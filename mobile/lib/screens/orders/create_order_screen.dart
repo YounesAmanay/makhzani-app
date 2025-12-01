@@ -849,27 +849,14 @@ class _AddOrderItemScreenState extends State<_AddOrderItemScreen> {
                       items: widget.products.map((product) {
                         return DropdownMenuItem(
                           value: product,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                product['name'],
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(AppConstants.textDark),
-                                ),
-                              ),
-                              if (product['price'] != null)
-                                Text(
-                                  '${product['price'].toStringAsFixed(2)} MAD/${product['unit'] ?? 'pc'}',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Color(AppConstants.textGray),
-                                  ),
-                                ),
-                            ],
+                          child: Text(
+                            product['name'],
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: Color(AppConstants.textDark),
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         );
                       }).toList(),
