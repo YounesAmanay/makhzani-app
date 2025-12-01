@@ -4,6 +4,9 @@ const router = express.Router();
 const { body, query, validationResult } = require('express-validator');
 const { authenticateToken, checkSubscription } = require('../middleware/auth');
 const db = require('../models');
+const { generateOrderPDF } = require('../utils/pdfGenerator');
+const fs = require('fs');
+const path = require('path');
 
 // Validation middleware
 const validateOrder = [
@@ -384,18 +387,40 @@ router.get('/:id', authenticateToken, async (req, res) => {
 
 /**
  * POST /api/orders/:id/generate-pdf
- * Generate PDF for order (marks as sent)
+ * Generate actual PDF file for order
  */
 router.post('/:id/generate-pdf', authenticateToken, checkSubscription, async (req, res) => {
   try {
     const { id } = req.params;
 
+    // Fetch order with all relations
     const order = await db.PurchaseOrder.findOne({
       where: {
         id: id,
         merchant_id: req.merchantId,
         is_active: true
-      }
+      },
+      include: [
+        {
+          model: db.Merchant,
+          as: 'merchant',
+          attributes: ['id', 'name', 'shop_name', 'phone_number', 'region']
+        },
+        {
+          model: db.Supplier,
+          as: 'supplier',
+          attributes: ['id', 'name', 'business_name', 'phone_number', 'email', 'address']
+        },
+        {
+          model: db.PurchaseOrderItem,
+          as: 'items',
+          include: [{
+            model: db.Product,
+            as: 'product',
+            attributes: ['id', 'name', 'unit']
+          }]
+        }
+      ]
     });
 
     if (!order) {
@@ -405,9 +430,13 @@ router.post('/:id/generate-pdf', authenticateToken, checkSubscription, async (re
       });
     }
 
-    // Update order to mark PDF as generated
+    // Generate PDF file
+    const pdfData = await generateOrderPDF(order);
+
+    // Update order with PDF info
     await order.update({
-      pdf_generated_at: new Date()
+      pdf_generated_at: new Date(),
+      pdf_url: pdfData.url
     });
 
     res.json({
@@ -417,7 +446,8 @@ router.post('/:id/generate-pdf', authenticateToken, checkSubscription, async (re
         order_id: order.id,
         order_number: order.order_number,
         pdf_generated_at: order.pdf_generated_at,
-        pdf_url: `/api/orders/${order.id}/download-pdf`  // Future implementation
+        pdf_url: pdfData.url,
+        pdf_filename: pdfData.filename
       }
     });
 
@@ -484,6 +514,62 @@ router.post('/:id/mark-sent', authenticateToken, [
     res.status(500).json({
       success: false,
       message: 'Failed to mark order as sent',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
+  }
+});
+
+/**
+ * GET /api/orders/:id/download-pdf
+ * Download order PDF file
+ */
+router.get('/:id/download-pdf', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Verify order exists and belongs to user
+    const order = await db.PurchaseOrder.findOne({
+      where: {
+        id: id,
+        merchant_id: req.merchantId,
+        is_active: true
+      }
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+
+    if (!order.pdf_url) {
+      return res.status(400).json({
+        success: false,
+        message: 'PDF has not been generated for this order'
+      });
+    }
+
+    // Construct file path
+    const filename = path.basename(order.pdf_url);
+    const filepath = path.join(__dirname, '../uploads/pdfs', filename);
+
+    // Check if file exists
+    if (!fs.existsSync(filepath)) {
+      return res.status(404).json({
+        success: false,
+        message: 'PDF file not found'
+      });
+    }
+
+    // Send file
+    res.download(filepath, `order-${order.order_number}.pdf`);
+
+  } catch (error) {
+    console.error('Error downloading PDF:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to download PDF',
       error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }
