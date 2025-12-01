@@ -10,7 +10,8 @@
     "test-models": "node scripts/test-models.js",
     "test-auth": "node scripts/test-auth.js",
     "test-all-apis": "node scripts/test-all-apis.js",
-    "clean-test-data": "node scripts/clean-test-data.js"
+    "clean-test-data": "node scripts/clean-test-data.js",
+    "extend-trial": "node scripts/extend-trial.js"
   },
   "keywords": [],
   "author": "",
