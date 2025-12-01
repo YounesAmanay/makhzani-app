@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 import '../../services/api_service.dart';
 import '../../utils/constants.dart';
 import 'create_order_screen.dart';
+
+typedef CanLaunchUrl = Future<bool> Function(Uri);
+typedef LaunchUrl = Future<bool> Function(Uri);
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -579,7 +587,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       InkWell(
                         onTap: () {
                           Navigator.pop(context);
-                          _showSendOptionsDialog(order['id']);
+                          _showSendOptionsDialog(order['id'], order['pdf_url']);
                         },
                         borderRadius: BorderRadius.circular(8),
                         child: Container(
@@ -645,13 +653,13 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  void _showSendOptionsDialog(String orderId) {
+  void _showSendOptionsDialog(String orderId, String? pdfUrl) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         title: const Text(
-          'How was this order sent?',
+          'Share order via:',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -661,24 +669,24 @@ class _OrdersScreenState extends State<OrdersScreen> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildSendOption(Icons.phone_rounded, 'WhatsApp', () {
+            _buildSendOption(Icons.chat_rounded, 'WhatsApp', () {
               Navigator.pop(context);
-              _markAsSent(orderId, 'whatsapp');
+              _shareViaPlatform(orderId, 'whatsapp', pdfUrl);
             }),
             const SizedBox(height: 8),
             _buildSendOption(Icons.email_rounded, 'Email', () {
               Navigator.pop(context);
-              _markAsSent(orderId, 'email');
+              _shareViaPlatform(orderId, 'email', pdfUrl);
             }),
             const SizedBox(height: 8),
-            _buildSendOption(Icons.call_rounded, 'Phone', () {
+            _buildSendOption(Icons.phone_rounded, 'Phone', () {
               Navigator.pop(context);
-              _markAsSent(orderId, 'phone');
+              _shareViaPlatform(orderId, 'phone', pdfUrl);
             }),
             const SizedBox(height: 8),
             _buildSendOption(Icons.person_rounded, 'In Person', () {
               Navigator.pop(context);
-              _markAsSent(orderId, 'in_person');
+              _shareViaPlatform(orderId, 'in_person', pdfUrl);
             }),
           ],
         ),
@@ -737,6 +745,181 @@ class _OrdersScreenState extends State<OrdersScreen> {
           ),
         );
       }
+    }
+  }
+
+  Future<void> _shareViaPlatform(String orderId, String platform, String? pdfUrl) async {
+    try {
+      // Show loading indicator
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Preparing PDF for sharing...'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+
+      // Download PDF if URL exists
+      File? pdfFile;
+      if (pdfUrl != null && pdfUrl.isNotEmpty) {
+        pdfFile = await _downloadPDF(pdfUrl);
+      }
+
+      // Share via appropriate platform
+      switch (platform.toLowerCase()) {
+        case 'whatsapp':
+          await _shareViaWhatsApp(orderId, pdfFile);
+          break;
+        case 'email':
+          await _shareViaEmail(orderId, pdfFile);
+          break;
+        case 'phone':
+          await _shareViaPhone(orderId);
+          break;
+        case 'in_person':
+          // For in-person, just mark as sent
+          await _markAsSent(orderId, platform);
+          return;
+        default:
+          throw Exception('Unknown platform: $platform');
+      }
+
+      // Mark as sent in backend
+      await _markAsSent(orderId, platform);
+
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to share: ${e.toString().replaceAll('Exception: ', '')}'),
+            backgroundColor: const Color(AppConstants.errorColor),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<File?> _downloadPDF(String pdfUrl) async {
+    try {
+      // Construct full URL
+      final fullUrl = pdfUrl.startsWith('http')
+          ? pdfUrl
+          : '${AppConstants.baseUrl.replaceAll('/api', '')}$pdfUrl';
+
+      final response = await http.get(Uri.parse(fullUrl));
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to download PDF');
+      }
+
+      // Get temporary directory
+      final tempDir = await getTemporaryDirectory();
+      final filename = 'order_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final file = File('${tempDir.path}/$filename');
+
+      // Write bytes to file
+      await file.writeAsBytes(response.bodyBytes);
+      return file;
+    } catch (e) {
+      debugPrint('Error downloading PDF: $e');
+      return null;
+    }
+  }
+
+  Future<void> _shareViaWhatsApp(String orderId, File? pdfFile) async {
+    try {
+      final order = _orders.firstWhere((o) => o['id'] == orderId);
+      final orderNumber = order['order_number'] ?? 'Order';
+      final supplier = order['supplier'] ?? {};
+      final supplierName = supplier['name'] ?? 'Supplier';
+
+      final message = 'Hi $supplierName,\n\n'
+          'I have a purchase order for you.\n'
+          'Order #: $orderNumber\n\n'
+          'Thank you!';
+
+      // Use native Share dialog
+      if (pdfFile != null) {
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(pdfFile.path)],
+            text: message,
+          ),
+        );
+      } else {
+        await SharePlus.instance.share(
+          ShareParams(text: message),
+        );
+      }
+    } catch (e) {
+      throw Exception('Failed to share via WhatsApp: $e');
+    }
+  }
+
+  Future<void> _shareViaEmail(String orderId, File? pdfFile) async {
+    try {
+      final order = _orders.firstWhere((o) => o['id'] == orderId);
+      final orderNumber = order['order_number'] ?? 'Order';
+      final supplier = order['supplier'] ?? {};
+      final supplierEmail = supplier['email'] ?? '';
+
+      if (supplierEmail.isEmpty) {
+        throw Exception('No email address available for this supplier');
+      }
+
+      final subject = 'Purchase Order - $orderNumber';
+      final body = 'Hi,\n\nPlease find the attached purchase order.\n\nThank you!';
+
+      // Construct mailto URI
+      final mailtoUri = Uri(
+        scheme: 'mailto',
+        path: supplierEmail,
+        queryParameters: {
+          'subject': subject,
+          'body': body,
+        },
+      );
+
+      if (await canLaunchUrl(mailtoUri)) {
+        await launchUrl(mailtoUri);
+      } else {
+        throw Exception('Could not launch email');
+      }
+    } catch (e) {
+      throw Exception('Failed to share via Email: $e');
+    }
+  }
+
+  Future<void> _shareViaPhone(String orderId) async {
+    try {
+      final order = _orders.firstWhere((o) => o['id'] == orderId);
+      final orderNumber = order['order_number'] ?? 'Order';
+      final supplier = order['supplier'] ?? {};
+      final supplierPhone = supplier['phone_number'] ?? '';
+
+      if (supplierPhone.isEmpty) {
+        throw Exception('No phone number available for this supplier');
+      }
+
+      // Remove any non-numeric characters for URI
+      final cleanPhone = supplierPhone.replaceAll(RegExp(r'[^0-9+]'), '');
+      final message = 'Hi, I have a purchase order for you. Order #: $orderNumber';
+
+      final smsUri = Uri(
+        scheme: 'sms',
+        path: cleanPhone,
+        queryParameters: {'body': message},
+      );
+
+      if (await canLaunchUrl(smsUri)) {
+        await launchUrl(smsUri);
+      } else {
+        throw Exception('Could not launch SMS');
+      }
+    } catch (e) {
+      throw Exception('Failed to share via Phone: $e');
     }
   }
 
