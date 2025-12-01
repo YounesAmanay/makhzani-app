@@ -110,8 +110,8 @@ async function generateOrderPDF(order) {
 
         order.items.forEach((item) => {
           const product = item.product || {};
-          const quantity = item.quantity || 0;
-          const unitPrice = item.unit_price || 0;
+          const quantity = parseFloat(item.quantity) || 0;
+          const unitPrice = parseFloat(item.unit_price) || 0;
           const itemTotal = quantity * unitPrice;
           grandTotal += itemTotal;
 
