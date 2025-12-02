@@ -38,6 +38,9 @@ dependencies:
   # Permissions for file downloads
   permission_handler: ^11.4.0
 
+  # Local notifications for download progress
+  flutter_local_notifications: ^17.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
