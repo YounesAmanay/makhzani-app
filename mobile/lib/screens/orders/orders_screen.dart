@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import '../../services/api_service.dart';
@@ -151,7 +150,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return '${pdfDir.path}/order-$orderId.pdf';
   }
 
-  // Download PDF using system download manager
+  // Download PDF to system Downloads folder
   Future<void> _downloadPDFToDownloads(String orderId, String pdfUrl) async {
     try {
       // Request storage permission
@@ -178,6 +177,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
       final orderNumber = order['order_number'] ?? 'Order';
       final fileName = 'order-$orderNumber.pdf';
 
+      // Get Downloads directory
+      final downloadsDir = Directory('/storage/emulated/0/Download');
+      if (!await downloadsDir.exists()) {
+        await downloadsDir.create(recursive: true);
+      }
+
+      final filePath = '${downloadsDir.path}/$fileName';
+      final file = File(filePath);
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -187,19 +195,33 @@ class _OrdersScreenState extends State<OrdersScreen> {
         );
       }
 
-      // Use flutter_downloader to download with system notification
-      await FlutterDownloader.enqueue(
-        url: fullUrl,
-        fileName: fileName,
-        savedDir: '/storage/emulated/0/Download', // Downloads folder
-        showNotification: true,
-        openFileFromNotification: true,
+      // Download the file
+      final response = await http.get(Uri.parse(fullUrl)).timeout(
+        const Duration(seconds: 60),
+        onTimeout: () => throw Exception('Download timeout'),
       );
+
+      if (response.statusCode == 200) {
+        // Write file to Downloads
+        await file.writeAsBytes(response.bodyBytes);
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('PDF downloaded: $fileName'),
+              backgroundColor: const Color(AppConstants.primaryGreen),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      } else {
+        throw Exception('Failed to download: ${response.statusCode}');
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to download PDF: $e'),
+            content: Text('Download failed: $e'),
             backgroundColor: const Color(AppConstants.errorColor),
           ),
         );
