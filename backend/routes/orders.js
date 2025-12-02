@@ -141,6 +141,7 @@ router.get('/', authenticateToken, validateQuery, handleValidationErrors, async 
             sent: !!order.sent_at,
             sent_via: order.sent_via
           },
+          pdf_url: order.pdf_url,
           created_at: order.created_at,
           pdf_generated_at: order.pdf_generated_at,
           sent_at: order.sent_at
@@ -360,6 +361,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
             total_value: totalValue
           },
           notes: order.notes,
+          pdf_url: order.pdf_url,
           status: {
             pdf_generated: !!order.pdf_generated_at,
             sent: !!order.sent_at,
