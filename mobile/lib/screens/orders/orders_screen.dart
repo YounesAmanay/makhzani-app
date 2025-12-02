@@ -17,7 +17,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
   bool _isLoading = true;
   List<Map<String, dynamic>> _orders = [];
   String? _error;
-  final String _selectedStatus = 'all';
+  String _selectedStatus = 'all';
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -45,6 +46,24 @@ class _OrdersScreenState extends State<OrdersScreen> {
         _isLoading = false;
       });
     }
+  }
+
+  // Filter orders based on search and status
+  List<Map<String, dynamic>> _getFilteredOrders() {
+    var filtered = _orders;
+
+    // Apply search filter
+    if (_searchQuery.isNotEmpty) {
+      filtered = filtered.where((order) {
+        final orderNumber = order['order_number']?.toString().toLowerCase() ?? '';
+        final supplierName = order['supplier']?['name']?.toString().toLowerCase() ?? '';
+        final query = _searchQuery.toLowerCase();
+
+        return orderNumber.contains(query) || supplierName.contains(query);
+      }).toList();
+    }
+
+    return filtered;
   }
 
   // Determine order status based on pdf_generated_at and sent_at
@@ -247,6 +266,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
           // Close popup
           Navigator.pop(context);
+
+          // Auto-download the PDF
+          final pdfUrl = response['data']?['pdf_url'];
+          if (pdfUrl != null) {
+            await Future.delayed(const Duration(milliseconds: 500));
+            if (mounted) {
+              await _downloadAndSavePDF(orderId, pdfUrl);
+            }
+          }
         }
       } else {
         throw Exception(response['message'] ?? 'Failed to generate PDF');
@@ -265,7 +293,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   // Share PDF via native share dialog
   Future<void> _shareOrderPDF(String orderId, File? pdfFile) async {
-    if (pdfFile == null) return;
     try {
       final order = _orders.firstWhere((o) => o['id'] == orderId);
       final orderNumber = order['order_number'] ?? 'Order';
@@ -300,7 +327,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
         title: const Text('Purchase Orders'),
         elevation: 0,
       ),
-      body: _buildBody(),
+      body: Column(
+        children: [
+          // Search and filter bar
+          _buildSearchAndFilterBar(),
+          // Orders list
+          Expanded(
+            child: _buildBody(),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -310,6 +346,103 @@ class _OrdersScreenState extends State<OrdersScreen> {
         },
         backgroundColor: const Color(AppConstants.primaryGreen),
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  Widget _buildSearchAndFilterBar() {
+    return Container(
+      color: const Color(AppConstants.white),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          // Search box
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(AppConstants.background),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: const Color(AppConstants.textLight).withValues(alpha: 0.2),
+                width: 1,
+              ),
+            ),
+            child: TextField(
+              onChanged: (value) {
+                setState(() => _searchQuery = value);
+              },
+              decoration: InputDecoration(
+                hintText: 'Search by order # or supplier...',
+                hintStyle: const TextStyle(
+                  color: Color(AppConstants.textLight),
+                  fontSize: 13,
+                ),
+                prefixIcon: const Icon(
+                  Icons.search,
+                  color: Color(AppConstants.textGray),
+                  size: 20,
+                ),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Filter chips
+          SizedBox(
+            height: 40,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                _buildFilterChip('All', 'all'),
+                const SizedBox(width: 8),
+                _buildFilterChip('Not Ready', 'draft'),
+                const SizedBox(width: 8),
+                _buildFilterChip('Ready', 'ready'),
+                const SizedBox(width: 8),
+                _buildFilterChip('Shared', 'sent'),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterChip(String label, String status) {
+    final isSelected = _selectedStatus == status;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() => _selectedStatus = status);
+        _loadOrders();
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? const Color(AppConstants.primaryGreen)
+              : const Color(AppConstants.background),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected
+                ? const Color(AppConstants.primaryGreen)
+                : const Color(AppConstants.textLight).withValues(alpha: 0.2),
+            width: 1,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: isSelected
+                ? const Color(AppConstants.white)
+                : const Color(AppConstants.textGray),
+          ),
+        ),
       ),
     );
   }
@@ -356,7 +489,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
       );
     }
 
-    if (_orders.isEmpty) {
+    final filteredOrders = _getFilteredOrders();
+
+    if (filteredOrders.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -367,9 +502,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
               color: Color(AppConstants.textGray),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'No orders yet',
-              style: TextStyle(
+            Text(
+              _searchQuery.isNotEmpty ? 'No orders found' : 'No orders yet',
+              style: const TextStyle(
                 color: Color(AppConstants.textGray),
                 fontSize: 14,
               ),
@@ -381,9 +516,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: _orders.length,
+      itemCount: filteredOrders.length,
       itemBuilder: (context, index) {
-        final order = _orders[index];
+        final order = filteredOrders[index];
         return _buildOrderCard(order);
       },
     );
