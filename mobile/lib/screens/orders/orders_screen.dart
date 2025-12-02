@@ -161,9 +161,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
       }
 
       // Download from backend
+      // Use serverUrl (without /api) for file downloads
       final fullUrl = pdfUrl.startsWith('http')
           ? pdfUrl
-          : '${AppConstants.baseUrl}$pdfUrl';
+          : '${AppConstants.serverUrl}$pdfUrl';
 
       final response = await http.get(Uri.parse(fullUrl)).timeout(
         const Duration(seconds: 30),
