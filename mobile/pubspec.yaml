@@ -14,6 +14,9 @@ dependencies:
   # HTTP client for API calls
   http: ^1.1.0
 
+  # HTTP client for file downloads with progress
+  dio: ^5.4.0
+
   # Local storage
   sqflite: ^2.3.0
   path: ^1.8.3
@@ -37,9 +40,6 @@ dependencies:
 
   # Permissions for file downloads
   permission_handler: ^11.4.0
-
-  # Local notifications for download progress
-  flutter_local_notifications: ^17.0.0
 
 dev_dependencies:
   flutter_test:

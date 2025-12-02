@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:io';
-import '../../main.dart';
 import '../../services/api_service.dart';
 import '../../utils/constants.dart';
 import 'create_order_screen.dart';
@@ -179,26 +177,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
       final orderNumber = order['order_number'] ?? 'Order';
       final fileName = 'order-$orderNumber.pdf';
 
-      // Show initial notification
-      await flutterLocalNotificationsPlugin.show(
-        orderId.hashCode,
-        'Downloading PDF',
-        'order-$orderNumber.pdf',
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'download_channel',
-            'PDF Downloads',
-            channelDescription: 'Notifications for PDF downloads',
-            importance: Importance.low,
-            priority: Priority.low,
-            showProgress: true,
-            maxProgress: 100,
-            progress: 0,
-            ongoing: true,
-          ),
-        ),
-      );
-
       // Get Downloads directory
       final downloadsDir = Directory('/storage/emulated/0/Download');
       if (!await downloadsDir.exists()) {
@@ -206,86 +184,29 @@ class _OrdersScreenState extends State<OrdersScreen> {
       }
 
       final filePath = '${downloadsDir.path}/$fileName';
-      final file = File(filePath);
 
-      // Download the file with progress tracking
-      final request = http.Request('GET', Uri.parse(fullUrl));
-      final response = await request.send().timeout(
-            const Duration(seconds: 60),
-            onTimeout: () => throw Exception('Download timeout'),
-          );
-
-      if (response.statusCode == 200) {
-        final contentLength = response.contentLength ?? 0;
-        int received = 0;
-        final sink = file.openWrite();
-
-        await response.stream.listen(
-          (List<int> chunk) {
-            received += chunk.length;
-            sink.add(chunk);
-
-            // Update notification with progress
-            final progress = contentLength > 0 ? (received * 100 ~/ contentLength) : 0;
-            flutterLocalNotificationsPlugin.show(
-              orderId.hashCode,
-              'Downloading PDF',
-              '$progress%',
-              NotificationDetails(
-                android: AndroidNotificationDetails(
-                  'download_channel',
-                  'PDF Downloads',
-                  channelDescription: 'Notifications for PDF downloads',
-                  importance: Importance.low,
-                  priority: Priority.low,
-                  showProgress: true,
-                  maxProgress: 100,
-                  progress: progress,
-                  ongoing: true,
-                ),
-              ),
-            );
-          },
-        ).asFuture();
-
-        await sink.close();
-
-        // Show completion notification
-        await flutterLocalNotificationsPlugin.show(
-          orderId.hashCode,
-          'PDF Downloaded',
-          fileName,
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              'download_channel',
-              'PDF Downloads',
-              channelDescription: 'Notifications for PDF downloads',
-              importance: Importance.low,
-              priority: Priority.low,
-              showProgress: false,
-            ),
-          ),
-        );
-      } else {
-        throw Exception('Failed to download: ${response.statusCode}');
-      }
-    } catch (e) {
-      // Show error notification
-      await flutterLocalNotificationsPlugin.show(
-        'error'.hashCode,
-        'Download Failed',
-        'Could not download PDF',
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'download_channel',
-            'PDF Downloads',
-            channelDescription: 'Notifications for PDF downloads',
-            importance: Importance.low,
-            priority: Priority.low,
-          ),
-        ),
+      // Download the file using dio
+      final dio = Dio();
+      await dio.download(
+        fullUrl,
+        filePath,
+        onReceiveProgress: (received, total) {
+          if (total != -1) {
+            final progress = (received / total * 100).toInt();
+            print('Download Progress: $progress%');
+          }
+        },
       );
 
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('PDF downloaded: $fileName'),
+            backgroundColor: const Color(AppConstants.successColor),
+          ),
+        );
+      }
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -314,17 +235,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
           ? pdfUrl
           : '${AppConstants.serverUrl}$pdfUrl';
 
-      final response = await http.get(Uri.parse(fullUrl)).timeout(
-        const Duration(seconds: 30),
-        onTimeout: () => throw Exception('Download timeout'),
+      final dio = Dio();
+      await dio.download(
+        fullUrl,
+        file.path,
       );
-
-      if (response.statusCode == 200) {
-        await file.writeAsBytes(response.bodyBytes);
-        return file;
-      } else {
-        throw Exception('Failed to download PDF: ${response.statusCode}');
-      }
+      return file;
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
