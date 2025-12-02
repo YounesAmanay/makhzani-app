@@ -146,7 +146,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         'unit_price': item['unit_price'],
       }).toList();
 
-      await ApiService.createOrder(
+      // Create order
+      final createResponse = await ApiService.createOrder(
         supplierId: _selectedSupplier!['id'],
         items: items,
         notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
@@ -155,11 +156,39 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Order created successfully'),
-            backgroundColor: Color(AppConstants.successColor),
+            content: Text('Order created! Generating PDF...'),
+            backgroundColor: Color(AppConstants.primaryGreen),
           ),
         );
-        Navigator.pop(context);
+
+        // Get the order ID from the response
+        final orderId = createResponse['data']?['order']?['id'];
+        if (orderId != null) {
+          // Auto-generate PDF after a short delay
+          await Future.delayed(const Duration(milliseconds: 500));
+
+          if (mounted) {
+            try {
+              await ApiService.generateOrderPDF(orderId);
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('PDF generated successfully!'),
+                    backgroundColor: Color(AppConstants.primaryGreen),
+                  ),
+                );
+              }
+            } catch (pdfError) {
+              // If PDF generation fails, just continue
+              // User can generate it manually later
+            }
+          }
+        }
+
+        // Close the create order screen
+        if (mounted) {
+          Navigator.pop(context);
+        }
       }
     } catch (e) {
       if (mounted) {

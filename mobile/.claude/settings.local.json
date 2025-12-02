@@ -5,7 +5,10 @@
       "Bash(findstr:*)",
       "Read(//c/Users/PC/Desktop/Projects/makhzani-app/backend/routes/**)",
       "Bash(git commit:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npm install:*)",
+      "Bash(flutter pub add:*)",
+      "Bash(flutter pub get:*)"
     ],
     "deny": [],
     "ask": []

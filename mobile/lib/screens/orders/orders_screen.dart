@@ -33,7 +33,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
     });
 
     try {
-      final response = await ApiService.getOrders(status: _selectedStatus);
+      // Map UI status to API status
+      String apiStatus = _selectedStatus;
+      if (_selectedStatus == 'draft') {
+        apiStatus = 'draft'; // Not Ready
+      } else if (_selectedStatus == 'ready') {
+        apiStatus = 'all'; // Ready - fetch all, filter locally
+      } else if (_selectedStatus == 'sent') {
+        apiStatus = 'sent'; // Shared
+      }
+
+      final response = await ApiService.getOrders(status: apiStatus);
       if (response['success'] == true) {
         setState(() {
           _orders = List<Map<String, dynamic>>.from(response['data']['orders']);
@@ -51,6 +61,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
   // Filter orders based on search and status
   List<Map<String, dynamic>> _getFilteredOrders() {
     var filtered = _orders;
+
+    // Apply status filter locally
+    if (_selectedStatus != 'all') {
+      filtered = filtered.where((order) {
+        final orderStatus = _getOrderStatus(order);
+        return orderStatus == _selectedStatus;
+      }).toList();
+    }
 
     // Apply search filter
     if (_searchQuery.isNotEmpty) {
@@ -1057,7 +1075,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
           ),
         ),
       );
-    } else if (status == 'ready' && pdfUrl != null) {
+    } else if (status == 'ready') {
+      // If PDF is marked as ready, show Open PDF button (with or without URL)
       return SizedBox(
         width: double.infinity,
         child: ElevatedButton.icon(
