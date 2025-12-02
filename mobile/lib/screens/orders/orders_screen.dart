@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import '../../services/api_service.dart';
 import '../../utils/constants.dart';
@@ -149,7 +151,63 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return '${pdfDir.path}/order-$orderId.pdf';
   }
 
-  // Download PDF from backend and save to phone
+  // Download PDF using system download manager
+  Future<void> _downloadPDFToDownloads(String orderId, String pdfUrl) async {
+    try {
+      // Request storage permission
+      final status = await Permission.storage.request();
+      if (!status.isGranted) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Storage permission required to download PDF'),
+              backgroundColor: Color(AppConstants.warningColor),
+            ),
+          );
+        }
+        return;
+      }
+
+      // Build full URL
+      final fullUrl = pdfUrl.startsWith('http')
+          ? pdfUrl
+          : '${AppConstants.serverUrl}$pdfUrl';
+
+      // Get order for filename
+      final order = _orders.firstWhere((o) => o['id'] == orderId);
+      final orderNumber = order['order_number'] ?? 'Order';
+      final fileName = 'order-$orderNumber.pdf';
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Downloading PDF...'),
+            backgroundColor: Color(AppConstants.primaryGreen),
+          ),
+        );
+      }
+
+      // Use flutter_downloader to download with system notification
+      await FlutterDownloader.enqueue(
+        url: fullUrl,
+        fileName: fileName,
+        savedDir: '/storage/emulated/0/Download', // Downloads folder
+        showNotification: true,
+        openFileFromNotification: true,
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to download PDF: $e'),
+            backgroundColor: const Color(AppConstants.errorColor),
+          ),
+        );
+      }
+    }
+  }
+
+  // Download PDF from backend and save to phone (backup method)
   Future<File?> _downloadAndSavePDF(String orderId, String pdfUrl) async {
     try {
       final filePath = await _getPDFFilePath(orderId);
@@ -273,25 +331,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
       if (response['success'] == true) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('PDF generated successfully!'),
-              backgroundColor: Color(AppConstants.primaryGreen),
-            ),
-          );
-
           // Reload orders to update status
           await _loadOrders();
 
           // Close popup
           Navigator.pop(context);
 
-          // Auto-download the PDF
+          // Auto-download the PDF to system Downloads folder
           final pdfUrl = response['data']?['pdf_url'];
           if (pdfUrl != null) {
             await Future.delayed(const Duration(milliseconds: 500));
             if (mounted) {
-              await _downloadAndSavePDF(orderId, pdfUrl);
+              await _downloadPDFToDownloads(orderId, pdfUrl);
             }
           }
         }
