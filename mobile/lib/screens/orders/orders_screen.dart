@@ -177,16 +177,23 @@ class _OrdersScreenState extends State<OrdersScreen> {
       final orderNumber = order['order_number'] ?? 'Order';
       final fileName = 'order-$orderNumber.pdf';
 
-      // Use standard Android Downloads directory
-      const downloadsPath = '/storage/emulated/0/Download';
-      final downloadsDir = Directory(downloadsPath);
+      // Get external storage directory
+      final Directory? appDir = await getExternalStorageDirectory();
+      if (appDir == null) {
+        throw Exception('Could not access external storage');
+      }
 
-      // Create directory if it doesn't exist
+      // Extract the base storage path and navigate to public Downloads
+      // appDir.path is like: /storage/emulated/0/Android/data/com.example.app/files
+      // We want: /storage/emulated/0/Download
+      final String basePath = appDir.path.split('/Android/')[0];
+      final downloadsDir = Directory('$basePath/Download');
+
       if (!await downloadsDir.exists()) {
         await downloadsDir.create(recursive: true);
       }
 
-      final filePath = '$downloadsPath/$fileName';
+      final filePath = '${downloadsDir.path}/$fileName';
 
       // Download using dio
       final dio = Dio();
