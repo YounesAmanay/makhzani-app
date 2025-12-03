@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
-import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import '../../services/api_service.dart';
@@ -178,13 +177,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
       final orderNumber = order['order_number'] ?? 'Order';
       final fileName = 'order-$orderNumber.pdf';
 
-      // Get Downloads directory path
-      final downloadDir = await DownloadsPathProvider.downloadsDirectory;
-      if (downloadDir == null) {
-        throw Exception('Could not access Downloads folder');
+      // Use standard Android Downloads directory
+      const downloadsPath = '/storage/emulated/0/Download';
+      final downloadsDir = Directory(downloadsPath);
+
+      // Create directory if it doesn't exist
+      if (!await downloadsDir.exists()) {
+        await downloadsDir.create(recursive: true);
       }
 
-      final filePath = '${downloadDir.path}/$fileName';
+      final filePath = '$downloadsPath/$fileName';
 
       // Download using dio
       final dio = Dio();
@@ -202,7 +204,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('PDF saved: $fileName'),
+            content: Text('PDF saved to Downloads: $fileName'),
             backgroundColor: const Color(AppConstants.successColor),
             duration: const Duration(seconds: 3),
           ),

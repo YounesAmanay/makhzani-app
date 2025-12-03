@@ -17,10 +17,8 @@ dependencies:
   # HTTP client for file downloads
   dio: ^5.4.0
 
-  # Get Downloads folder path
-  downloads_path_provider_28: ^0.1.1
-
-  # Local storage
+  # Local storage and path utilities
+  path_provider: ^2.1.0
   sqflite: ^2.3.0
   path: ^1.8.3
 
