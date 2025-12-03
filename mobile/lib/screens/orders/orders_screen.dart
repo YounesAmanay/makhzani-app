@@ -201,7 +201,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Downloaded: $filePath'),
+            content: Text('PDF saved to Downloads folder'),
             backgroundColor: const Color(AppConstants.successColor),
           ),
         );
