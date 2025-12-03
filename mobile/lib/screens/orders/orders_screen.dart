@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import '../../services/api_service.dart';
@@ -177,40 +177,44 @@ class _OrdersScreenState extends State<OrdersScreen> {
       final orderNumber = order['order_number'] ?? 'Order';
       final fileName = 'order-$orderNumber.pdf';
 
-      // Get Downloads directory
-      final downloadsDir = Directory('/storage/emulated/0/Download');
-      if (!await downloadsDir.exists()) {
-        await downloadsDir.create(recursive: true);
-      }
-
-      final filePath = '${downloadsDir.path}/$fileName';
-
-      // Download the file using dio
-      final dio = Dio();
-      await dio.download(
-        fullUrl,
-        filePath,
-        onReceiveProgress: (received, total) {
-          if (total != -1) {
-            final progress = (received / total * 100).toInt();
-            print('Download Progress: $progress%');
+      // Download using flutter_file_downloader - automatically saves to Downloads
+      FileDownloader.downloadFile(
+        url: fullUrl,
+        name: fileName,
+        onProgress: (fileName, progress) {
+          if (mounted) {
+            // Progress callback - can be used to update UI
+            print('Downloading $fileName: $progress%');
+          }
+        },
+        onDownloadCompleted: (String path) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('PDF downloaded: $fileName'),
+                backgroundColor: const Color(AppConstants.successColor),
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
+        },
+        onDownloadError: (String error) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Download failed: $error'),
+                backgroundColor: const Color(AppConstants.errorColor),
+                duration: const Duration(seconds: 3),
+              ),
+            );
           }
         },
       );
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('PDF saved to Downloads folder'),
-            backgroundColor: const Color(AppConstants.successColor),
-          ),
-        );
-      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Download failed: $e'),
+            content: Text('Download error: $e'),
             backgroundColor: const Color(AppConstants.errorColor),
           ),
         );
