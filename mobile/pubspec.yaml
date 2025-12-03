@@ -14,8 +14,11 @@ dependencies:
   # HTTP client for API calls
   http: ^1.1.0
 
-  # File downloader for Downloads folder
-  flutter_file_downloader: ^1.1.3
+  # HTTP client for file downloads
+  dio: ^5.4.0
+
+  # Get Downloads folder path
+  downloads_path_provider_28: ^0.1.1
 
   # Local storage
   sqflite: ^2.3.0
