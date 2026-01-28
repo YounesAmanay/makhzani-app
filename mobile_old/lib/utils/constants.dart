@@ -1,11 +1,11 @@
 class AppConstants {
   // API Configuration
-  static const String baseUrl = 'http://192.168.1.5:3000/api'; // Physical device
-  static const String serverUrl = 'http://192.168.1.5:3000'; // Server root for file downloads
+  static const String baseUrl = 'http://localhost:3000/api'; // Windows/Web
+  static const String serverUrl = 'http://localhost:3000'; // Server root for file downloads
+  // static const String baseUrl = 'http://192.168.1.5:3000/api'; // Physical device
+  // static const String serverUrl = 'http://192.168.1.5:3000'; // Server root for file downloads
   // static const String baseUrl = 'http://10.0.2.2:3000/api'; // Android emulator
   // static const String serverUrl = 'http://10.0.2.2:3000'; // Android emulator server
-  // static const String baseUrl = 'http://localhost:3000/api'; // iOS simulator
-  // static const String serverUrl = 'http://localhost:3000'; // iOS simulator server
 
   // App Configuration
   static const String appName = 'Makhzani';
