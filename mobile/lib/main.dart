@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/localization/generated/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/screens/phone_input_screen.dart';
+import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,30 +40,13 @@ class MakhzaniApp extends StatelessWidget {
         Locale('fr'),
         Locale('en'),
       ],
-      locale: const Locale('en'), // Start with English for now
+      locale: const Locale('en'),
 
       // Routes
       routes: {
         '/': (context) => const PhoneInputScreen(),
-        '/dashboard': (context) => const DashboardPlaceholder(),
+        '/dashboard': (context) => const DashboardScreen(),
       },
-    );
-  }
-}
-
-/// Temporary dashboard placeholder
-class DashboardPlaceholder extends StatelessWidget {
-  const DashboardPlaceholder({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-      ),
-      body: const Center(
-        child: Text('Welcome! Dashboard coming soon...'),
-      ),
     );
   }
 }
