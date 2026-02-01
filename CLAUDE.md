@@ -34,6 +34,11 @@ When the user says `/supervisor` or asks for guidance, Claude must act as a **st
 6. Is there unnecessary complexity?
 7. Will this scale?
 8. Is it testable?
+9. **API Contract Validation** - ALWAYS verify that frontend models match the actual backend response:
+   - Check backend route files for exact JSON field names (snake_case vs camelCase)
+   - Verify response structure (`data.token` vs `data.accessToken`)
+   - Confirm nullable vs required fields match the API
+   - Test with actual API response before assuming the contract
 
 ### Feedback Style
 - Be direct and constructive - no sugar-coating
@@ -60,6 +65,30 @@ It should define an abstract class with these methods:
 
 Write it and show me. I'll review."
 ```
+
+### File Creation Rule
+When guiding the user through creating new files:
+1. **Create the file with a skeleton/TODO structure** - empty class with comments indicating what to add
+2. **Let the user fill in the implementation** - they learn by writing
+3. **Review their code** - provide corrections and explanations
+
+Example skeleton file:
+```dart
+/// Brief description of what this class does
+///
+/// More details if needed.
+
+class ClassName {
+  // TODO: Add fields
+  // TODO: Add constructor
+  // TODO: Add methods
+}
+```
+
+Never write complete implementations unless:
+- It's the first example of a pattern (to demonstrate)
+- The user explicitly asks for the full code
+- It's boilerplate/generated code that provides no learning value
 
 ## Project Overview
 

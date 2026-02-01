@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../constants/api_endpoints.dart';
+import '../constants/app_constants.dart';
 
 class ApiClient {
   late final Dio _dio;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  // TODO: Update with your actual API URL
-  static const String baseUrl = 'https://api.makhzani.ma/api/v1';
+  static String get baseUrl => AppConstants.baseUrl;
 
   ApiClient() {
     _dio = Dio(BaseOptions(
@@ -134,20 +134,24 @@ class _AuthInterceptor extends Interceptor {
     handler.next(err);
   }
 
+  /// Refresh token using current token in Authorization header
+  /// Backend uses single-token system (same JWT for auth and refresh)
   Future<bool> _refreshToken() async {
     try {
-      final refreshToken = await _storage.read(key: 'refresh_token');
-      if (refreshToken == null) return false;
+      final currentToken = await _storage.read(key: 'access_token');
+      if (currentToken == null) return false;
 
       final response = await Dio().post(
         '${ApiClient.baseUrl}${ApiEndpoints.refreshToken}',
-        data: {'refreshToken': refreshToken},
+        options: Options(
+          headers: {'Authorization': 'Bearer $currentToken'},
+        ),
       );
 
       if (response.statusCode == 200) {
         final data = response.data['data'];
-        await _storage.write(key: 'access_token', value: data['accessToken']);
-        await _storage.write(key: 'refresh_token', value: data['refreshToken']);
+        // Backend returns single 'token' field
+        await _storage.write(key: 'access_token', value: data['token']);
         return true;
       }
     } catch (e) {

@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'core/localization/generated/app_localizations.dart';
 import 'core/theme/app_theme.dart';
+import 'features/auth/presentation/screens/phone_input_screen.dart';
 
 void main() {
-  runApp(const MakhzaniApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(
+    const ProviderScope(
+      child: MakhzaniApp(),
+    ),
+  );
 }
 
 class MakhzaniApp extends StatelessWidget {
@@ -27,50 +35,33 @@ class MakhzaniApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
-        Locale('ar'), // Arabic
-        Locale('fr'), // French
-        Locale('en'), // English
+        Locale('ar'),
+        Locale('fr'),
+        Locale('en'),
       ],
-      locale: const Locale('ar'), // Default to Arabic
+      locale: const Locale('en'), // Start with English for now
 
-      // Home
-      home: const TestScreen(),
+      // Routes
+      routes: {
+        '/': (context) => const PhoneInputScreen(),
+        '/dashboard': (context) => const DashboardPlaceholder(),
+      },
     );
   }
 }
 
-// Temporary test screen
-class TestScreen extends StatelessWidget {
-  const TestScreen({super.key});
+/// Temporary dashboard placeholder
+class DashboardPlaceholder extends StatelessWidget {
+  const DashboardPlaceholder({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.appName),
+        title: const Text('Dashboard'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              l10n.welcome,
-              style: Theme.of(context).textTheme.displayMedium,
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text(l10n.login),
-            ),
-            const SizedBox(height: 16),
-            OutlinedButton(
-              onPressed: () {},
-              child: const Text('Test Button'),
-            ),
-          ],
-        ),
+      body: const Center(
+        child: Text('Welcome! Dashboard coming soon...'),
       ),
     );
   }

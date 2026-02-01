@@ -8,6 +8,7 @@
 ///
 /// Why? Because domain entities are the HEART of your app.
 /// They should be pure Dart and never change due to API changes.
+library;
 
 class Merchant {
   /// Unique identifier from the backend
@@ -42,8 +43,7 @@ class Merchant {
       trialEndsAt!.isAfter(DateTime.now());
 
   /// Helper to check if subscription is active (trial or paid)
-  bool get hasActiveSubscription =>
-      subscriptionStatus == 'paid' || isOnTrial;
+  bool get hasActiveSubscription => subscriptionStatus == 'paid' || isOnTrial;
 
   /// Helper to get days remaining in trial
   int? get trialDaysRemaining {
