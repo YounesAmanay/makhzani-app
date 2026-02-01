@@ -106,53 +106,101 @@ abstract class AppLocalizations {
   /// **'Makhzani'**
   String get appName;
 
-  /// No description provided for @welcome.
+  /// No description provided for @auth_phoneInputTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome'**
-  String get welcome;
+  /// **'Enter your phone number to continue'**
+  String get auth_phoneInputTitle;
 
-  /// No description provided for @login.
-  ///
-  /// In en, this message translates to:
-  /// **'Login'**
-  String get login;
-
-  /// No description provided for @phoneNumber.
+  /// No description provided for @auth_phoneLabel.
   ///
   /// In en, this message translates to:
   /// **'Phone Number'**
-  String get phoneNumber;
+  String get auth_phoneLabel;
 
-  /// No description provided for @enterPhoneNumber.
+  /// No description provided for @auth_phoneHint.
   ///
   /// In en, this message translates to:
-  /// **'Enter your phone number'**
-  String get enterPhoneNumber;
+  /// **'6XXXXXXXX'**
+  String get auth_phoneHint;
 
-  /// No description provided for @sendOTP.
+  /// No description provided for @auth_phonePrefixMorocco.
+  ///
+  /// In en, this message translates to:
+  /// **'+212'**
+  String get auth_phonePrefixMorocco;
+
+  /// No description provided for @auth_sendCode.
   ///
   /// In en, this message translates to:
   /// **'Send Code'**
-  String get sendOTP;
+  String get auth_sendCode;
 
-  /// No description provided for @verifyOTP.
-  ///
-  /// In en, this message translates to:
-  /// **'Verify Code'**
-  String get verifyOTP;
-
-  /// No description provided for @otp.
-  ///
-  /// In en, this message translates to:
-  /// **'Verification Code'**
-  String get otp;
-
-  /// No description provided for @enterOTP.
+  /// No description provided for @auth_verifyTitle.
   ///
   /// In en, this message translates to:
   /// **'Enter verification code'**
-  String get enterOTP;
+  String get auth_verifyTitle;
+
+  /// No description provided for @auth_verifySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a 4-digit code to\n{phoneNumber}'**
+  String auth_verifySubtitle(String phoneNumber);
+
+  /// No description provided for @auth_verify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get auth_verify;
+
+  /// No description provided for @auth_resendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend Code'**
+  String get auth_resendCode;
+
+  /// No description provided for @auth_codeResent.
+  ///
+  /// In en, this message translates to:
+  /// **'Code resent successfully'**
+  String get auth_codeResent;
+
+  /// No description provided for @auth_invalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid code. Please try again.'**
+  String get auth_invalidCode;
+
+  /// No description provided for @auth_failedToSendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send OTP. Please try again.'**
+  String get auth_failedToSendOtp;
+
+  /// No description provided for @validation_required.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required'**
+  String get validation_required;
+
+  /// No description provided for @validation_phoneLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number must be 9 digits'**
+  String get validation_phoneLength;
+
+  /// No description provided for @validation_phonePrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number must start with 5, 6, or 7'**
+  String get validation_phonePrefix;
+
+  /// No description provided for @validation_otpLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the 4-digit code'**
+  String get validation_otpLength;
 
   /// No description provided for @dashboard.
   ///
@@ -160,11 +208,149 @@ abstract class AppLocalizations {
   /// **'Dashboard'**
   String get dashboard;
 
+  /// No description provided for @dashboard_totalProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Products'**
+  String get dashboard_totalProducts;
+
+  /// No description provided for @dashboard_lowStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Low Stock'**
+  String get dashboard_lowStock;
+
+  /// No description provided for @dashboard_totalSuppliers.
+  ///
+  /// In en, this message translates to:
+  /// **'Suppliers'**
+  String get dashboard_totalSuppliers;
+
+  /// No description provided for @dashboard_pendingOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Orders'**
+  String get dashboard_pendingOrders;
+
+  /// No description provided for @dashboard_recentOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Orders'**
+  String get dashboard_recentOrders;
+
+  /// No description provided for @dashboard_quickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
+  String get dashboard_quickActions;
+
+  /// No description provided for @dashboard_viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get dashboard_viewAll;
+
   /// No description provided for @products.
   ///
   /// In en, this message translates to:
   /// **'Products'**
   String get products;
+
+  /// No description provided for @products_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Product'**
+  String get products_add;
+
+  /// No description provided for @products_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Product'**
+  String get products_edit;
+
+  /// No description provided for @products_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Name'**
+  String get products_name;
+
+  /// No description provided for @products_sku.
+  ///
+  /// In en, this message translates to:
+  /// **'SKU'**
+  String get products_sku;
+
+  /// No description provided for @products_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get products_price;
+
+  /// No description provided for @products_costPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost Price'**
+  String get products_costPrice;
+
+  /// No description provided for @products_sellingPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Selling Price'**
+  String get products_sellingPrice;
+
+  /// No description provided for @products_quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get products_quantity;
+
+  /// No description provided for @products_minStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum Stock'**
+  String get products_minStock;
+
+  /// No description provided for @products_category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get products_category;
+
+  /// No description provided for @products_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get products_description;
+
+  /// No description provided for @products_inStock.
+  ///
+  /// In en, this message translates to:
+  /// **'In Stock'**
+  String get products_inStock;
+
+  /// No description provided for @products_outOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of Stock'**
+  String get products_outOfStock;
+
+  /// No description provided for @products_lowStockWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Low stock'**
+  String get products_lowStockWarning;
+
+  /// No description provided for @products_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No products yet'**
+  String get products_empty;
+
+  /// No description provided for @products_emptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first product to get started'**
+  String get products_emptyDescription;
 
   /// No description provided for @suppliers.
   ///
@@ -172,11 +358,185 @@ abstract class AppLocalizations {
   /// **'Suppliers'**
   String get suppliers;
 
+  /// No description provided for @suppliers_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Supplier'**
+  String get suppliers_add;
+
+  /// No description provided for @suppliers_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Supplier'**
+  String get suppliers_edit;
+
+  /// No description provided for @suppliers_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier Name'**
+  String get suppliers_name;
+
+  /// No description provided for @suppliers_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get suppliers_phone;
+
+  /// No description provided for @suppliers_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get suppliers_email;
+
+  /// No description provided for @suppliers_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get suppliers_address;
+
+  /// No description provided for @suppliers_city.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get suppliers_city;
+
+  /// No description provided for @suppliers_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get suppliers_notes;
+
+  /// No description provided for @suppliers_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No suppliers yet'**
+  String get suppliers_empty;
+
+  /// No description provided for @suppliers_emptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first supplier to manage your purchases'**
+  String get suppliers_emptyDescription;
+
   /// No description provided for @orders.
   ///
   /// In en, this message translates to:
   /// **'Orders'**
   String get orders;
+
+  /// No description provided for @orders_purchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Orders'**
+  String get orders_purchase;
+
+  /// No description provided for @orders_create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Order'**
+  String get orders_create;
+
+  /// No description provided for @orders_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Order'**
+  String get orders_edit;
+
+  /// No description provided for @orders_supplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier'**
+  String get orders_supplier;
+
+  /// No description provided for @orders_selectSupplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Supplier'**
+  String get orders_selectSupplier;
+
+  /// No description provided for @orders_items.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get orders_items;
+
+  /// No description provided for @orders_addItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Item'**
+  String get orders_addItem;
+
+  /// No description provided for @orders_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get orders_total;
+
+  /// No description provided for @orders_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get orders_status;
+
+  /// No description provided for @orders_status_draft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get orders_status_draft;
+
+  /// No description provided for @orders_status_sent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get orders_status_sent;
+
+  /// No description provided for @orders_status_received.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get orders_status_received;
+
+  /// No description provided for @orders_status_cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get orders_status_cancelled;
+
+  /// No description provided for @orders_markSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Sent'**
+  String get orders_markSent;
+
+  /// No description provided for @orders_markReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Received'**
+  String get orders_markReceived;
+
+  /// No description provided for @orders_generatePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate PDF'**
+  String get orders_generatePdf;
+
+  /// No description provided for @orders_downloadPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Download PDF'**
+  String get orders_downloadPdf;
+
+  /// No description provided for @orders_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders yet'**
+  String get orders_empty;
+
+  /// No description provided for @orders_emptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first purchase order'**
+  String get orders_emptyDescription;
 
   /// No description provided for @profile.
   ///
@@ -184,11 +544,305 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get profile;
 
+  /// No description provided for @profile_businessName.
+  ///
+  /// In en, this message translates to:
+  /// **'Business Name'**
+  String get profile_businessName;
+
+  /// No description provided for @profile_ownerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner Name'**
+  String get profile_ownerName;
+
+  /// No description provided for @profile_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get profile_phone;
+
+  /// No description provided for @profile_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get profile_email;
+
+  /// No description provided for @profile_region.
+  ///
+  /// In en, this message translates to:
+  /// **'Region'**
+  String get profile_region;
+
+  /// No description provided for @profile_subscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription'**
+  String get profile_subscription;
+
+  /// No description provided for @profile_trialEnds.
+  ///
+  /// In en, this message translates to:
+  /// **'Trial ends {date}'**
+  String profile_trialEnds(String date);
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @settings_language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settings_language;
+
+  /// No description provided for @settings_notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get settings_notifications;
+
+  /// No description provided for @settings_about.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settings_about;
+
+  /// No description provided for @settings_version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String settings_version(String version);
+
+  /// No description provided for @common_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get common_save;
+
+  /// No description provided for @common_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get common_cancel;
+
+  /// No description provided for @common_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get common_delete;
+
+  /// No description provided for @common_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get common_edit;
+
+  /// No description provided for @common_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get common_add;
+
+  /// No description provided for @common_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get common_search;
+
+  /// No description provided for @common_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get common_filter;
+
+  /// No description provided for @common_sort.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get common_sort;
+
+  /// No description provided for @common_refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get common_refresh;
+
+  /// No description provided for @common_retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get common_retry;
+
+  /// No description provided for @common_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get common_loading;
+
+  /// No description provided for @common_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get common_confirm;
+
+  /// No description provided for @common_yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get common_yes;
+
+  /// No description provided for @common_no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get common_no;
+
+  /// No description provided for @common_ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get common_ok;
+
+  /// No description provided for @common_close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get common_close;
+
+  /// No description provided for @common_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get common_back;
+
+  /// No description provided for @common_next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get common_next;
+
+  /// No description provided for @common_done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get common_done;
+
+  /// No description provided for @common_skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get common_skip;
+
+  /// No description provided for @common_moreOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'More options'**
+  String get common_moreOptions;
+
+  /// No description provided for @common_selectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select All'**
+  String get common_selectAll;
+
+  /// No description provided for @common_clearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All'**
+  String get common_clearAll;
+
+  /// No description provided for @error_generic.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get error_generic;
+
+  /// No description provided for @error_network.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection'**
+  String get error_network;
+
+  /// No description provided for @error_server.
+  ///
+  /// In en, this message translates to:
+  /// **'Server error. Please try again later.'**
+  String get error_server;
+
+  /// No description provided for @error_timeout.
+  ///
+  /// In en, this message translates to:
+  /// **'Request timed out'**
+  String get error_timeout;
+
+  /// No description provided for @error_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'An unknown error occurred'**
+  String get error_unknown;
+
+  /// No description provided for @success_saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved successfully'**
+  String get success_saved;
+
+  /// No description provided for @success_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted successfully'**
+  String get success_deleted;
+
+  /// No description provided for @success_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated successfully'**
+  String get success_updated;
+
+  /// No description provided for @success_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Created successfully'**
+  String get success_created;
+
+  /// No description provided for @confirm_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this?'**
+  String get confirm_delete;
+
+  /// No description provided for @confirm_deleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get confirm_deleteTitle;
+
+  /// No description provided for @confirm_logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to logout?'**
+  String get confirm_logout;
+
+  /// No description provided for @confirm_logoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get confirm_logoutTitle;
+
+  /// No description provided for @confirm_discard.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to discard changes?'**
+  String get confirm_discard;
+
+  /// No description provided for @confirm_discardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard Changes'**
+  String get confirm_discardTitle;
 
   /// No description provided for @logout.
   ///
@@ -196,77 +850,23 @@ abstract class AppLocalizations {
   /// **'Logout'**
   String get logout;
 
-  /// No description provided for @cancel.
+  /// No description provided for @currency_mad.
   ///
   /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancel;
+  /// **'MAD'**
+  String get currency_mad;
 
-  /// No description provided for @save.
+  /// No description provided for @itemCount.
   ///
   /// In en, this message translates to:
-  /// **'Save'**
-  String get save;
+  /// **'{count} items'**
+  String itemCount(int count);
 
-  /// No description provided for @delete.
+  /// No description provided for @itemCountPlural.
   ///
   /// In en, this message translates to:
-  /// **'Delete'**
-  String get delete;
-
-  /// No description provided for @edit.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit'**
-  String get edit;
-
-  /// No description provided for @add.
-  ///
-  /// In en, this message translates to:
-  /// **'Add'**
-  String get add;
-
-  /// No description provided for @search.
-  ///
-  /// In en, this message translates to:
-  /// **'Search'**
-  String get search;
-
-  /// No description provided for @loading.
-  ///
-  /// In en, this message translates to:
-  /// **'Loading...'**
-  String get loading;
-
-  /// No description provided for @error.
-  ///
-  /// In en, this message translates to:
-  /// **'Error'**
-  String get error;
-
-  /// No description provided for @success.
-  ///
-  /// In en, this message translates to:
-  /// **'Success'**
-  String get success;
-
-  /// No description provided for @confirm.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm'**
-  String get confirm;
-
-  /// No description provided for @yes.
-  ///
-  /// In en, this message translates to:
-  /// **'Yes'**
-  String get yes;
-
-  /// No description provided for @no.
-  ///
-  /// In en, this message translates to:
-  /// **'No'**
-  String get no;
+  /// **'{count, plural, =0{No items} =1{1 item} other{{count} items}}'**
+  String itemCountPlural(int count);
 }
 
 class _AppLocalizationsDelegate

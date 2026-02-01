@@ -1,31 +1,172 @@
 {
   "@@locale": "fr",
+
   "appName": "Makhzani",
-  "welcome": "Bienvenue",
-  "login": "Se connecter",
-  "phoneNumber": "Numéro de téléphone",
-  "enterPhoneNumber": "Entrez votre numéro",
-  "sendOTP": "Envoyer le code",
-  "verifyOTP": "Vérifier le code",
-  "otp": "Code de vérification",
-  "enterOTP": "Entrez le code",
+
+  "auth_phoneInputTitle": "Entrez votre numero de telephone pour continuer",
+  "auth_phoneLabel": "Numero de telephone",
+  "auth_phoneHint": "6XXXXXXXX",
+  "auth_phonePrefixMorocco": "+212",
+  "auth_sendCode": "Envoyer le code",
+  "auth_verifyTitle": "Entrez le code de verification",
+  "auth_verifySubtitle": "Nous avons envoye un code a 4 chiffres a\n{phoneNumber}",
+  "@auth_verifySubtitle": {
+    "placeholders": {
+      "phoneNumber": {"type": "String"}
+    }
+  },
+  "auth_verify": "Verifier",
+  "auth_resendCode": "Renvoyer le code",
+  "auth_codeResent": "Code renvoye avec succes",
+  "auth_invalidCode": "Code invalide. Veuillez reessayer.",
+  "auth_failedToSendOtp": "Echec de l'envoi du code. Veuillez reessayer.",
+
+  "validation_required": "Ce champ est obligatoire",
+  "validation_phoneLength": "Le numero de telephone doit contenir 9 chiffres",
+  "validation_phonePrefix": "Le numero de telephone doit commencer par 5, 6 ou 7",
+  "validation_otpLength": "Veuillez entrer le code a 4 chiffres",
+
   "dashboard": "Tableau de bord",
+  "dashboard_totalProducts": "Total des produits",
+  "dashboard_lowStock": "Stock faible",
+  "dashboard_totalSuppliers": "Fournisseurs",
+  "dashboard_pendingOrders": "Commandes en attente",
+  "dashboard_recentOrders": "Commandes recentes",
+  "dashboard_quickActions": "Actions rapides",
+  "dashboard_viewAll": "Voir tout",
+
   "products": "Produits",
+  "products_add": "Ajouter un produit",
+  "products_edit": "Modifier le produit",
+  "products_name": "Nom du produit",
+  "products_sku": "Reference",
+  "products_price": "Prix",
+  "products_costPrice": "Prix d'achat",
+  "products_sellingPrice": "Prix de vente",
+  "products_quantity": "Quantite",
+  "products_minStock": "Stock minimum",
+  "products_category": "Categorie",
+  "products_description": "Description",
+  "products_inStock": "En stock",
+  "products_outOfStock": "Rupture de stock",
+  "products_lowStockWarning": "Stock faible",
+  "products_empty": "Aucun produit pour le moment",
+  "products_emptyDescription": "Ajoutez votre premier produit pour commencer",
+
   "suppliers": "Fournisseurs",
+  "suppliers_add": "Ajouter un fournisseur",
+  "suppliers_edit": "Modifier le fournisseur",
+  "suppliers_name": "Nom du fournisseur",
+  "suppliers_phone": "Telephone",
+  "suppliers_email": "Email",
+  "suppliers_address": "Adresse",
+  "suppliers_city": "Ville",
+  "suppliers_notes": "Notes",
+  "suppliers_empty": "Aucun fournisseur pour le moment",
+  "suppliers_emptyDescription": "Ajoutez votre premier fournisseur pour gerer vos achats",
+
   "orders": "Commandes",
+  "orders_purchase": "Bons de commande",
+  "orders_create": "Creer une commande",
+  "orders_edit": "Modifier la commande",
+  "orders_supplier": "Fournisseur",
+  "orders_selectSupplier": "Selectionner un fournisseur",
+  "orders_items": "Articles",
+  "orders_addItem": "Ajouter un article",
+  "orders_total": "Total",
+  "orders_status": "Statut",
+  "orders_status_draft": "Brouillon",
+  "orders_status_sent": "Envoyee",
+  "orders_status_received": "Recue",
+  "orders_status_cancelled": "Annulee",
+  "orders_markSent": "Marquer comme envoyee",
+  "orders_markReceived": "Marquer comme recue",
+  "orders_generatePdf": "Generer PDF",
+  "orders_downloadPdf": "Telecharger PDF",
+  "orders_empty": "Aucune commande pour le moment",
+  "orders_emptyDescription": "Creez votre premier bon de commande",
+
   "profile": "Profil",
-  "settings": "Paramètres",
-  "logout": "Se déconnecter",
-  "cancel": "Annuler",
-  "save": "Enregistrer",
-  "delete": "Supprimer",
-  "edit": "Modifier",
-  "add": "Ajouter",
-  "search": "Rechercher",
-  "loading": "Chargement...",
-  "error": "Erreur",
-  "success": "Succès",
-  "confirm": "Confirmer",
-  "yes": "Oui",
-  "no": "Non"
+  "profile_businessName": "Nom de l'entreprise",
+  "profile_ownerName": "Nom du proprietaire",
+  "profile_phone": "Telephone",
+  "profile_email": "Email",
+  "profile_region": "Region",
+  "profile_subscription": "Abonnement",
+  "profile_trialEnds": "Essai se termine le {date}",
+  "@profile_trialEnds": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+
+  "settings": "Parametres",
+  "settings_language": "Langue",
+  "settings_notifications": "Notifications",
+  "settings_about": "A propos",
+  "settings_version": "Version {version}",
+  "@settings_version": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+
+  "common_save": "Enregistrer",
+  "common_cancel": "Annuler",
+  "common_delete": "Supprimer",
+  "common_edit": "Modifier",
+  "common_add": "Ajouter",
+  "common_search": "Rechercher",
+  "common_filter": "Filtrer",
+  "common_sort": "Trier",
+  "common_refresh": "Actualiser",
+  "common_retry": "Reessayer",
+  "common_loading": "Chargement...",
+  "common_confirm": "Confirmer",
+  "common_yes": "Oui",
+  "common_no": "Non",
+  "common_ok": "OK",
+  "common_close": "Fermer",
+  "common_back": "Retour",
+  "common_next": "Suivant",
+  "common_done": "Termine",
+  "common_skip": "Ignorer",
+  "common_moreOptions": "Plus d'options",
+  "common_selectAll": "Tout selectionner",
+  "common_clearAll": "Tout effacer",
+
+  "error_generic": "Une erreur s'est produite",
+  "error_network": "Pas de connexion Internet",
+  "error_server": "Erreur serveur. Veuillez reessayer plus tard.",
+  "error_timeout": "Delai d'attente depasse",
+  "error_unknown": "Une erreur inconnue s'est produite",
+
+  "success_saved": "Enregistre avec succes",
+  "success_deleted": "Supprime avec succes",
+  "success_updated": "Mis a jour avec succes",
+  "success_created": "Cree avec succes",
+
+  "confirm_delete": "Etes-vous sur de vouloir supprimer ?",
+  "confirm_deleteTitle": "Supprimer",
+  "confirm_logout": "Etes-vous sur de vouloir vous deconnecter ?",
+  "confirm_logoutTitle": "Deconnexion",
+  "confirm_discard": "Etes-vous sur de vouloir abandonner les modifications ?",
+  "confirm_discardTitle": "Abandonner les modifications",
+
+  "logout": "Deconnexion",
+
+  "currency_mad": "MAD",
+
+  "itemCount": "{count} articles",
+  "@itemCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "itemCountPlural": "{count, plural, =0{Aucun article} =1{1 article} other{{count} articles}}",
+  "@itemCountPlural": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  }
 }
