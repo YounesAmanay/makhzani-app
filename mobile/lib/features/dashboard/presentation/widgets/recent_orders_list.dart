@@ -124,12 +124,16 @@ class _RecentOrderTile extends StatelessWidget {
               children: [
                 Text(
                   order.orderNumber,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
                 ),
                 Text(
                   order.supplierName ?? 'Unknown Supplier',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.textSecondary,
                       ),

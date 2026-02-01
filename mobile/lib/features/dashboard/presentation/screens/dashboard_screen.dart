@@ -145,7 +145,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: AppDimensions.marginMedium,
       crossAxisSpacing: AppDimensions.marginMedium,
-      childAspectRatio: 1.3,
+      childAspectRatio: 1.5,
       children: [
         StatsCard(
           title: 'Products',

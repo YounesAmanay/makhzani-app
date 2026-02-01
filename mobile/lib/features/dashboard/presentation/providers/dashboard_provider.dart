@@ -5,7 +5,6 @@ library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/network/api_client.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/datasources/dashboard_remote_datasource.dart';
 import '../../domain/entities/dashboard_stats.dart';
