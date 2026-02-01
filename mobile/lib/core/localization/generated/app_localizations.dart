@@ -352,6 +352,126 @@ abstract class AppLocalizations {
   /// **'Add your first product to get started'**
   String get products_emptyDescription;
 
+  /// No description provided for @products_searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search products...'**
+  String get products_searchHint;
+
+  /// No description provided for @products_noResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No products found'**
+  String get products_noResults;
+
+  /// No description provided for @products_adjustFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your search or filters'**
+  String get products_adjustFilters;
+
+  /// No description provided for @products_currentStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Stock'**
+  String get products_currentStock;
+
+  /// No description provided for @products_reorderThreshold.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorder Threshold'**
+  String get products_reorderThreshold;
+
+  /// No description provided for @products_barcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode'**
+  String get products_barcode;
+
+  /// No description provided for @products_unit.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get products_unit;
+
+  /// No description provided for @products_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get products_details;
+
+  /// No description provided for @products_adjustStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust Stock'**
+  String get products_adjustStock;
+
+  /// No description provided for @products_stockAdjusted.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock adjusted successfully'**
+  String get products_stockAdjusted;
+
+  /// No description provided for @products_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Product created successfully'**
+  String get products_created;
+
+  /// No description provided for @products_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Product updated successfully'**
+  String get products_updated;
+
+  /// No description provided for @products_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Product deleted successfully'**
+  String get products_deleted;
+
+  /// No description provided for @products_deleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this product?'**
+  String get products_deleteConfirm;
+
+  /// No description provided for @products_lowStockOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Low stock only'**
+  String get products_lowStockOnly;
+
+  /// No description provided for @products_stockAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get products_stockAdd;
+
+  /// No description provided for @products_stockRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get products_stockRemove;
+
+  /// No description provided for @products_newStock.
+  ///
+  /// In en, this message translates to:
+  /// **'New stock'**
+  String get products_newStock;
+
+  /// No description provided for @products_stockNegativeError.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock cannot be negative'**
+  String get products_stockNegativeError;
+
+  /// No description provided for @products_reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (optional)'**
+  String get products_reason;
+
   /// No description provided for @suppliers.
   ///
   /// In en, this message translates to:

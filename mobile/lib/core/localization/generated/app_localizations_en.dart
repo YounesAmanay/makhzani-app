@@ -139,6 +139,67 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add your first product to get started';
 
   @override
+  String get products_searchHint => 'Search products...';
+
+  @override
+  String get products_noResults => 'No products found';
+
+  @override
+  String get products_adjustFilters => 'Try adjusting your search or filters';
+
+  @override
+  String get products_currentStock => 'Current Stock';
+
+  @override
+  String get products_reorderThreshold => 'Reorder Threshold';
+
+  @override
+  String get products_barcode => 'Barcode';
+
+  @override
+  String get products_unit => 'Unit';
+
+  @override
+  String get products_details => 'Details';
+
+  @override
+  String get products_adjustStock => 'Adjust Stock';
+
+  @override
+  String get products_stockAdjusted => 'Stock adjusted successfully';
+
+  @override
+  String get products_created => 'Product created successfully';
+
+  @override
+  String get products_updated => 'Product updated successfully';
+
+  @override
+  String get products_deleted => 'Product deleted successfully';
+
+  @override
+  String get products_deleteConfirm =>
+      'Are you sure you want to delete this product?';
+
+  @override
+  String get products_lowStockOnly => 'Low stock only';
+
+  @override
+  String get products_stockAdd => 'Add';
+
+  @override
+  String get products_stockRemove => 'Remove';
+
+  @override
+  String get products_newStock => 'New stock';
+
+  @override
+  String get products_stockNegativeError => 'Stock cannot be negative';
+
+  @override
+  String get products_reason => 'Reason (optional)';
+
+  @override
   String get suppliers => 'Suppliers';
 
   @override

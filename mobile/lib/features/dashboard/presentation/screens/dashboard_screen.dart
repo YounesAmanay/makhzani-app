@@ -143,9 +143,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: AppDimensions.marginMedium,
-      crossAxisSpacing: AppDimensions.marginMedium,
-      childAspectRatio: 1.5,
+      mainAxisSpacing: AppDimensions.marginSmall,
+      crossAxisSpacing: AppDimensions.marginSmall,
+      childAspectRatio: 1.3,
       children: [
         StatsCard(
           title: 'Products',

@@ -6,6 +6,9 @@ import 'core/localization/generated/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/screens/phone_input_screen.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'features/products/presentation/screens/products_screen.dart';
+import 'features/products/presentation/screens/product_form_screen.dart';
+import 'features/products/presentation/screens/product_detail_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +49,24 @@ class MakhzaniApp extends StatelessWidget {
       routes: {
         '/': (context) => const PhoneInputScreen(),
         '/dashboard': (context) => const DashboardScreen(),
+        '/products': (context) => const ProductsScreen(),
+        '/products/create': (context) => const ProductFormScreen(),
+      },
+      onGenerateRoute: (settings) {
+        // Handle routes with arguments
+        if (settings.name == '/products/detail') {
+          final productId = settings.arguments as String;
+          return MaterialPageRoute(
+            builder: (context) => ProductDetailScreen(productId: productId),
+          );
+        }
+        if (settings.name == '/products/edit') {
+          final productId = settings.arguments as String;
+          return MaterialPageRoute(
+            builder: (context) => ProductFormScreen(productId: productId),
+          );
+        }
+        return null;
       },
     );
   }
