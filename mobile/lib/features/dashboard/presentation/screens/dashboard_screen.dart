@@ -37,7 +37,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Future<void> _onLogout() async {
     await ref.read(authProvider.notifier).logout();
     if (mounted) {
-      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+      Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
     }
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/localization/generated/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/screens/phone_input_screen.dart';
+import 'features/auth/presentation/screens/splash_screen.dart';
 import 'features/products/presentation/screens/product_detail_screen.dart';
 import 'features/products/presentation/screens/product_form_screen.dart';
 import 'features/shell/presentation/screens/main_shell_screen.dart';
@@ -46,7 +47,8 @@ class MakhzaniApp extends StatelessWidget {
 
       // Routes
       routes: {
-        '/': (context) => const PhoneInputScreen(),
+        '/': (context) => const SplashScreen(),
+        '/login': (context) => const PhoneInputScreen(),
         '/main': (context) => const MainShellScreen(),
         '/products/create': (context) => const ProductFormScreen(),
       },
