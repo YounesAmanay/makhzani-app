@@ -46,6 +46,8 @@ class _StockAdjustmentDialogState extends State<StockAdjustmentDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return AlertDialog(
       title: Text(context.l10n.products_adjustStock),
       content: SingleChildScrollView(
@@ -56,15 +58,15 @@ class _StockAdjustmentDialogState extends State<StockAdjustmentDialog> {
             // Product name
             Text(
               widget.product.name,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
             ),
             const SizedBox(height: AppDimensions.marginXSmall),
             Text(
               '${context.l10n.products_currentStock}: ${widget.product.currentStock} ${widget.product.unit}',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodySmall?.color,
                   ),
             ),
 
@@ -75,6 +77,7 @@ class _StockAdjustmentDialogState extends State<StockAdjustmentDialog> {
               children: [
                 Expanded(
                   child: _buildToggleButton(
+                    context: context,
                     label: context.l10n.products_stockAdd,
                     icon: Icons.add,
                     isSelected: _isAdding,
@@ -84,6 +87,7 @@ class _StockAdjustmentDialogState extends State<StockAdjustmentDialog> {
                 const SizedBox(width: AppDimensions.marginSmall),
                 Expanded(
                   child: _buildToggleButton(
+                    context: context,
                     label: context.l10n.products_stockRemove,
                     icon: Icons.remove,
                     isSelected: !_isAdding,
@@ -114,7 +118,7 @@ class _StockAdjustmentDialogState extends State<StockAdjustmentDialog> {
             Container(
               padding: const EdgeInsets.all(AppDimensions.paddingMedium),
               decoration: BoxDecoration(
-                color: AppColors.background,
+                color: theme.scaffoldBackgroundColor,
                 borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
               ),
               child: Row(
@@ -122,11 +126,11 @@ class _StockAdjustmentDialogState extends State<StockAdjustmentDialog> {
                 children: [
                   Text(
                     '${context.l10n.products_newStock}:',
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: theme.textTheme.bodyMedium,
                   ),
                   Text(
                     '$_newStock ${widget.product.unit}',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: _newStock < 0 ? AppColors.error : null,
                         ),
@@ -139,7 +143,7 @@ class _StockAdjustmentDialogState extends State<StockAdjustmentDialog> {
               const SizedBox(height: AppDimensions.marginSmall),
               Text(
                 context.l10n.products_stockNegativeError,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                style: theme.textTheme.bodySmall?.copyWith(
                       color: AppColors.error,
                     ),
               ),
@@ -172,11 +176,14 @@ class _StockAdjustmentDialogState extends State<StockAdjustmentDialog> {
   }
 
   Widget _buildToggleButton({
+    required BuildContext context,
     required String label,
     required IconData icon,
     required bool isSelected,
     required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
@@ -185,9 +192,9 @@ class _StockAdjustmentDialogState extends State<StockAdjustmentDialog> {
           vertical: AppDimensions.paddingSmall,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surface,
+          color: isSelected ? AppColors.primary : theme.colorScheme.surface,
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.border,
+            color: isSelected ? AppColors.primary : theme.colorScheme.outlineVariant,
           ),
           borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
         ),
@@ -197,13 +204,17 @@ class _StockAdjustmentDialogState extends State<StockAdjustmentDialog> {
             Icon(
               icon,
               size: 18,
-              color: isSelected ? AppColors.white : AppColors.textSecondary,
+              color: isSelected
+                  ? AppColors.white
+                  : theme.textTheme.bodySmall?.color,
             ),
             const SizedBox(width: AppDimensions.marginXSmall),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? AppColors.white : AppColors.textSecondary,
+                color: isSelected
+                    ? AppColors.white
+                    : theme.textTheme.bodySmall?.color,
                 fontWeight: FontWeight.w500,
               ),
             ),

@@ -9,10 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../products/presentation/providers/products_provider.dart';
 import '../../../shell/presentation/providers/navigation_provider.dart';
 import '../providers/dashboard_provider.dart';
+import '../widgets/dashboard_app_bar.dart';
 import '../widgets/low_stock_list.dart';
 import '../widgets/recent_orders_list.dart';
 import '../widgets/stats_card.dart';
@@ -32,13 +32,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     Future.microtask(() {
       ref.read(dashboardProvider.notifier).loadDashboard();
     });
-  }
-
-  Future<void> _onLogout() async {
-    await ref.read(authProvider.notifier).logout();
-    if (mounted) {
-      Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
-    }
   }
 
   void _navigateToProducts({bool lowStockFilter = false}) {
@@ -61,17 +54,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final state = ref.watch(dashboardProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(context.l10n.dashboard),
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            tooltip: context.l10n.logout,
-            onPressed: _onLogout,
-          ),
-        ],
-      ),
+      appBar: const DashboardAppBar(),
       body: _buildBody(state),
     );
   }

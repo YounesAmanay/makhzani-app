@@ -155,6 +155,17 @@
 
   "logout": "Deconnexion",
 
+  "theme_light": "Mode clair",
+  "theme_dark": "Mode sombre",
+
+  "language_switchToArabic": "العربية",
+  "language_switchToEnglish": "English",
+
+  "nav_dashboard": "Tableau de bord",
+  "nav_products": "Produits",
+  "nav_suppliers": "Fournisseurs",
+  "nav_orders": "Commandes",
+
   "currency_mad": "MAD",
 
   "itemCount": "{count} articles",

@@ -20,13 +20,15 @@ class LowStockList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     if (items.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(AppDimensions.paddingLarge),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
         ),
         child: Row(
           children: [
@@ -37,8 +39,8 @@ class LowStockList extends StatelessWidget {
             const SizedBox(width: 12),
             Text(
               'All products are well stocked',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodySmall?.color,
                   ),
             ),
           ],
@@ -48,9 +50,9 @@ class LowStockList extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
       ),
       child: Column(
         children: [
@@ -62,7 +64,7 @@ class LowStockList extends StatelessWidget {
                 padding: const EdgeInsets.all(AppDimensions.paddingMedium),
                 decoration: BoxDecoration(
                   border: Border(
-                    top: BorderSide(color: AppColors.border),
+                    top: BorderSide(color: theme.colorScheme.outlineVariant),
                   ),
                 ),
                 child: Row(
@@ -70,7 +72,7 @@ class LowStockList extends StatelessWidget {
                   children: [
                     Text(
                       'See all ${items.length} items',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      style: theme.textTheme.bodyMedium?.copyWith(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w500,
                           ),
@@ -104,11 +106,13 @@ class _LowStockItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       padding: const EdgeInsets.all(AppDimensions.paddingMedium),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: AppColors.border),
+          bottom: BorderSide(color: theme.colorScheme.outlineVariant),
         ),
       ),
       child: Row(
@@ -130,14 +134,14 @@ class _LowStockItemTile extends StatelessWidget {
                   item.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
                 ),
                 Text(
                   '${item.currentStock}/${item.reorderThreshold} ${item.unit}',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.textTheme.bodySmall?.color,
                       ),
                 ),
               ],
@@ -151,7 +155,7 @@ class _LowStockItemTile extends StatelessWidget {
             ),
             child: Text(
               '-${item.shortage}',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              style: theme.textTheme.bodySmall?.copyWith(
                     color: _statusColor,
                     fontWeight: FontWeight.w600,
                   ),

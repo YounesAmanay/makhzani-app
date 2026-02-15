@@ -451,16 +451,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String get logout => 'تسجيل الخروج';
 
   @override
-  String get nav_dashboard => 'Dashboard';
+  String get theme_light => 'الوضع الفاتح';
 
   @override
-  String get nav_products => 'Products';
+  String get theme_dark => 'الوضع الداكن';
 
   @override
-  String get nav_suppliers => 'Suppliers';
+  String get language_switchToArabic => 'العربية';
 
   @override
-  String get nav_orders => 'Orders';
+  String get language_switchToEnglish => 'English';
+
+  @override
+  String get nav_dashboard => 'لوحة التحكم';
+
+  @override
+  String get nav_products => 'المنتجات';
+
+  @override
+  String get nav_suppliers => 'الموردون';
+
+  @override
+  String get nav_orders => 'الطلبات';
 
   @override
   String get comingSoon => 'Coming Soon';

@@ -458,16 +458,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logout => 'Deconnexion';
 
   @override
-  String get nav_dashboard => 'Dashboard';
+  String get theme_light => 'Mode clair';
 
   @override
-  String get nav_products => 'Products';
+  String get theme_dark => 'Mode sombre';
 
   @override
-  String get nav_suppliers => 'Suppliers';
+  String get language_switchToArabic => 'العربية';
 
   @override
-  String get nav_orders => 'Orders';
+  String get language_switchToEnglish => 'English';
+
+  @override
+  String get nav_dashboard => 'Tableau de bord';
+
+  @override
+  String get nav_products => 'Produits';
+
+  @override
+  String get nav_suppliers => 'Fournisseurs';
+
+  @override
+  String get nav_orders => 'Commandes';
 
   @override
   String get comingSoon => 'Coming Soon';

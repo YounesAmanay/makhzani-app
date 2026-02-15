@@ -175,6 +175,12 @@
 
   "logout": "Logout",
 
+  "theme_light": "Light Mode",
+  "theme_dark": "Dark Mode",
+
+  "language_switchToArabic": "العربية",
+  "language_switchToEnglish": "English",
+
   "nav_dashboard": "Dashboard",
   "nav_products": "Products",
   "nav_suppliers": "Suppliers",

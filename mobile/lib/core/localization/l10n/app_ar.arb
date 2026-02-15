@@ -140,6 +140,17 @@
 
   "logout": "تسجيل الخروج",
 
+  "theme_light": "الوضع الفاتح",
+  "theme_dark": "الوضع الداكن",
+
+  "language_switchToArabic": "العربية",
+  "language_switchToEnglish": "English",
+
+  "nav_dashboard": "لوحة التحكم",
+  "nav_products": "المنتجات",
+  "nav_suppliers": "الموردون",
+  "nav_orders": "الطلبات",
+
   "currency_mad": "درهم",
 
   "itemCount": "{count} عناصر",

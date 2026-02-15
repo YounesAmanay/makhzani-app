@@ -26,9 +26,10 @@ class StatsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = iconColor ?? AppColors.primary;
+    final theme = Theme.of(context);
 
     return Material(
-      color: AppColors.surface,
+      color: theme.colorScheme.surface,
       borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
       child: InkWell(
         onTap: onTap,
@@ -37,7 +38,10 @@ class StatsCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-            border: Border.all(color: AppColors.border, width: 1),
+            border: Border.all(
+              color: theme.colorScheme.outlineVariant,
+              width: 1,
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,9 +69,9 @@ class StatsCard extends StatelessWidget {
                 children: [
                   Text(
                     value,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    style: theme.textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: theme.colorScheme.onSurface,
                           height: 1.1,
                         ),
                   ),
@@ -76,8 +80,8 @@ class StatsCard extends StatelessWidget {
                     title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.textSecondary,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.textTheme.bodySmall?.color,
                           fontWeight: FontWeight.w500,
                         ),
                   ),

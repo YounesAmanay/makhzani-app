@@ -20,25 +20,27 @@ class RecentOrdersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     if (orders.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(AppDimensions.paddingLarge),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
         ),
         child: Row(
           children: [
             Icon(
               Icons.receipt_long_outlined,
-              color: AppColors.textSecondary,
+              color: theme.textTheme.bodySmall?.color,
             ),
             const SizedBox(width: 12),
             Text(
               'No orders yet',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodySmall?.color,
                   ),
             ),
           ],
@@ -48,9 +50,9 @@ class RecentOrdersList extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
       ),
       child: Column(
         children: [
@@ -62,7 +64,7 @@ class RecentOrdersList extends StatelessWidget {
                 padding: const EdgeInsets.all(AppDimensions.paddingMedium),
                 decoration: BoxDecoration(
                   border: Border(
-                    top: BorderSide(color: AppColors.border),
+                    top: BorderSide(color: theme.colorScheme.outlineVariant),
                   ),
                 ),
                 child: Row(
@@ -70,7 +72,7 @@ class RecentOrdersList extends StatelessWidget {
                   children: [
                     Text(
                       'See all orders',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      style: theme.textTheme.bodyMedium?.copyWith(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w500,
                           ),
@@ -109,11 +111,13 @@ class _RecentOrderTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       padding: const EdgeInsets.all(AppDimensions.paddingMedium),
       decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: AppColors.border),
+          bottom: BorderSide(color: theme.colorScheme.outlineVariant),
         ),
       ),
       child: Row(
@@ -126,7 +130,7 @@ class _RecentOrderTile extends StatelessWidget {
                   order.orderNumber,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
                 ),
@@ -134,8 +138,8 @@ class _RecentOrderTile extends StatelessWidget {
                   order.supplierName ?? 'Unknown Supplier',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.textTheme.bodySmall?.color,
                       ),
                 ),
               ],
@@ -143,7 +147,7 @@ class _RecentOrderTile extends StatelessWidget {
           ),
           Text(
             _formatDate(order.createdAt),
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            style: theme.textTheme.bodySmall?.copyWith(
                   color: AppColors.textTertiary,
                 ),
           ),

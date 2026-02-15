@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/localization/l10n_extension.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../dashboard/presentation/screens/dashboard_screen.dart';
 import '../../../orders/presentation/screens/orders_placeholder_screen.dart';
 import '../../../products/presentation/screens/products_screen.dart';
@@ -35,10 +34,6 @@ class MainShellScreen extends ConsumerWidget {
         currentIndex: currentIndex,
         onTap: (index) => ref.read(bottomNavIndexProvider.notifier).state = index,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.textTertiary,
-        backgroundColor: AppColors.surface,
-        elevation: 8,
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.dashboard_outlined),

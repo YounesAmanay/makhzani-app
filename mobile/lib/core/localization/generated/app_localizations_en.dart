@@ -454,6 +454,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logout => 'Logout';
 
   @override
+  String get theme_light => 'Light Mode';
+
+  @override
+  String get theme_dark => 'Dark Mode';
+
+  @override
+  String get language_switchToArabic => 'العربية';
+
+  @override
+  String get language_switchToEnglish => 'English';
+
+  @override
   String get nav_dashboard => 'Dashboard';
 
   @override

@@ -970,6 +970,30 @@ abstract class AppLocalizations {
   /// **'Logout'**
   String get logout;
 
+  /// No description provided for @theme_light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Mode'**
+  String get theme_light;
+
+  /// No description provided for @theme_dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get theme_dark;
+
+  /// No description provided for @language_switchToArabic.
+  ///
+  /// In en, this message translates to:
+  /// **'العربية'**
+  String get language_switchToArabic;
+
+  /// No description provided for @language_switchToEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get language_switchToEnglish;
+
   /// No description provided for @nav_dashboard.
   ///
   /// In en, this message translates to:
