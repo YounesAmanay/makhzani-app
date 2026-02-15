@@ -175,6 +175,14 @@
 
   "logout": "Logout",
 
+  "nav_dashboard": "Dashboard",
+  "nav_products": "Products",
+  "nav_suppliers": "Suppliers",
+  "nav_orders": "Orders",
+
+  "comingSoon": "Coming Soon",
+  "comingSoon_description": "This feature is under development",
+
   "currency_mad": "MAD",
 
   "itemCount": "{count} items",

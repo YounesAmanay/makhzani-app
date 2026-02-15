@@ -970,6 +970,42 @@ abstract class AppLocalizations {
   /// **'Logout'**
   String get logout;
 
+  /// No description provided for @nav_dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get nav_dashboard;
+
+  /// No description provided for @nav_products.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get nav_products;
+
+  /// No description provided for @nav_suppliers.
+  ///
+  /// In en, this message translates to:
+  /// **'Suppliers'**
+  String get nav_suppliers;
+
+  /// No description provided for @nav_orders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get nav_orders;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming Soon'**
+  String get comingSoon;
+
+  /// No description provided for @comingSoon_description.
+  ///
+  /// In en, this message translates to:
+  /// **'This feature is under development'**
+  String get comingSoon_description;
+
   /// No description provided for @currency_mad.
   ///
   /// In en, this message translates to:

@@ -6,13 +6,16 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../products/presentation/providers/products_provider.dart';
+import '../../../shell/presentation/providers/navigation_provider.dart';
 import '../providers/dashboard_provider.dart';
-import '../widgets/stats_card.dart';
 import '../widgets/low_stock_list.dart';
 import '../widgets/recent_orders_list.dart';
+import '../widgets/stats_card.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -38,17 +41,33 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     }
   }
 
+  void _navigateToProducts({bool lowStockFilter = false}) {
+    if (lowStockFilter) {
+      ref.read(productsProvider.notifier).setLowStockFilter(true);
+    }
+    ref.read(bottomNavIndexProvider.notifier).state = 1;
+  }
+
+  void _navigateToSuppliers() {
+    ref.read(bottomNavIndexProvider.notifier).state = 2;
+  }
+
+  void _navigateToOrders() {
+    ref.read(bottomNavIndexProvider.notifier).state = 3;
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(dashboardProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: Text(context.l10n.dashboard),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
+            tooltip: context.l10n.logout,
             onPressed: _onLogout,
           ),
         ],
@@ -77,7 +96,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                state.errorMessage ?? 'Something went wrong',
+                state.errorMessage ?? context.l10n.error_generic,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 16),
@@ -85,7 +104,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 onPressed: () {
                   ref.read(dashboardProvider.notifier).refresh();
                 },
-                child: const Text('Retry'),
+                child: Text(context.l10n.common_retry),
               ),
             ],
           ),
@@ -106,25 +125,21 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 const SizedBox(height: AppDimensions.marginLarge),
 
                 // Low Stock Section
-                _buildSectionHeader('Low Stock Items'),
+                _buildSectionHeader(context.l10n.dashboard_lowStock),
                 const SizedBox(height: AppDimensions.marginSmall),
                 LowStockList(
                   items: state.lowStockItems,
-                  onSeeAll: () {
-                    // TODO: Navigate to products with low stock filter
-                  },
+                  onSeeAll: () => _navigateToProducts(lowStockFilter: true),
                 ),
 
                 const SizedBox(height: AppDimensions.marginLarge),
 
                 // Recent Orders Section
-                _buildSectionHeader('Recent Orders'),
+                _buildSectionHeader(context.l10n.dashboard_recentOrders),
                 const SizedBox(height: AppDimensions.marginSmall),
                 RecentOrdersList(
                   orders: state.recentOrders,
-                  onSeeAll: () {
-                    // TODO: Navigate to orders
-                  },
+                  onSeeAll: _navigateToOrders,
                 ),
 
                 const SizedBox(height: AppDimensions.marginLarge),
@@ -148,40 +163,32 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       childAspectRatio: 1.3,
       children: [
         StatsCard(
-          title: 'Products',
+          title: context.l10n.nav_products,
           value: stats.totalProducts.toString(),
           icon: Icons.inventory_2_outlined,
           iconColor: AppColors.primary,
-          onTap: () {
-            // TODO: Navigate to products
-          },
+          onTap: _navigateToProducts,
         ),
         StatsCard(
-          title: 'Low Stock',
+          title: context.l10n.dashboard_lowStock,
           value: stats.lowStockProducts.toString(),
           icon: Icons.warning_amber_outlined,
           iconColor: stats.lowStockProducts > 0 ? AppColors.warning : AppColors.success,
-          onTap: () {
-            // TODO: Navigate to low stock products
-          },
+          onTap: () => _navigateToProducts(lowStockFilter: true),
         ),
         StatsCard(
-          title: 'Suppliers',
+          title: context.l10n.nav_suppliers,
           value: stats.totalSuppliers.toString(),
           icon: Icons.people_outline,
           iconColor: AppColors.info,
-          onTap: () {
-            // TODO: Navigate to suppliers
-          },
+          onTap: _navigateToSuppliers,
         ),
         StatsCard(
-          title: 'Orders',
+          title: context.l10n.nav_orders,
           value: stats.totalOrders.toString(),
           icon: Icons.receipt_long_outlined,
           iconColor: AppColors.primary,
-          onTap: () {
-            // TODO: Navigate to orders
-          },
+          onTap: _navigateToOrders,
         ),
       ],
     );

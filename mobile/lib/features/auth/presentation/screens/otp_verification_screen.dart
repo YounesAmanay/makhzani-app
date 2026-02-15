@@ -57,9 +57,9 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
     setState(() => _isLoading = false);
 
     if (success && mounted) {
-      // Navigate to dashboard - clear all previous screens
+      // Navigate to main shell - clear all previous screens
       Navigator.of(context).pushNamedAndRemoveUntil(
-        '/dashboard',
+        '/main',
         (route) => false,
       );
     } else if (mounted) {

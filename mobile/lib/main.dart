@@ -5,10 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/localization/generated/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/screens/phone_input_screen.dart';
-import 'features/dashboard/presentation/screens/dashboard_screen.dart';
-import 'features/products/presentation/screens/products_screen.dart';
-import 'features/products/presentation/screens/product_form_screen.dart';
 import 'features/products/presentation/screens/product_detail_screen.dart';
+import 'features/products/presentation/screens/product_form_screen.dart';
+import 'features/shell/presentation/screens/main_shell_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,8 +47,7 @@ class MakhzaniApp extends StatelessWidget {
       // Routes
       routes: {
         '/': (context) => const PhoneInputScreen(),
-        '/dashboard': (context) => const DashboardScreen(),
-        '/products': (context) => const ProductsScreen(),
+        '/main': (context) => const MainShellScreen(),
         '/products/create': (context) => const ProductFormScreen(),
       },
       onGenerateRoute: (settings) {

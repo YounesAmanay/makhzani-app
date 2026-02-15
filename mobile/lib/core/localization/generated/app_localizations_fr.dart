@@ -458,6 +458,24 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logout => 'Deconnexion';
 
   @override
+  String get nav_dashboard => 'Dashboard';
+
+  @override
+  String get nav_products => 'Products';
+
+  @override
+  String get nav_suppliers => 'Suppliers';
+
+  @override
+  String get nav_orders => 'Orders';
+
+  @override
+  String get comingSoon => 'Coming Soon';
+
+  @override
+  String get comingSoon_description => 'This feature is under development';
+
+  @override
   String get currency_mad => 'MAD';
 
   @override
