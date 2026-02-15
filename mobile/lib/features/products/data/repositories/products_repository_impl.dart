@@ -52,7 +52,7 @@ class ProductsRepositoryImpl implements ProductsRepository {
       'reorder_threshold': reorderThreshold,
       'unit': unit,
       if (barcode != null) 'barcode': barcode,
-      if (price != null) 'price': price.toString(),
+      if (price != null) 'price': price,
     });
     return model.toEntity();
   }
@@ -73,7 +73,7 @@ class ProductsRepositoryImpl implements ProductsRepository {
     if (reorderThreshold != null) data['reorder_threshold'] = reorderThreshold;
     if (unit != null) data['unit'] = unit;
     if (barcode != null) data['barcode'] = barcode;
-    if (price != null) data['price'] = price.toString();
+    if (price != null) data['price'] = price;
 
     final model = await _remoteDataSource.updateProduct(id, data);
     return model.toEntity();

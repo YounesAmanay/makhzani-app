@@ -29,6 +29,10 @@
   "dashboard_recentOrders": "الطلبات الأخيرة",
   "dashboard_quickActions": "إجراءات سريعة",
   "dashboard_viewAll": "عرض الكل",
+  "dashboard_allStocked": "جميع المنتجات مخزنة بشكل جيد",
+  "dashboard_seeAllItems": "عرض جميع العناصر ({count})",
+  "dashboard_noOrders": "لا توجد طلبات بعد",
+  "dashboard_seeAllOrders": "عرض جميع الطلبات",
 
   "products": "المنتجات",
   "products_add": "إضافة منتج",
@@ -47,6 +51,27 @@
   "products_lowStockWarning": "مخزون منخفض",
   "products_empty": "لا توجد منتجات بعد",
   "products_emptyDescription": "أضف منتجك الأول للبدء",
+  "products_newStock": "المخزون الجديد",
+  "products_stockNegativeError": "لا يمكن أن يكون المخزون سالبًا",
+  "products_reason": "السبب (اختياري)",
+  "products_adjustment": "التعديل",
+  "products_adjustmentHint": "+10 أو -5",
+  "products_adjustmentHelper": "استخدم + لإضافة مخزون، - للإزالة",
+  "products_adjustStock": "تعديل المخزون",
+  "products_stockAdjusted": "تم تعديل المخزون بنجاح",
+  "products_created": "تم إنشاء المنتج بنجاح",
+  "products_updated": "تم تحديث المنتج بنجاح",
+  "products_deleted": "تم حذف المنتج بنجاح",
+  "products_deleteConfirm": "هل أنت متأكد أنك تريد حذف هذا المنتج؟",
+  "products_currentStock": "المخزون الحالي",
+  "products_reorderThreshold": "حد إعادة الطلب",
+  "products_barcode": "الباركود",
+  "products_unit": "الوحدة",
+  "products_details": "التفاصيل",
+  "products_searchHint": "البحث عن المنتجات...",
+  "products_noResults": "لم يتم العثور على منتجات",
+  "products_adjustFilters": "جرب تعديل البحث أو الفلاتر",
+  "products_lowStockOnly": "المخزون المنخفض فقط",
 
   "suppliers": "الموردون",
   "suppliers_add": "إضافة مورد",
@@ -59,6 +84,7 @@
   "suppliers_notes": "ملاحظات",
   "suppliers_empty": "لا يوجد موردون بعد",
   "suppliers_emptyDescription": "أضف موردك الأول لإدارة مشترياتك",
+  "suppliers_unknown": "مورد غير معروف",
 
   "orders": "الطلبات",
   "orders_purchase": "طلبات الشراء",
@@ -119,6 +145,9 @@
   "common_moreOptions": "خيارات أخرى",
   "common_selectAll": "تحديد الكل",
   "common_clearAll": "مسح الكل",
+  "common_today": "اليوم",
+  "common_yesterday": "أمس",
+  "common_daysAgo": "منذ {count} أيام",
 
   "error_generic": "حدث خطأ ما",
   "error_network": "لا يوجد اتصال بالإنترنت",
@@ -152,6 +181,9 @@
   "nav_orders": "الطلبات",
 
   "currency_mad": "درهم",
+
+  "comingSoon": "قريبًا",
+  "comingSoon_description": "هذه الميزة قيد التطوير",
 
   "itemCount": "{count} عناصر",
   "itemCountPlural": "{count, plural, =0{لا توجد عناصر} =1{عنصر واحد} =2{عنصران} few{{count} عناصر} many{{count} عنصر} other{{count} عنصر}}"

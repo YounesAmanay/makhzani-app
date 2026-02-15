@@ -34,6 +34,15 @@
   "dashboard_recentOrders": "Recent Orders",
   "dashboard_quickActions": "Quick Actions",
   "dashboard_viewAll": "View All",
+  "dashboard_allStocked": "All products are well stocked",
+  "dashboard_seeAllItems": "See all {count} items",
+  "@dashboard_seeAllItems": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "dashboard_noOrders": "No orders yet",
+  "dashboard_seeAllOrders": "See all orders",
 
   "products": "Products",
   "products_add": "Add Product",
@@ -67,11 +76,12 @@
   "products_deleted": "Product deleted successfully",
   "products_deleteConfirm": "Are you sure you want to delete this product?",
   "products_lowStockOnly": "Low stock only",
-  "products_stockAdd": "Add",
-  "products_stockRemove": "Remove",
   "products_newStock": "New stock",
   "products_stockNegativeError": "Stock cannot be negative",
   "products_reason": "Reason (optional)",
+  "products_adjustment": "Adjustment",
+  "products_adjustmentHint": "+10 or -5",
+  "products_adjustmentHelper": "Use + to add stock, - to remove",
 
   "suppliers": "Suppliers",
   "suppliers_add": "Add Supplier",
@@ -84,6 +94,7 @@
   "suppliers_notes": "Notes",
   "suppliers_empty": "No suppliers yet",
   "suppliers_emptyDescription": "Add your first supplier to manage your purchases",
+  "suppliers_unknown": "Unknown Supplier",
 
   "orders": "Orders",
   "orders_purchase": "Purchase Orders",
@@ -154,6 +165,14 @@
   "common_moreOptions": "More options",
   "common_selectAll": "Select All",
   "common_clearAll": "Clear All",
+  "common_today": "Today",
+  "common_yesterday": "Yesterday",
+  "common_daysAgo": "{count} days ago",
+  "@common_daysAgo": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "error_generic": "Something went wrong",
   "error_network": "No internet connection",

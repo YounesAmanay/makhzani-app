@@ -4,6 +4,8 @@
 library;
 
 import 'package:flutter/material.dart';
+
+import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../domain/entities/low_stock_item.dart';
@@ -38,7 +40,7 @@ class LowStockList extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Text(
-              'All products are well stocked',
+              context.l10n.dashboard_allStocked,
               style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodySmall?.color,
                   ),
@@ -71,7 +73,7 @@ class LowStockList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'See all ${items.length} items',
+                      context.l10n.dashboard_seeAllItems(items.length),
                       style: theme.textTheme.bodyMedium?.copyWith(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w500,

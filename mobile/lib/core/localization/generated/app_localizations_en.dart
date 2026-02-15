@@ -87,6 +87,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboard_viewAll => 'View All';
 
   @override
+  String get dashboard_allStocked => 'All products are well stocked';
+
+  @override
+  String dashboard_seeAllItems(int count) {
+    return 'See all $count items';
+  }
+
+  @override
+  String get dashboard_noOrders => 'No orders yet';
+
+  @override
+  String get dashboard_seeAllOrders => 'See all orders';
+
+  @override
   String get products => 'Products';
 
   @override
@@ -185,12 +199,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get products_lowStockOnly => 'Low stock only';
 
   @override
-  String get products_stockAdd => 'Add';
-
-  @override
-  String get products_stockRemove => 'Remove';
-
-  @override
   String get products_newStock => 'New stock';
 
   @override
@@ -198,6 +206,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get products_reason => 'Reason (optional)';
+
+  @override
+  String get products_adjustment => 'Adjustment';
+
+  @override
+  String get products_adjustmentHint => '+10 or -5';
+
+  @override
+  String get products_adjustmentHelper => 'Use + to add stock, - to remove';
 
   @override
   String get suppliers => 'Suppliers';
@@ -232,6 +249,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get suppliers_emptyDescription =>
       'Add your first supplier to manage your purchases';
+
+  @override
+  String get suppliers_unknown => 'Unknown Supplier';
 
   @override
   String get orders => 'Orders';
@@ -404,6 +424,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get common_clearAll => 'Clear All';
+
+  @override
+  String get common_today => 'Today';
+
+  @override
+  String get common_yesterday => 'Yesterday';
+
+  @override
+  String common_daysAgo(int count) {
+    return '$count days ago';
+  }
 
   @override
   String get error_generic => 'Something went wrong';

@@ -11,6 +11,7 @@ import '../../../../core/localization/locale_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../core/theme/theme_provider.dart';
+import '../../../../shared/widgets/app_confirm_dialog.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 
 class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -96,15 +97,22 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
           top: Radius.circular(AppDimensions.radiusLarge),
         ),
       ),
-      builder: (context) => _ProfileSheet(ref: ref),
+      builder: (sheetContext) => _ProfileSheet(
+        ref: ref,
+        parentContext: context,
+      ),
     );
   }
 }
 
 class _ProfileSheet extends ConsumerWidget {
   final WidgetRef ref;
+  final BuildContext parentContext;
 
-  const _ProfileSheet({required this.ref});
+  const _ProfileSheet({
+    required this.ref,
+    required this.parentContext,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -193,7 +201,7 @@ class _ProfileSheet extends ConsumerWidget {
               title: Text(context.l10n.settings),
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pushNamed('/settings');
+                Navigator.of(parentContext).pushNamed('/settings');
               },
             ),
 
@@ -252,17 +260,7 @@ class _ProfileSheet extends ConsumerWidget {
                 context.l10n.logout,
                 style: TextStyle(color: AppColors.error),
               ),
-              onTap: () async {
-                Navigator.of(context).pop();
-                final confirmed = await _showLogoutConfirmation(context);
-                if (confirmed && context.mounted) {
-                  await ref.read(authProvider.notifier).logout();
-                  if (context.mounted) {
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/login', (r) => false);
-                  }
-                }
-              },
+              onTap: () => _handleLogout(context, ref),
             ),
 
             const SizedBox(height: AppDimensions.marginSmall),
@@ -272,27 +270,30 @@ class _ProfileSheet extends ConsumerWidget {
     );
   }
 
-  Future<bool> _showLogoutConfirmation(BuildContext context) async {
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.confirm_logoutTitle),
-        content: Text(context.l10n.confirm_logout),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.l10n.common_cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-            ),
-            child: Text(context.l10n.logout),
-          ),
-        ],
-      ),
+  Future<void> _handleLogout(BuildContext sheetContext, WidgetRef ref) async {
+    // Show confirmation dialog first (while sheet is still open)
+    final confirmed = await AppConfirmDialog.show(
+      context: sheetContext,
+      title: sheetContext.l10n.confirm_logoutTitle,
+      message: sheetContext.l10n.confirm_logout,
+      confirmLabel: sheetContext.l10n.logout,
+      isDestructive: true,
+      icon: Icons.logout,
     );
-    return result ?? false;
+
+    if (!confirmed) return;
+
+    // Close the bottom sheet
+    if (sheetContext.mounted) {
+      Navigator.of(sheetContext).pop();
+    }
+
+    // Perform logout
+    await ref.read(authProvider.notifier).logout();
+
+    // Navigate to splash (it will handle routing to login)
+    if (parentContext.mounted) {
+      Navigator.of(parentContext).pushNamedAndRemoveUntil('/', (r) => false);
+    }
   }
 }

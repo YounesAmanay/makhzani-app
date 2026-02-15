@@ -86,6 +86,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dashboard_viewAll => 'عرض الكل';
 
   @override
+  String get dashboard_allStocked => 'جميع المنتجات مخزنة بشكل جيد';
+
+  @override
+  String dashboard_seeAllItems(int count) {
+    return 'عرض جميع العناصر ($count)';
+  }
+
+  @override
+  String get dashboard_noOrders => 'لا توجد طلبات بعد';
+
+  @override
+  String get dashboard_seeAllOrders => 'عرض جميع الطلبات';
+
+  @override
   String get products => 'المنتجات';
 
   @override
@@ -137,65 +151,67 @@ class AppLocalizationsAr extends AppLocalizations {
   String get products_emptyDescription => 'أضف منتجك الأول للبدء';
 
   @override
-  String get products_searchHint => 'Search products...';
+  String get products_searchHint => 'البحث عن المنتجات...';
 
   @override
-  String get products_noResults => 'No products found';
+  String get products_noResults => 'لم يتم العثور على منتجات';
 
   @override
-  String get products_adjustFilters => 'Try adjusting your search or filters';
+  String get products_adjustFilters => 'جرب تعديل البحث أو الفلاتر';
 
   @override
-  String get products_currentStock => 'Current Stock';
+  String get products_currentStock => 'المخزون الحالي';
 
   @override
-  String get products_reorderThreshold => 'Reorder Threshold';
+  String get products_reorderThreshold => 'حد إعادة الطلب';
 
   @override
-  String get products_barcode => 'Barcode';
+  String get products_barcode => 'الباركود';
 
   @override
-  String get products_unit => 'Unit';
+  String get products_unit => 'الوحدة';
 
   @override
-  String get products_details => 'Details';
+  String get products_details => 'التفاصيل';
 
   @override
-  String get products_adjustStock => 'Adjust Stock';
+  String get products_adjustStock => 'تعديل المخزون';
 
   @override
-  String get products_stockAdjusted => 'Stock adjusted successfully';
+  String get products_stockAdjusted => 'تم تعديل المخزون بنجاح';
 
   @override
-  String get products_created => 'Product created successfully';
+  String get products_created => 'تم إنشاء المنتج بنجاح';
 
   @override
-  String get products_updated => 'Product updated successfully';
+  String get products_updated => 'تم تحديث المنتج بنجاح';
 
   @override
-  String get products_deleted => 'Product deleted successfully';
+  String get products_deleted => 'تم حذف المنتج بنجاح';
 
   @override
-  String get products_deleteConfirm =>
-      'Are you sure you want to delete this product?';
+  String get products_deleteConfirm => 'هل أنت متأكد أنك تريد حذف هذا المنتج؟';
 
   @override
-  String get products_lowStockOnly => 'Low stock only';
+  String get products_lowStockOnly => 'المخزون المنخفض فقط';
 
   @override
-  String get products_stockAdd => 'Add';
+  String get products_newStock => 'المخزون الجديد';
 
   @override
-  String get products_stockRemove => 'Remove';
+  String get products_stockNegativeError => 'لا يمكن أن يكون المخزون سالبًا';
 
   @override
-  String get products_newStock => 'New stock';
+  String get products_reason => 'السبب (اختياري)';
 
   @override
-  String get products_stockNegativeError => 'Stock cannot be negative';
+  String get products_adjustment => 'التعديل';
 
   @override
-  String get products_reason => 'Reason (optional)';
+  String get products_adjustmentHint => '+10 أو -5';
+
+  @override
+  String get products_adjustmentHelper => 'استخدم + لإضافة مخزون، - للإزالة';
 
   @override
   String get suppliers => 'الموردون';
@@ -229,6 +245,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get suppliers_emptyDescription => 'أضف موردك الأول لإدارة مشترياتك';
+
+  @override
+  String get suppliers_unknown => 'مورد غير معروف';
 
   @override
   String get orders => 'الطلبات';
@@ -403,6 +422,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get common_clearAll => 'مسح الكل';
 
   @override
+  String get common_today => 'اليوم';
+
+  @override
+  String get common_yesterday => 'أمس';
+
+  @override
+  String common_daysAgo(int count) {
+    return 'منذ $count أيام';
+  }
+
+  @override
   String get error_generic => 'حدث خطأ ما';
 
   @override
@@ -475,10 +505,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get nav_orders => 'الطلبات';
 
   @override
-  String get comingSoon => 'Coming Soon';
+  String get comingSoon => 'قريبًا';
 
   @override
-  String get comingSoon_description => 'This feature is under development';
+  String get comingSoon_description => 'هذه الميزة قيد التطوير';
 
   @override
   String get currency_mad => 'درهم';

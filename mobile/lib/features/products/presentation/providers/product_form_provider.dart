@@ -3,6 +3,7 @@
 /// Riverpod provider for product CRUD operations.
 library;
 
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/product.dart';
@@ -76,9 +77,16 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
       return true;
     } catch (e) {
+      String errorMessage = 'Failed to create product';
+      if (e is DioException && e.response?.data != null) {
+        final data = e.response!.data;
+        if (data is Map) {
+          errorMessage = data['message'] ?? errorMessage;
+        }
+      }
       state = state.copyWith(
         status: ProductFormStatus.error,
-        errorMessage: 'Failed to create product',
+        errorMessage: errorMessage,
       );
       return false;
     }
@@ -116,9 +124,16 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
       return true;
     } catch (e) {
+      String errorMessage = 'Failed to update product';
+      if (e is DioException && e.response?.data != null) {
+        final data = e.response!.data;
+        if (data is Map) {
+          errorMessage = data['message'] ?? errorMessage;
+        }
+      }
       state = state.copyWith(
         status: ProductFormStatus.error,
-        errorMessage: 'Failed to update product',
+        errorMessage: errorMessage,
       );
       return false;
     }
@@ -137,9 +152,16 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
       return true;
     } catch (e) {
+      String errorMessage = 'Failed to delete product';
+      if (e is DioException && e.response?.data != null) {
+        final data = e.response!.data;
+        if (data is Map) {
+          errorMessage = data['message'] ?? errorMessage;
+        }
+      }
       state = state.copyWith(
         status: ProductFormStatus.error,
-        errorMessage: 'Failed to delete product',
+        errorMessage: errorMessage,
       );
       return false;
     }
@@ -169,9 +191,16 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
       return true;
     } catch (e) {
+      String errorMessage = 'Failed to adjust stock';
+      if (e is DioException && e.response?.data != null) {
+        final data = e.response!.data;
+        if (data is Map) {
+          errorMessage = data['message'] ?? errorMessage;
+        }
+      }
       state = state.copyWith(
         status: ProductFormStatus.error,
-        errorMessage: 'Failed to adjust stock',
+        errorMessage: errorMessage,
       );
       return false;
     }
@@ -188,9 +217,16 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
       );
       return product;
     } catch (e) {
+      String errorMessage = 'Failed to load product';
+      if (e is DioException && e.response?.data != null) {
+        final data = e.response!.data;
+        if (data is Map) {
+          errorMessage = data['message'] ?? errorMessage;
+        }
+      }
       state = state.copyWith(
         status: ProductFormStatus.error,
-        errorMessage: 'Failed to load product',
+        errorMessage: errorMessage,
       );
       return null;
     }

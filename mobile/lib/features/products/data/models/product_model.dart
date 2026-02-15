@@ -53,7 +53,7 @@ class ProductModel {
       'reorder_threshold': reorderThreshold,
       'unit': unit,
       if (barcode != null) 'barcode': barcode,
-      if (price != null) 'price': price.toString(),
+      if (price != null) 'price': price,
     };
   }
 

@@ -1,6 +1,6 @@
 /// Product Form Screen
 ///
-/// Create/Edit product form.
+/// Create/Edit product form with clean UX.
 library;
 
 import 'package:flutter/material.dart';
@@ -12,6 +12,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../domain/entities/product.dart';
 import '../providers/product_form_provider.dart';
+import '../providers/products_provider.dart';
 
 class ProductFormScreen extends ConsumerStatefulWidget {
   final String? productId;
@@ -37,6 +38,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
   String _selectedUnit = 'piece';
   bool _isLoading = false;
+  bool _isSubmitting = false;
+  String? _errorMessage;
   Product? _product;
 
   static const List<String> _units = [
@@ -59,23 +62,26 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   Future<void> _loadProduct() async {
     setState(() => _isLoading = true);
 
-    final product = await ref
-        .read(productFormProvider.notifier)
-        .getProductById(widget.productId!);
+    try {
+      final repository = ref.read(productsRepositoryProvider);
+      final product = await repository.getProductById(widget.productId!);
 
-    if (product != null && mounted) {
-      setState(() {
-        _product = product;
-        _nameController.text = product.name;
-        _stockController.text = product.currentStock.toString();
-        _thresholdController.text = product.reorderThreshold.toString();
-        _barcodeController.text = product.barcode ?? '';
-        _priceController.text = product.price?.toString() ?? '';
-        _selectedUnit = product.unit;
-        _isLoading = false;
-      });
-    } else {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() {
+          _product = product;
+          _nameController.text = product.name;
+          _stockController.text = product.currentStock.toString();
+          _thresholdController.text = product.reorderThreshold.toString();
+          _barcodeController.text = product.barcode ?? '';
+          _priceController.text = product.price?.toString() ?? '';
+          _selectedUnit = product.unit;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -91,11 +97,13 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final formState = ref.watch(productFormProvider);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isEditing ? context.l10n.products_edit : context.l10n.products_add),
+        title: Text(
+          widget.isEditing ? context.l10n.products_edit : context.l10n.products_add,
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -113,6 +121,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                         labelText: '${context.l10n.products_name} *',
                       ),
                       textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return context.l10n.validation_required;
@@ -136,8 +145,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                               hintText: '0',
                             ),
                             keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.next,
                             inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
+                              FilteringTextInputFormatter.digitsOnly,
                             ],
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
@@ -182,6 +192,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                         hintText: '10',
                       ),
                       keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.next,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
@@ -198,14 +209,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                       controller: _barcodeController,
                       decoration: InputDecoration(
                         labelText: context.l10n.products_barcode,
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.qr_code_scanner),
-                          tooltip: context.l10n.products_barcode,
-                          onPressed: () {
-                            // TODO: Implement barcode scanner
-                          },
-                        ),
                       ),
+                      textInputAction: TextInputAction.next,
                     ),
 
                     const SizedBox(height: AppDimensions.marginMedium),
@@ -218,28 +223,38 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                         hintText: '0.00',
                         suffixText: context.l10n.currency_mad,
                       ),
-                      keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      textInputAction: TextInputAction.done,
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                            RegExp(r'^\d*\.?\d{0,2}')),
+                        FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                       ],
                     ),
 
                     const SizedBox(height: AppDimensions.marginXLarge),
 
                     // Error message
-                    if (formState.status == ProductFormStatus.error)
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: AppDimensions.marginMedium),
-                        child: Text(
-                          formState.errorMessage ?? context.l10n.error_generic,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: AppColors.error,
-                                  ),
-                          textAlign: TextAlign.center,
+                    if (_errorMessage != null)
+                      Container(
+                        margin: const EdgeInsets.only(bottom: AppDimensions.marginMedium),
+                        padding: const EdgeInsets.all(AppDimensions.paddingMedium),
+                        decoration: BoxDecoration(
+                          color: AppColors.errorBackground,
+                          borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+                          border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.error_outline, color: AppColors.error, size: 20),
+                            const SizedBox(width: AppDimensions.marginSmall),
+                            Expanded(
+                              child: Text(
+                                _errorMessage!,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: AppColors.error,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
 
@@ -247,10 +262,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                     SizedBox(
                       height: AppDimensions.buttonHeightLarge,
                       child: ElevatedButton(
-                        onPressed: formState.status == ProductFormStatus.loading
-                            ? null
-                            : _handleSubmit,
-                        child: formState.status == ProductFormStatus.loading
+                        onPressed: _isSubmitting ? null : _handleSubmit,
+                        child: _isSubmitting
                             ? const SizedBox(
                                 width: 24,
                                 height: 24,
@@ -259,7 +272,11 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                                   color: AppColors.white,
                                 ),
                               )
-                            : Text(widget.isEditing ? context.l10n.common_save : context.l10n.products_add),
+                            : Text(
+                                widget.isEditing
+                                    ? context.l10n.common_save
+                                    : context.l10n.products_add,
+                              ),
                       ),
                     ),
                   ],
@@ -272,7 +289,10 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   Future<void> _handleSubmit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    ref.read(productFormProvider.notifier).reset();
+    setState(() {
+      _isSubmitting = true;
+      _errorMessage = null;
+    });
 
     final name = _nameController.text.trim();
     final currentStock = int.parse(_stockController.text.trim());
@@ -287,11 +307,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
       success = await ref.read(productFormProvider.notifier).updateProduct(
             id: widget.productId!,
             name: name != _product?.name ? name : null,
-            currentStock:
-                currentStock != _product?.currentStock ? currentStock : null,
-            reorderThreshold: reorderThreshold != _product?.reorderThreshold
-                ? reorderThreshold
-                : null,
+            currentStock: currentStock != _product?.currentStock ? currentStock : null,
+            reorderThreshold:
+                reorderThreshold != _product?.reorderThreshold ? reorderThreshold : null,
             unit: _selectedUnit != _product?.unit ? _selectedUnit : null,
             barcode: barcode != (_product?.barcode ?? '')
                 ? (barcode.isEmpty ? null : barcode)
@@ -309,16 +327,23 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
           );
     }
 
-    if (success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(widget.isEditing
-              ? context.l10n.products_updated
-              : context.l10n.products_created),
-          backgroundColor: AppColors.success,
-        ),
-      );
-      Navigator.of(context).pop();
+    if (mounted) {
+      setState(() => _isSubmitting = false);
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              widget.isEditing ? context.l10n.products_updated : context.l10n.products_created,
+            ),
+            backgroundColor: AppColors.success,
+          ),
+        );
+        Navigator.of(context).pop();
+      } else {
+        final errorMsg = ref.read(productFormProvider).errorMessage;
+        setState(() => _errorMessage = errorMsg ?? context.l10n.error_generic);
+      }
     }
   }
 }

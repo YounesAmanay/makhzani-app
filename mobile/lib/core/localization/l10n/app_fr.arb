@@ -34,6 +34,15 @@
   "dashboard_recentOrders": "Commandes recentes",
   "dashboard_quickActions": "Actions rapides",
   "dashboard_viewAll": "Voir tout",
+  "dashboard_allStocked": "Tous les produits sont bien approvisionnes",
+  "dashboard_seeAllItems": "Voir les {count} articles",
+  "@dashboard_seeAllItems": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "dashboard_noOrders": "Aucune commande pour le moment",
+  "dashboard_seeAllOrders": "Voir toutes les commandes",
 
   "products": "Produits",
   "products_add": "Ajouter un produit",
@@ -52,6 +61,27 @@
   "products_lowStockWarning": "Stock faible",
   "products_empty": "Aucun produit pour le moment",
   "products_emptyDescription": "Ajoutez votre premier produit pour commencer",
+  "products_newStock": "Nouveau stock",
+  "products_stockNegativeError": "Le stock ne peut pas etre negatif",
+  "products_reason": "Raison (optionnel)",
+  "products_adjustment": "Ajustement",
+  "products_adjustmentHint": "+10 ou -5",
+  "products_adjustmentHelper": "Utilisez + pour ajouter, - pour retirer",
+  "products_adjustStock": "Ajuster le stock",
+  "products_stockAdjusted": "Stock ajuste avec succes",
+  "products_created": "Produit cree avec succes",
+  "products_updated": "Produit mis a jour avec succes",
+  "products_deleted": "Produit supprime avec succes",
+  "products_deleteConfirm": "Etes-vous sur de vouloir supprimer ce produit ?",
+  "products_currentStock": "Stock actuel",
+  "products_reorderThreshold": "Seuil de reapprovisionnement",
+  "products_barcode": "Code-barres",
+  "products_unit": "Unite",
+  "products_details": "Details",
+  "products_searchHint": "Rechercher des produits...",
+  "products_noResults": "Aucun produit trouve",
+  "products_adjustFilters": "Essayez d'ajuster votre recherche ou vos filtres",
+  "products_lowStockOnly": "Stock faible uniquement",
 
   "suppliers": "Fournisseurs",
   "suppliers_add": "Ajouter un fournisseur",
@@ -64,6 +94,7 @@
   "suppliers_notes": "Notes",
   "suppliers_empty": "Aucun fournisseur pour le moment",
   "suppliers_emptyDescription": "Ajoutez votre premier fournisseur pour gerer vos achats",
+  "suppliers_unknown": "Fournisseur inconnu",
 
   "orders": "Commandes",
   "orders_purchase": "Bons de commande",
@@ -134,6 +165,14 @@
   "common_moreOptions": "Plus d'options",
   "common_selectAll": "Tout selectionner",
   "common_clearAll": "Tout effacer",
+  "common_today": "Aujourd'hui",
+  "common_yesterday": "Hier",
+  "common_daysAgo": "Il y a {count} jours",
+  "@common_daysAgo": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "error_generic": "Une erreur s'est produite",
   "error_network": "Pas de connexion Internet",
@@ -167,6 +206,9 @@
   "nav_orders": "Commandes",
 
   "currency_mad": "MAD",
+
+  "comingSoon": "Bientot disponible",
+  "comingSoon_description": "Cette fonctionnalite est en cours de developpement",
 
   "itemCount": "{count} articles",
   "@itemCount": {

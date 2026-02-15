@@ -250,6 +250,30 @@ abstract class AppLocalizations {
   /// **'View All'**
   String get dashboard_viewAll;
 
+  /// No description provided for @dashboard_allStocked.
+  ///
+  /// In en, this message translates to:
+  /// **'All products are well stocked'**
+  String get dashboard_allStocked;
+
+  /// No description provided for @dashboard_seeAllItems.
+  ///
+  /// In en, this message translates to:
+  /// **'See all {count} items'**
+  String dashboard_seeAllItems(int count);
+
+  /// No description provided for @dashboard_noOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders yet'**
+  String get dashboard_noOrders;
+
+  /// No description provided for @dashboard_seeAllOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'See all orders'**
+  String get dashboard_seeAllOrders;
+
   /// No description provided for @products.
   ///
   /// In en, this message translates to:
@@ -442,18 +466,6 @@ abstract class AppLocalizations {
   /// **'Low stock only'**
   String get products_lowStockOnly;
 
-  /// No description provided for @products_stockAdd.
-  ///
-  /// In en, this message translates to:
-  /// **'Add'**
-  String get products_stockAdd;
-
-  /// No description provided for @products_stockRemove.
-  ///
-  /// In en, this message translates to:
-  /// **'Remove'**
-  String get products_stockRemove;
-
   /// No description provided for @products_newStock.
   ///
   /// In en, this message translates to:
@@ -471,6 +483,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reason (optional)'**
   String get products_reason;
+
+  /// No description provided for @products_adjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjustment'**
+  String get products_adjustment;
+
+  /// No description provided for @products_adjustmentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'+10 or -5'**
+  String get products_adjustmentHint;
+
+  /// No description provided for @products_adjustmentHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Use + to add stock, - to remove'**
+  String get products_adjustmentHelper;
 
   /// No description provided for @suppliers.
   ///
@@ -537,6 +567,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add your first supplier to manage your purchases'**
   String get suppliers_emptyDescription;
+
+  /// No description provided for @suppliers_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Supplier'**
+  String get suppliers_unknown;
 
   /// No description provided for @orders.
   ///
@@ -873,6 +909,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear All'**
   String get common_clearAll;
+
+  /// No description provided for @common_today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get common_today;
+
+  /// No description provided for @common_yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get common_yesterday;
+
+  /// No description provided for @common_daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days ago'**
+  String common_daysAgo(int count);
 
   /// No description provided for @error_generic.
   ///

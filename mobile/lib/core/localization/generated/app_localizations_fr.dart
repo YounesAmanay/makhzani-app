@@ -90,6 +90,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dashboard_viewAll => 'Voir tout';
 
   @override
+  String get dashboard_allStocked =>
+      'Tous les produits sont bien approvisionnes';
+
+  @override
+  String dashboard_seeAllItems(int count) {
+    return 'Voir les $count articles';
+  }
+
+  @override
+  String get dashboard_noOrders => 'Aucune commande pour le moment';
+
+  @override
+  String get dashboard_seeAllOrders => 'Voir toutes les commandes';
+
+  @override
   String get products => 'Produits';
 
   @override
@@ -142,65 +157,70 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ajoutez votre premier produit pour commencer';
 
   @override
-  String get products_searchHint => 'Search products...';
+  String get products_searchHint => 'Rechercher des produits...';
 
   @override
-  String get products_noResults => 'No products found';
+  String get products_noResults => 'Aucun produit trouve';
 
   @override
-  String get products_adjustFilters => 'Try adjusting your search or filters';
+  String get products_adjustFilters =>
+      'Essayez d\'ajuster votre recherche ou vos filtres';
 
   @override
-  String get products_currentStock => 'Current Stock';
+  String get products_currentStock => 'Stock actuel';
 
   @override
-  String get products_reorderThreshold => 'Reorder Threshold';
+  String get products_reorderThreshold => 'Seuil de reapprovisionnement';
 
   @override
-  String get products_barcode => 'Barcode';
+  String get products_barcode => 'Code-barres';
 
   @override
-  String get products_unit => 'Unit';
+  String get products_unit => 'Unite';
 
   @override
   String get products_details => 'Details';
 
   @override
-  String get products_adjustStock => 'Adjust Stock';
+  String get products_adjustStock => 'Ajuster le stock';
 
   @override
-  String get products_stockAdjusted => 'Stock adjusted successfully';
+  String get products_stockAdjusted => 'Stock ajuste avec succes';
 
   @override
-  String get products_created => 'Product created successfully';
+  String get products_created => 'Produit cree avec succes';
 
   @override
-  String get products_updated => 'Product updated successfully';
+  String get products_updated => 'Produit mis a jour avec succes';
 
   @override
-  String get products_deleted => 'Product deleted successfully';
+  String get products_deleted => 'Produit supprime avec succes';
 
   @override
   String get products_deleteConfirm =>
-      'Are you sure you want to delete this product?';
+      'Etes-vous sur de vouloir supprimer ce produit ?';
 
   @override
-  String get products_lowStockOnly => 'Low stock only';
+  String get products_lowStockOnly => 'Stock faible uniquement';
 
   @override
-  String get products_stockAdd => 'Add';
+  String get products_newStock => 'Nouveau stock';
 
   @override
-  String get products_stockRemove => 'Remove';
+  String get products_stockNegativeError => 'Le stock ne peut pas etre negatif';
 
   @override
-  String get products_newStock => 'New stock';
+  String get products_reason => 'Raison (optionnel)';
 
   @override
-  String get products_stockNegativeError => 'Stock cannot be negative';
+  String get products_adjustment => 'Ajustement';
 
   @override
-  String get products_reason => 'Reason (optional)';
+  String get products_adjustmentHint => '+10 ou -5';
+
+  @override
+  String get products_adjustmentHelper =>
+      'Utilisez + pour ajouter, - pour retirer';
 
   @override
   String get suppliers => 'Fournisseurs';
@@ -235,6 +255,9 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get suppliers_emptyDescription =>
       'Ajoutez votre premier fournisseur pour gerer vos achats';
+
+  @override
+  String get suppliers_unknown => 'Fournisseur inconnu';
 
   @override
   String get orders => 'Commandes';
@@ -409,6 +432,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String get common_clearAll => 'Tout effacer';
 
   @override
+  String get common_today => 'Aujourd\'hui';
+
+  @override
+  String get common_yesterday => 'Hier';
+
+  @override
+  String common_daysAgo(int count) {
+    return 'Il y a $count jours';
+  }
+
+  @override
   String get error_generic => 'Une erreur s\'est produite';
 
   @override
@@ -482,10 +516,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get nav_orders => 'Commandes';
 
   @override
-  String get comingSoon => 'Coming Soon';
+  String get comingSoon => 'Bientot disponible';
 
   @override
-  String get comingSoon_description => 'This feature is under development';
+  String get comingSoon_description =>
+      'Cette fonctionnalite est en cours de developpement';
 
   @override
   String get currency_mad => 'MAD';

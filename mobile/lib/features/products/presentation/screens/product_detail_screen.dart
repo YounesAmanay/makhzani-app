@@ -9,9 +9,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
+import '../../../../shared/widgets/app_confirm_dialog.dart';
 import '../../domain/entities/product.dart';
 import '../providers/product_form_provider.dart';
-import '../widgets/stock_adjustment_dialog.dart';
+import '../providers/products_provider.dart';
+import '../widgets/stock_adjustment_sheet.dart';
 
 class ProductDetailScreen extends ConsumerStatefulWidget {
   final String productId;
@@ -29,6 +31,7 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   Product? _product;
   bool _isLoading = true;
+  bool _isDeleting = false;
 
   @override
   void initState() {
@@ -37,23 +40,30 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   }
 
   Future<void> _loadProduct() async {
-    setState(() => _isLoading = true);
+    // Only show spinner on first load
+    setState(() => _isLoading = _product == null);
 
-    final product = await ref
-        .read(productFormProvider.notifier)
-        .getProductById(widget.productId);
+    try {
+      final repository = ref.read(productsRepositoryProvider);
+      final product = await repository.getProductById(widget.productId);
 
-    if (mounted) {
-      setState(() {
-        _product = product;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _product = product;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final formState = ref.watch(productFormProvider);
+    // DO NOT watch productFormProvider here - it causes rebuild loop
+    // Only read it when performing actions (delete, adjust)
 
     return Scaffold(
       appBar: AppBar(
@@ -72,47 +82,57 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               },
             ),
             IconButton(
-              icon: const Icon(Icons.delete_outline),
+              icon: _isDeleting
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.delete_outline),
               tooltip: context.l10n.common_delete,
-              onPressed: () => _showDeleteDialog(),
+              onPressed: _isDeleting ? null : () => _showDeleteDialog(),
             ),
           ],
         ],
       ),
-      body: _buildBody(formState),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _product == null
+              ? _buildErrorState()
+              : RefreshIndicator(
+                  onRefresh: _loadProduct,
+                  child: _buildContent(_product!),
+                ),
     );
   }
 
-  Widget _buildBody(ProductFormState formState) {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+  Widget _buildErrorState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 48,
+            color: AppColors.error,
+          ),
+          const SizedBox(height: 16),
+          Text(context.l10n.error_generic),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: _loadProduct,
+            child: Text(context.l10n.common_retry),
+          ),
+        ],
+      ),
+    );
+  }
 
-    if (_product == null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 48,
-              color: AppColors.error,
-            ),
-            const SizedBox(height: 16),
-            Text(context.l10n.error_generic),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadProduct,
-              child: Text(context.l10n.common_retry),
-            ),
-          ],
-        ),
-      );
-    }
-
-    final product = _product!;
+  Widget _buildContent(Product product) {
+    final theme = Theme.of(context);
 
     return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(AppDimensions.paddingMedium),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -125,8 +145,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 children: [
                   Text(
                     context.l10n.products_currentStock,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: AppColors.textSecondary,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                          color: theme.textTheme.bodySmall?.color,
                         ),
                   ),
                   const SizedBox(height: AppDimensions.marginSmall),
@@ -137,17 +157,16 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     children: [
                       Text(
                         product.currentStock.toString(),
-                        style:
-                            Theme.of(context).textTheme.displayMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: _getStockColor(product),
-                                ),
+                        style: theme.textTheme.displayMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: _getStockColor(product),
+                            ),
                       ),
                       const SizedBox(width: AppDimensions.marginSmall),
                       Text(
                         product.unit,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: AppColors.textSecondary,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                              color: theme.textTheme.bodySmall?.color,
                             ),
                       ),
                     ],
@@ -158,9 +177,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: formState.status == ProductFormStatus.loading
-                          ? null
-                          : () => _showStockAdjustmentDialog(product),
+                      onPressed: () => _showStockAdjustmentDialog(product),
                       icon: const Icon(Icons.tune),
                       label: Text(context.l10n.products_adjustStock),
                     ),
@@ -181,19 +198,26 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 children: [
                   Text(
                     context.l10n.products_details,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                   ),
                   const SizedBox(height: AppDimensions.marginMedium),
                   _buildDetailRow(context.l10n.products_name, product.name),
                   _buildDetailRow(
-                      context.l10n.products_reorderThreshold, '${product.reorderThreshold} ${product.unit}'),
+                    context.l10n.products_reorderThreshold,
+                    '${product.reorderThreshold} ${product.unit}',
+                  ),
                   if (product.barcode != null)
-                    _buildDetailRow(context.l10n.products_barcode, product.barcode!),
+                    _buildDetailRow(
+                      context.l10n.products_barcode,
+                      product.barcode!,
+                    ),
                   if (product.price != null)
                     _buildDetailRow(
-                        context.l10n.products_price, '${product.price!.toStringAsFixed(2)} ${context.l10n.currency_mad}'),
+                      context.l10n.products_price,
+                      '${product.price!.toStringAsFixed(2)} ${context.l10n.currency_mad}',
+                    ),
                   _buildDetailRow(
                     context.l10n.products_unit,
                     product.unit,
@@ -209,6 +233,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   }
 
   Widget _buildDetailRow(String label, String value, {bool isLast = false}) {
+    final theme = Theme.of(context);
+
     return Column(
       children: [
         Padding(
@@ -220,14 +246,14 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             children: [
               Text(
                 label,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.textTheme.bodySmall?.color,
                     ),
               ),
               Flexible(
                 child: Text(
                   value,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
                   textAlign: TextAlign.end,
@@ -273,79 +299,84 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
   (String, Color, Color) _getStockStatusData(Product product) {
     if (product.isOutOfStock) {
-      return (context.l10n.products_outOfStock, AppColors.errorBackground, AppColors.error);
+      return (
+        context.l10n.products_outOfStock,
+        AppColors.errorBackground,
+        AppColors.error
+      );
     }
     if (product.isLowStock) {
-      return (context.l10n.products_lowStockWarning, AppColors.warningBackground, AppColors.warning);
+      return (
+        context.l10n.products_lowStockWarning,
+        AppColors.warningBackground,
+        AppColors.warning
+      );
     }
-    return (context.l10n.products_inStock, AppColors.successBackground, AppColors.success);
+    return (
+      context.l10n.products_inStock,
+      AppColors.successBackground,
+      AppColors.success
+    );
   }
 
   void _showStockAdjustmentDialog(Product product) {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    showDialog(
+    StockAdjustmentSheet.show(
       context: context,
-      builder: (dialogContext) => StockAdjustmentDialog(
-        product: product,
-        onSubmit: (adjustment, reason) async {
-          final success =
-              await ref.read(productFormProvider.notifier).adjustStock(
-                    id: product.id,
-                    adjustment: adjustment,
-                    reason: reason,
-                  );
+      product: product,
+      onSubmit: (adjustment, reason) async {
+        final success =
+            await ref.read(productFormProvider.notifier).adjustStock(
+                  id: product.id,
+                  adjustment: adjustment,
+                  reason: reason,
+                );
 
-          if (success && mounted) {
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Text(context.l10n.products_stockAdjusted),
-                backgroundColor: AppColors.success,
-              ),
-            );
-            _loadProduct();
-          }
-        },
-      ),
+        if (success && mounted) {
+          scaffoldMessenger.showSnackBar(
+            SnackBar(
+              content: Text(context.l10n.products_stockAdjusted),
+              backgroundColor: AppColors.success,
+            ),
+          );
+          // Refresh both detail screen and products list
+          _loadProduct();
+          ref.read(productsProvider.notifier).refresh();
+        }
+      },
     );
   }
 
-  void _showDeleteDialog() {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
-    showDialog(
+  Future<void> _showDeleteDialog() async {
+    final confirmed = await AppConfirmDialog.show(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(context.l10n.confirm_deleteTitle),
-        content: Text(context.l10n.products_deleteConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(context.l10n.common_cancel),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.of(dialogContext).pop();
-              final success = await ref
-                  .read(productFormProvider.notifier)
-                  .deleteProduct(widget.productId);
-
-              if (success && mounted) {
-                scaffoldMessenger.showSnackBar(
-                  SnackBar(
-                    content: Text(context.l10n.products_deleted),
-                    backgroundColor: AppColors.success,
-                  ),
-                );
-                navigator.pop();
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-            ),
-            child: Text(context.l10n.common_delete),
-          ),
-        ],
-      ),
+      title: context.l10n.confirm_deleteTitle,
+      message: context.l10n.products_deleteConfirm,
+      confirmLabel: context.l10n.common_delete,
+      isDestructive: true,
+      icon: Icons.delete_outline,
     );
+
+    if (!confirmed || !mounted) return;
+
+    setState(() => _isDeleting = true);
+
+    final success = await ref
+        .read(productFormProvider.notifier)
+        .deleteProduct(widget.productId);
+
+    if (mounted) {
+      setState(() => _isDeleting = false);
+    }
+
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.products_deleted),
+          backgroundColor: AppColors.success,
+        ),
+      );
+      Navigator.of(context).pop();
+    }
   }
 }

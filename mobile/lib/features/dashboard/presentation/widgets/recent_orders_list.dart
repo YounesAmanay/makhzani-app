@@ -4,6 +4,8 @@
 library;
 
 import 'package:flutter/material.dart';
+
+import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../domain/entities/recent_order.dart';
@@ -38,7 +40,7 @@ class RecentOrdersList extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Text(
-              'No orders yet',
+              context.l10n.dashboard_noOrders,
               style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodySmall?.color,
                   ),
@@ -71,7 +73,7 @@ class RecentOrdersList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'See all orders',
+                      context.l10n.dashboard_seeAllOrders,
                       style: theme.textTheme.bodyMedium?.copyWith(
                             color: AppColors.primary,
                             fontWeight: FontWeight.w500,
@@ -98,13 +100,13 @@ class _RecentOrderTile extends StatelessWidget {
 
   const _RecentOrderTile({required this.order});
 
-  String _formatDate(DateTime date) {
+  String _formatDate(BuildContext context, DateTime date) {
     final now = DateTime.now();
     final diff = now.difference(date);
 
-    if (diff.inDays == 0) return 'Today';
-    if (diff.inDays == 1) return 'Yesterday';
-    if (diff.inDays < 7) return '${diff.inDays} days ago';
+    if (diff.inDays == 0) return context.l10n.common_today;
+    if (diff.inDays == 1) return context.l10n.common_yesterday;
+    if (diff.inDays < 7) return context.l10n.common_daysAgo(diff.inDays);
 
     return '${date.day}/${date.month}/${date.year}';
   }
@@ -135,7 +137,7 @@ class _RecentOrderTile extends StatelessWidget {
                       ),
                 ),
                 Text(
-                  order.supplierName ?? 'Unknown Supplier',
+                  order.supplierName ?? context.l10n.suppliers_unknown,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(
@@ -146,7 +148,7 @@ class _RecentOrderTile extends StatelessWidget {
             ),
           ),
           Text(
-            _formatDate(order.createdAt),
+            _formatDate(context, order.createdAt),
             style: theme.textTheme.bodySmall?.copyWith(
                   color: AppColors.textTertiary,
                 ),
