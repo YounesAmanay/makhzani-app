@@ -2,6 +2,7 @@
 library;
 
 import '../../domain/entities/supplier.dart';
+import '../../domain/entities/supplier_order.dart';
 
 class SupplierModel {
   final String id;
@@ -94,5 +95,39 @@ class SupplierRelationshipModel {
         lastOrderDate: lastOrderDate,
         totalOrders: totalOrders,
         linkedSince: linkedSince,
+      );
+}
+
+class SupplierOrderModel {
+  final String id;
+  final String orderNumber;
+  final DateTime createdAt;
+  final bool pdfGenerated;
+  final bool sent;
+
+  const SupplierOrderModel({
+    required this.id,
+    required this.orderNumber,
+    required this.createdAt,
+    required this.pdfGenerated,
+    required this.sent,
+  });
+
+  factory SupplierOrderModel.fromJson(Map<String, dynamic> json) {
+    return SupplierOrderModel(
+      id: json['id'].toString(),
+      orderNumber: json['order_number'],
+      createdAt: DateTime.parse(json['created_at']),
+      pdfGenerated: json['pdf_generated'] ?? false,
+      sent: json['sent'] ?? false,
+    );
+  }
+
+  SupplierOrder toEntity() => SupplierOrder(
+        id: id,
+        orderNumber: orderNumber,
+        createdAt: createdAt,
+        pdfGenerated: pdfGenerated,
+        sent: sent,
       );
 }

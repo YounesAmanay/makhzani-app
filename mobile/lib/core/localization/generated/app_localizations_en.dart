@@ -63,6 +63,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get validation_otpLength => 'Please enter the 4-digit code';
 
   @override
+  String get validation_phoneFormat =>
+      'Invalid Morocco phone format (+212XXXXXXXXX)';
+
+  @override
+  String get validation_emailFormat => 'Invalid email format';
+
+  @override
   String get dashboard => 'Dashboard';
 
   @override
@@ -269,6 +276,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String suppliers_totalOrders(int count) {
     return '$count orders';
   }
+
+  @override
+  String get suppliers_contactInfo => 'Contact Information';
+
+  @override
+  String get suppliers_relationship => 'Relationship';
+
+  @override
+  String get suppliers_preferredContact => 'Preferred Contact';
+
+  @override
+  String get suppliers_paymentTerms => 'Payment Terms';
+
+  @override
+  String get suppliers_linkedSince => 'Linked Since';
+
+  @override
+  String get suppliers_lastOrder => 'Last Order';
+
+  @override
+  String get suppliers_recentOrders => 'Recent Orders';
+
+  @override
+  String get suppliers_noOrders => 'No orders with this supplier yet';
+
+  @override
+  String get suppliers_deleted => 'Supplier removed successfully';
+
+  @override
+  String get suppliers_deleteConfirm =>
+      'Are you sure you want to remove this supplier?';
+
+  @override
+  String get suppliers_deleteBlockedOrders =>
+      'Cannot remove supplier with existing orders';
+
+  @override
+  String get suppliers_contactWhatsApp => 'WhatsApp';
+
+  @override
+  String get suppliers_contactPhone => 'Phone';
+
+  @override
+  String get suppliers_contactEmail => 'Email';
+
+  @override
+  String get suppliers_orderPdf => 'PDF';
+
+  @override
+  String get suppliers_orderSent => 'Sent';
+
+  @override
+  String get suppliers_created => 'Supplier added successfully';
+
+  @override
+  String get suppliers_updated => 'Supplier updated successfully';
+
+  @override
+  String get suppliers_phoneHelper =>
+      'Format: +212XXXXXXXXX (9 digits after +212)';
+
+  @override
+  String get suppliers_citySelect => 'Select City';
 
   @override
   String get orders => 'Orders';

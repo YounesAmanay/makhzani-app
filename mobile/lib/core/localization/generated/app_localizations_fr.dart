@@ -66,6 +66,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get validation_otpLength => 'Veuillez entrer le code a 4 chiffres';
 
   @override
+  String get validation_phoneFormat =>
+      'Format de telephone marocain invalide (+212XXXXXXXXX)';
+
+  @override
+  String get validation_emailFormat => 'Format d\'email invalide';
+
+  @override
   String get dashboard => 'Tableau de bord';
 
   @override
@@ -275,6 +282,69 @@ class AppLocalizationsFr extends AppLocalizations {
   String suppliers_totalOrders(int count) {
     return '$count commandes';
   }
+
+  @override
+  String get suppliers_contactInfo => 'Coordonnees';
+
+  @override
+  String get suppliers_relationship => 'Relation';
+
+  @override
+  String get suppliers_preferredContact => 'Contact prefere';
+
+  @override
+  String get suppliers_paymentTerms => 'Conditions de paiement';
+
+  @override
+  String get suppliers_linkedSince => 'Lie depuis';
+
+  @override
+  String get suppliers_lastOrder => 'Derniere commande';
+
+  @override
+  String get suppliers_recentOrders => 'Commandes recentes';
+
+  @override
+  String get suppliers_noOrders => 'Aucune commande avec ce fournisseur';
+
+  @override
+  String get suppliers_deleted => 'Fournisseur supprime avec succes';
+
+  @override
+  String get suppliers_deleteConfirm =>
+      'Etes-vous sur de vouloir supprimer ce fournisseur ?';
+
+  @override
+  String get suppliers_deleteBlockedOrders =>
+      'Impossible de supprimer un fournisseur avec des commandes';
+
+  @override
+  String get suppliers_contactWhatsApp => 'WhatsApp';
+
+  @override
+  String get suppliers_contactPhone => 'Telephone';
+
+  @override
+  String get suppliers_contactEmail => 'Email';
+
+  @override
+  String get suppliers_orderPdf => 'PDF';
+
+  @override
+  String get suppliers_orderSent => 'Envoyee';
+
+  @override
+  String get suppliers_created => 'Fournisseur ajoute avec succes';
+
+  @override
+  String get suppliers_updated => 'Fournisseur mis a jour avec succes';
+
+  @override
+  String get suppliers_phoneHelper =>
+      'Format : +212XXXXXXXXX (9 chiffres apres +212)';
+
+  @override
+  String get suppliers_citySelect => 'Selectionner la ville';
 
   @override
   String get orders => 'Commandes';

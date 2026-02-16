@@ -62,6 +62,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get validation_otpLength => 'الرجاء إدخال الرمز المكون من 4 أرقام';
 
   @override
+  String get validation_phoneFormat =>
+      'تنسيق هاتف مغربي غير صحيح (+212XXXXXXXXX)';
+
+  @override
+  String get validation_emailFormat => 'تنسيق بريد إلكتروني غير صحيح';
+
+  @override
   String get dashboard => 'لوحة التحكم';
 
   @override
@@ -265,6 +272,68 @@ class AppLocalizationsAr extends AppLocalizations {
   String suppliers_totalOrders(int count) {
     return '$count طلبات';
   }
+
+  @override
+  String get suppliers_contactInfo => 'معلومات الاتصال';
+
+  @override
+  String get suppliers_relationship => 'العلاقة';
+
+  @override
+  String get suppliers_preferredContact => 'طريقة الاتصال المفضلة';
+
+  @override
+  String get suppliers_paymentTerms => 'شروط الدفع';
+
+  @override
+  String get suppliers_linkedSince => 'مرتبط منذ';
+
+  @override
+  String get suppliers_lastOrder => 'آخر طلب';
+
+  @override
+  String get suppliers_recentOrders => 'الطلبات الأخيرة';
+
+  @override
+  String get suppliers_noOrders => 'لا توجد طلبات مع هذا المورد بعد';
+
+  @override
+  String get suppliers_deleted => 'تم إزالة المورد بنجاح';
+
+  @override
+  String get suppliers_deleteConfirm =>
+      'هل أنت متأكد أنك تريد إزالة هذا المورد؟';
+
+  @override
+  String get suppliers_deleteBlockedOrders => 'لا يمكن إزالة مورد لديه طلبات';
+
+  @override
+  String get suppliers_contactWhatsApp => 'واتساب';
+
+  @override
+  String get suppliers_contactPhone => 'هاتف';
+
+  @override
+  String get suppliers_contactEmail => 'بريد إلكتروني';
+
+  @override
+  String get suppliers_orderPdf => 'PDF';
+
+  @override
+  String get suppliers_orderSent => 'مُرسل';
+
+  @override
+  String get suppliers_created => 'تم إضافة المورد بنجاح';
+
+  @override
+  String get suppliers_updated => 'تم تحديث المورد بنجاح';
+
+  @override
+  String get suppliers_phoneHelper =>
+      'التنسيق: +212XXXXXXXXX (9 أرقام بعد +212)';
+
+  @override
+  String get suppliers_citySelect => 'اختر المدينة';
 
   @override
   String get orders => 'الطلبات';

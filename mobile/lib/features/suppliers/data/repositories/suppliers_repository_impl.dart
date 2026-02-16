@@ -2,6 +2,7 @@
 library;
 
 import '../../domain/entities/supplier.dart';
+import '../../domain/entities/supplier_order.dart';
 import '../../domain/repositories/suppliers_repository.dart';
 import '../datasources/suppliers_remote_datasource.dart';
 
@@ -17,8 +18,59 @@ class SuppliersRepositoryImpl implements SuppliersRepository {
   }
 
   @override
-  Future<Supplier> getSupplierById(String id) async {
-    final model = await _remoteDataSource.getSupplierById(id);
+  Future<({Supplier supplier, List<SupplierOrder> recentOrders})>
+      getSupplierDetail(String id) async {
+    final result = await _remoteDataSource.getSupplierDetail(id);
+    return (
+      supplier: result.supplier.toEntity(),
+      recentOrders: result.recentOrders.map((m) => m.toEntity()).toList(),
+    );
+  }
+
+  @override
+  Future<Supplier> createSupplier({
+    required String name,
+    required String phoneNumber,
+    String? businessName,
+    String? email,
+    String? address,
+    String? city,
+    String? preferredContactMethod,
+    String? paymentTerms,
+    String? merchantNotes,
+  }) async {
+    final data = <String, dynamic>{
+      'name': name,
+      'phone_number': phoneNumber,
+      if (businessName != null) 'business_name': businessName,
+      if (email != null) 'email': email,
+      if (address != null) 'address': address,
+      if (city != null) 'city': city,
+      if (preferredContactMethod != null)
+        'preferred_contact_method': preferredContactMethod,
+      if (paymentTerms != null) 'payment_terms': paymentTerms,
+      if (merchantNotes != null) 'merchant_notes': merchantNotes,
+    };
+
+    final model = await _remoteDataSource.createSupplier(data);
+    return model.toEntity();
+  }
+
+  @override
+  Future<Supplier> updateSupplierRelationship({
+    required String id,
+    String? preferredContactMethod,
+    String? paymentTerms,
+    String? merchantNotes,
+  }) async {
+    final data = <String, dynamic>{
+      if (preferredContactMethod != null)
+        'preferred_contact_method': preferredContactMethod,
+      if (paymentTerms != null) 'payment_terms': paymentTerms,
+      if (merchantNotes != null) 'merchant_notes': merchantNotes,
+    };
+
+    final model = await _remoteDataSource.updateSupplierRelationship(id, data);
     return model.toEntity();
   }
 

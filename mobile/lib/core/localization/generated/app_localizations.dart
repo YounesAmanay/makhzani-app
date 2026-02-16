@@ -202,6 +202,18 @@ abstract class AppLocalizations {
   /// **'Please enter the 4-digit code'**
   String get validation_otpLength;
 
+  /// No description provided for @validation_phoneFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid Morocco phone format (+212XXXXXXXXX)'**
+  String get validation_phoneFormat;
+
+  /// No description provided for @validation_emailFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email format'**
+  String get validation_emailFormat;
+
   /// No description provided for @dashboard.
   ///
   /// In en, this message translates to:
@@ -603,6 +615,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} orders'**
   String suppliers_totalOrders(int count);
+
+  /// No description provided for @suppliers_contactInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Information'**
+  String get suppliers_contactInfo;
+
+  /// No description provided for @suppliers_relationship.
+  ///
+  /// In en, this message translates to:
+  /// **'Relationship'**
+  String get suppliers_relationship;
+
+  /// No description provided for @suppliers_preferredContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred Contact'**
+  String get suppliers_preferredContact;
+
+  /// No description provided for @suppliers_paymentTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Terms'**
+  String get suppliers_paymentTerms;
+
+  /// No description provided for @suppliers_linkedSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked Since'**
+  String get suppliers_linkedSince;
+
+  /// No description provided for @suppliers_lastOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Order'**
+  String get suppliers_lastOrder;
+
+  /// No description provided for @suppliers_recentOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Orders'**
+  String get suppliers_recentOrders;
+
+  /// No description provided for @suppliers_noOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders with this supplier yet'**
+  String get suppliers_noOrders;
+
+  /// No description provided for @suppliers_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier removed successfully'**
+  String get suppliers_deleted;
+
+  /// No description provided for @suppliers_deleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove this supplier?'**
+  String get suppliers_deleteConfirm;
+
+  /// No description provided for @suppliers_deleteBlockedOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot remove supplier with existing orders'**
+  String get suppliers_deleteBlockedOrders;
+
+  /// No description provided for @suppliers_contactWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get suppliers_contactWhatsApp;
+
+  /// No description provided for @suppliers_contactPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get suppliers_contactPhone;
+
+  /// No description provided for @suppliers_contactEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get suppliers_contactEmail;
+
+  /// No description provided for @suppliers_orderPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF'**
+  String get suppliers_orderPdf;
+
+  /// No description provided for @suppliers_orderSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get suppliers_orderSent;
+
+  /// No description provided for @suppliers_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier added successfully'**
+  String get suppliers_created;
+
+  /// No description provided for @suppliers_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier updated successfully'**
+  String get suppliers_updated;
+
+  /// No description provided for @suppliers_phoneHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Format: +212XXXXXXXXX (9 digits after +212)'**
+  String get suppliers_phoneHelper;
+
+  /// No description provided for @suppliers_citySelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Select City'**
+  String get suppliers_citySelect;
 
   /// No description provided for @orders.
   ///

@@ -8,7 +8,15 @@ import '../models/supplier_model.dart';
 abstract class SuppliersRemoteDataSource {
   Future<List<SupplierModel>> getSuppliers();
 
-  Future<SupplierModel> getSupplierById(String id);
+  Future<({SupplierModel supplier, List<SupplierOrderModel> recentOrders})>
+      getSupplierDetail(String id);
+
+  Future<SupplierModel> createSupplier(Map<String, dynamic> data);
+
+  Future<SupplierModel> updateSupplierRelationship(
+    String id,
+    Map<String, dynamic> data,
+  );
 
   Future<void> deleteSupplier(String id);
 }
@@ -31,9 +39,37 @@ class SuppliersRemoteDataSourceImpl implements SuppliersRemoteDataSource {
   }
 
   @override
-  Future<SupplierModel> getSupplierById(String id) async {
+  Future<({SupplierModel supplier, List<SupplierOrderModel> recentOrders})>
+      getSupplierDetail(String id) async {
     final response = await _apiClient.get(ApiEndpoints.supplierById(id));
+    final data = response.data['data'];
+
+    final supplier = SupplierModel.fromJson(data['supplier']);
+    final recentOrders = (data['recent_orders'] as List?)
+            ?.map((json) => SupplierOrderModel.fromJson(json))
+            .toList() ??
+        [];
+
+    return (supplier: supplier, recentOrders: recentOrders);
+  }
+
+  @override
+  Future<SupplierModel> createSupplier(Map<String, dynamic> data) async {
+    final response = await _apiClient.post(ApiEndpoints.suppliers, data: data);
     return SupplierModel.fromJson(response.data['data']['supplier']);
+  }
+
+  @override
+  Future<SupplierModel> updateSupplierRelationship(
+    String id,
+    Map<String, dynamic> data,
+  ) async {
+    await _apiClient.put(ApiEndpoints.supplierById(id), data: data);
+    // Backend returns supplier_id, supplier_name, relationship
+    // We need to reconstruct SupplierModel or fetch again
+    // For simplicity, fetch full supplier detail
+    final detailResult = await getSupplierDetail(id);
+    return detailResult.supplier;
   }
 
   @override

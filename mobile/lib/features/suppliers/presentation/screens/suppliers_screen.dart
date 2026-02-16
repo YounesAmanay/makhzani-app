@@ -53,7 +53,7 @@ class _SuppliersScreenState extends ConsumerState<SuppliersScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: Navigate to add supplier screen
+          Navigator.of(context).pushNamed('/suppliers/create');
         },
         tooltip: context.l10n.suppliers_add,
         child: const Icon(Icons.add),
@@ -138,7 +138,7 @@ class _SuppliersScreenState extends ConsumerState<SuppliersScreen> {
               const SizedBox(height: AppDimensions.marginLarge),
               ElevatedButton.icon(
                 onPressed: () {
-                  // TODO: Navigate to add supplier screen
+                  Navigator.of(context).pushNamed('/suppliers/create');
                 },
                 icon: const Icon(Icons.add),
                 label: Text(context.l10n.suppliers_add),
@@ -165,7 +165,10 @@ class _SuppliersScreenState extends ConsumerState<SuppliersScreen> {
           return SupplierListTile(
             supplier: supplier,
             onTap: () {
-              // TODO: Navigate to supplier detail screen
+              Navigator.of(context).pushNamed(
+                '/suppliers/detail',
+                arguments: supplier.id,
+              );
             },
           );
         },
