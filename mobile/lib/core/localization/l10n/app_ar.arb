@@ -137,6 +137,7 @@
   "common_yes": "نعم",
   "common_no": "لا",
   "common_ok": "موافق",
+  "common_clear": "مسح",
   "common_close": "إغلاق",
   "common_back": "رجوع",
   "common_next": "التالي",
@@ -184,6 +185,21 @@
 
   "comingSoon": "قريبًا",
   "comingSoon_description": "هذه الميزة قيد التطوير",
+
+  "sort_nameAsc": "الاسم أ→ي",
+  "sort_nameDesc": "الاسم ي→أ",
+  "sort_stockLow": "المخزون: الأقل أولاً",
+  "sort_stockHigh": "المخزون: الأكثر أولاً",
+  "sort_priceLow": "السعر: الأقل أولاً",
+  "sort_priceHigh": "السعر: الأكثر أولاً",
+  "sort_newest": "الأحدث أولاً",
+
+  "products_resultsCount": "{count} منتج",
+  "@products_resultsCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "itemCount": "{count} عناصر",
   "itemCountPlural": "{count, plural, =0{لا توجد عناصر} =1{عنصر واحد} =2{عنصران} few{{count} عناصر} many{{count} عنصر} other{{count} عنصر}}"

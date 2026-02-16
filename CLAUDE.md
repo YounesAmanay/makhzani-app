@@ -570,6 +570,97 @@ AnimatedOpacity(
 )
 ```
 
+#### 10. Error Handling UX - FIELD-LEVEL ERRORS (MANDATORY)
+
+**Backend error response format:**
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "errors": [
+    {
+      "type": "field",
+      "value": "abc",
+      "msg": "Barcode must be 8-50 characters",
+      "path": "barcode",
+      "location": "body"
+    }
+  ]
+}
+```
+
+**Rules:**
+1. **NEVER show just the generic `message`** (e.g., "Validation failed") — always parse the `errors[]` array
+2. **Field-level validation errors** → show inline under the specific form field using `TextFormField.validator` or external error state
+3. **Non-field errors** (network, auth, server) → show in a SnackBar or error container
+4. **Success messages** → show in a green SnackBar
+
+**Provider Error Parsing Pattern:**
+```dart
+// WRONG - Only shows "Validation failed"
+if (data is Map) {
+  errorMessage = data['message'] ?? errorMessage;
+}
+
+// CORRECT - Parse field-level errors
+if (data is Map) {
+  final errors = data['errors'];
+  if (errors is List && errors.isNotEmpty) {
+    // Return structured errors: Map<String, String> fieldName → errorMessage
+    final fieldErrors = <String, String>{};
+    for (final error in errors) {
+      if (error is Map) {
+        final field = error['path'] as String?;
+        final msg = error['msg'] as String?;
+        if (field != null && msg != null) {
+          fieldErrors[field] = msg;
+        }
+      }
+    }
+    // Store fieldErrors in state for the form to consume
+    state = state.copyWith(fieldErrors: fieldErrors, errorMessage: data['message']);
+  } else {
+    errorMessage = data['message'] ?? errorMessage;
+  }
+}
+```
+
+**Form Field Error Display Pattern:**
+```dart
+// In the form screen, map backend field names to controllers
+TextFormField(
+  controller: _barcodeController,
+  decoration: InputDecoration(
+    labelText: context.l10n.products_barcode,
+    // Show server-side validation error under the field
+    errorText: _fieldErrors['barcode'],
+  ),
+  validator: (value) {
+    // Client-side validation (runs first)
+    if (value != null && value.isNotEmpty && value.length < 8) {
+      return context.l10n.validation_barcodeLength;
+    }
+    return null;
+  },
+)
+```
+
+**Backend field name → Frontend field mapping:**
+```
+name           → _nameController
+current_stock  → _stockController
+reorder_threshold → _thresholdController
+barcode        → _barcodeController
+price          → _priceController
+unit           → _selectedUnit (dropdown)
+```
+
+**Error Display Priority:**
+1. Field-level errors from `errors[]` → inline under the specific input
+2. Generic `message` without `errors[]` → styled error container above the submit button
+3. Network/timeout errors → SnackBar with retry option
+4. Success → green SnackBar
+
 ### Pre-Commit Checklist
 
 Before submitting ANY UI code, verify:
@@ -586,6 +677,8 @@ Before submitting ANY UI code, verify:
 - [ ] Form fields have `validator` and `textInputAction`
 - [ ] Buttons show loading state during async operations
 - [ ] Pull-to-refresh for data screens
+- [ ] API validation errors parsed from `errors[]` array and shown inline under form fields
+- [ ] Generic error messages never shown when field-level errors are available
 - [ ] ARB files updated for all three languages (en, ar, fr)
 - [ ] Run `flutter gen-l10n` after ARB changes
 - [ ] Run `flutter analyze` - no errors

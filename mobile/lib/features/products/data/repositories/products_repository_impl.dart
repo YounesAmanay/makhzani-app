@@ -85,12 +85,11 @@ class ProductsRepositoryImpl implements ProductsRepository {
   }
 
   @override
-  Future<Product> adjustStock({
+  Future<int> adjustStock({
     required String id,
     required int adjustment,
     String? reason,
   }) async {
-    final model = await _remoteDataSource.adjustStock(id, adjustment, reason);
-    return model.toEntity();
+    return await _remoteDataSource.adjustStock(id, adjustment, reason);
   }
 }

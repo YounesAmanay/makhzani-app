@@ -320,29 +320,18 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   }
 
   void _showStockAdjustmentDialog(Product product) {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
     StockAdjustmentSheet.show(
       context: context,
       product: product,
-      onSubmit: (adjustment, reason) async {
-        final success =
-            await ref.read(productFormProvider.notifier).adjustStock(
-                  id: product.id,
-                  adjustment: adjustment,
-                  reason: reason,
-                );
-
-        if (success && mounted) {
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Text(context.l10n.products_stockAdjusted),
-              backgroundColor: AppColors.success,
-            ),
-          );
-          // Refresh both detail screen and products list
-          _loadProduct();
-          ref.read(productsProvider.notifier).refresh();
-        }
+      onSuccess: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.products_stockAdjusted),
+            backgroundColor: AppColors.success,
+          ),
+        );
+        _loadProduct();
+        ref.read(productsProvider.notifier).refresh();
       },
     );
   }

@@ -42,7 +42,9 @@ class ProductModel {
       needsReorder: json['needs_reorder'] ?? false,
       stockStatus: json['stock_status'] ?? 'ok',
       createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : DateTime.parse(json['created_at']),
     );
   }
 

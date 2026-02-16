@@ -14,12 +14,23 @@ import '../../domain/repositories/products_repository.dart';
 
 enum ProductsStatus { initial, loading, loaded, loadingMore, error }
 
+enum ProductSort {
+  nameAsc,
+  nameDesc,
+  stockLow,
+  stockHigh,
+  priceLow,
+  priceHigh,
+  newest,
+}
+
 class ProductsState {
   final ProductsStatus status;
   final List<Product> products;
   final Pagination? pagination;
   final String? search;
   final bool lowStockFilter;
+  final ProductSort sortBy;
   final String? errorMessage;
 
   const ProductsState({
@@ -28,11 +39,13 @@ class ProductsState {
     this.pagination,
     this.search,
     this.lowStockFilter = false,
+    this.sortBy = ProductSort.nameAsc,
     this.errorMessage,
   });
 
   bool get hasMore => pagination?.hasNextPage ?? false;
   int get currentPage => pagination?.currentPage ?? 1;
+  bool get hasActiveFilters => lowStockFilter || search != null;
 
   ProductsState copyWith({
     ProductsStatus? status,
@@ -40,6 +53,7 @@ class ProductsState {
     Pagination? pagination,
     String? search,
     bool? lowStockFilter,
+    ProductSort? sortBy,
     String? errorMessage,
   }) {
     return ProductsState(
@@ -48,6 +62,7 @@ class ProductsState {
       pagination: pagination ?? this.pagination,
       search: search ?? this.search,
       lowStockFilter: lowStockFilter ?? this.lowStockFilter,
+      sortBy: sortBy ?? this.sortBy,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -77,7 +92,7 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
 
       state = state.copyWith(
         status: ProductsStatus.loaded,
-        products: result.products,
+        products: _applySorting(result.products, state.sortBy),
         pagination: result.pagination,
       );
     } catch (e) {
@@ -104,7 +119,10 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
 
       state = state.copyWith(
         status: ProductsStatus.loaded,
-        products: [...state.products, ...result.products],
+        products: _applySorting(
+          [...state.products, ...result.products],
+          state.sortBy,
+        ),
         pagination: result.pagination,
       );
     } catch (e) {
@@ -145,6 +163,37 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
     loadProducts(refresh: true);
   }
 
+  void setSortBy(ProductSort sort) {
+    if (sort == state.sortBy) return;
+    state = state.copyWith(
+      sortBy: sort,
+      products: _applySorting(state.products, sort),
+    );
+  }
+
+  List<Product> _applySorting(List<Product> products, ProductSort sort) {
+    final sorted = List<Product>.from(products);
+    switch (sort) {
+      case ProductSort.nameAsc:
+        sorted.sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      case ProductSort.nameDesc:
+        sorted.sort(
+            (a, b) => b.name.toLowerCase().compareTo(a.name.toLowerCase()));
+      case ProductSort.stockLow:
+        sorted.sort((a, b) => a.currentStock.compareTo(b.currentStock));
+      case ProductSort.stockHigh:
+        sorted.sort((a, b) => b.currentStock.compareTo(a.currentStock));
+      case ProductSort.priceLow:
+        sorted.sort((a, b) => (a.price ?? 0).compareTo(b.price ?? 0));
+      case ProductSort.priceHigh:
+        sorted.sort((a, b) => (b.price ?? 0).compareTo(a.price ?? 0));
+      case ProductSort.newest:
+        sorted.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    }
+    return sorted;
+  }
+
   Future<void> refresh() async {
     await loadProducts(refresh: true);
   }
@@ -154,12 +203,15 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
     if (index != -1) {
       final newProducts = List<Product>.from(state.products);
       newProducts[index] = updatedProduct;
-      state = state.copyWith(products: newProducts);
+      state = state.copyWith(
+        products: _applySorting(newProducts, state.sortBy),
+      );
     }
   }
 
   void removeProductFromList(String productId) {
-    final newProducts = state.products.where((p) => p.id != productId).toList();
+    final newProducts =
+        state.products.where((p) => p.id != productId).toList();
     state = state.copyWith(products: newProducts);
   }
 }

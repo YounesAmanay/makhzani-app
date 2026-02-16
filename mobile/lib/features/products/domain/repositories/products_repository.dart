@@ -35,7 +35,7 @@ abstract class ProductsRepository {
 
   Future<void> deleteProduct(String id);
 
-  Future<Product> adjustStock({
+  Future<int> adjustStock({
     required String id,
     required int adjustment,
     String? reason,

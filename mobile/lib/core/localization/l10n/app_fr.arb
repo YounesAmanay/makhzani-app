@@ -157,6 +157,7 @@
   "common_yes": "Oui",
   "common_no": "Non",
   "common_ok": "OK",
+  "common_clear": "Effacer",
   "common_close": "Fermer",
   "common_back": "Retour",
   "common_next": "Suivant",
@@ -209,6 +210,21 @@
 
   "comingSoon": "Bientot disponible",
   "comingSoon_description": "Cette fonctionnalite est en cours de developpement",
+
+  "sort_nameAsc": "Nom A→Z",
+  "sort_nameDesc": "Nom Z→A",
+  "sort_stockLow": "Stock : Plus bas d'abord",
+  "sort_stockHigh": "Stock : Plus haut d'abord",
+  "sort_priceLow": "Prix : Plus bas d'abord",
+  "sort_priceHigh": "Prix : Plus haut d'abord",
+  "sort_newest": "Plus recent d'abord",
+
+  "products_resultsCount": "{count} produits",
+  "@products_resultsCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "itemCount": "{count} articles",
   "@itemCount": {

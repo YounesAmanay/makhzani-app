@@ -40,6 +40,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   bool _isLoading = false;
   bool _isSubmitting = false;
   String? _errorMessage;
+  Map<String, String> _fieldErrors = {};
   Product? _product;
 
   static const List<String> _units = [
@@ -119,10 +120,12 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                       controller: _nameController,
                       decoration: InputDecoration(
                         labelText: '${context.l10n.products_name} *',
+                        errorText: _fieldErrors['name'],
                       ),
                       textCapitalization: TextCapitalization.words,
                       textInputAction: TextInputAction.next,
                       validator: (value) {
+                        if (_fieldErrors['name'] != null) return null;
                         if (value == null || value.trim().isEmpty) {
                           return context.l10n.validation_required;
                         }
@@ -143,6 +146,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                             decoration: InputDecoration(
                               labelText: '${context.l10n.products_currentStock} *',
                               hintText: '0',
+                              errorText: _fieldErrors['current_stock'],
                             ),
                             keyboardType: TextInputType.number,
                             textInputAction: TextInputAction.next,
@@ -150,6 +154,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                               FilteringTextInputFormatter.digitsOnly,
                             ],
                             validator: (value) {
+                              if (_fieldErrors['current_stock'] != null) return null;
                               if (value == null || value.trim().isEmpty) {
                                 return context.l10n.validation_required;
                               }
@@ -165,6 +170,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                             value: _selectedUnit,
                             decoration: InputDecoration(
                               labelText: context.l10n.products_unit,
+                              errorText: _fieldErrors['unit'],
                             ),
                             items: _units.map((unit) {
                               return DropdownMenuItem(
@@ -190,11 +196,13 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                       decoration: InputDecoration(
                         labelText: '${context.l10n.products_reorderThreshold} *',
                         hintText: '10',
+                        errorText: _fieldErrors['reorder_threshold'],
                       ),
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       validator: (value) {
+                        if (_fieldErrors['reorder_threshold'] != null) return null;
                         if (value == null || value.trim().isEmpty) {
                           return context.l10n.validation_required;
                         }
@@ -209,6 +217,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                       controller: _barcodeController,
                       decoration: InputDecoration(
                         labelText: context.l10n.products_barcode,
+                        errorText: _fieldErrors['barcode'],
                       ),
                       textInputAction: TextInputAction.next,
                     ),
@@ -222,6 +231,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                         labelText: context.l10n.products_price,
                         hintText: '0.00',
                         suffixText: context.l10n.currency_mad,
+                        errorText: _fieldErrors['price'],
                       ),
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       textInputAction: TextInputAction.done,
@@ -287,11 +297,16 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   }
 
   Future<void> _handleSubmit() async {
+    // Clear previous errors before validation
+    setState(() {
+      _fieldErrors = {};
+      _errorMessage = null;
+    });
+
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
       _isSubmitting = true;
-      _errorMessage = null;
     });
 
     final name = _nameController.text.trim();
@@ -341,8 +356,14 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
         );
         Navigator.of(context).pop();
       } else {
-        final errorMsg = ref.read(productFormProvider).errorMessage;
-        setState(() => _errorMessage = errorMsg ?? context.l10n.error_generic);
+        final formState = ref.read(productFormProvider);
+        final fieldErrors = formState.fieldErrors;
+        setState(() {
+          _fieldErrors = fieldErrors;
+          _errorMessage = fieldErrors.isEmpty
+              ? (formState.errorMessage ?? context.l10n.error_generic)
+              : null;
+        });
       }
     }
   }

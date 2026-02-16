@@ -16,22 +16,26 @@ class ProductFormState {
   final ProductFormStatus status;
   final Product? product;
   final String? errorMessage;
+  final Map<String, String> fieldErrors;
 
   const ProductFormState({
     this.status = ProductFormStatus.initial,
     this.product,
     this.errorMessage,
+    this.fieldErrors = const {},
   });
 
   ProductFormState copyWith({
     ProductFormStatus? status,
     Product? product,
     String? errorMessage,
+    Map<String, String>? fieldErrors,
   }) {
     return ProductFormState(
       status: status ?? this.status,
       product: product ?? this.product,
-      errorMessage: errorMessage ?? this.errorMessage,
+      errorMessage: errorMessage,
+      fieldErrors: fieldErrors ?? this.fieldErrors,
     );
   }
 }
@@ -55,7 +59,11 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     String? barcode,
     double? price,
   }) async {
-    state = state.copyWith(status: ProductFormStatus.loading, errorMessage: null);
+    state = state.copyWith(
+      status: ProductFormStatus.loading,
+      errorMessage: null,
+      fieldErrors: {},
+    );
 
     try {
       final product = await _repository.createProduct(
@@ -78,15 +86,32 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
       return true;
     } catch (e) {
       String errorMessage = 'Failed to create product';
+      Map<String, String> fieldErrors = {};
+
       if (e is DioException && e.response?.data != null) {
         final data = e.response!.data;
         if (data is Map) {
+          // Parse field-level validation errors
+          final errors = data['errors'];
+          if (errors is List && errors.isNotEmpty) {
+            for (final error in errors) {
+              if (error is Map) {
+                final field = error['path'] as String?;
+                final msg = error['msg'] as String?;
+                if (field != null && msg != null) {
+                  fieldErrors[field] = msg;
+                }
+              }
+            }
+          }
           errorMessage = data['message'] ?? errorMessage;
         }
       }
+
       state = state.copyWith(
         status: ProductFormStatus.error,
-        errorMessage: errorMessage,
+        errorMessage: fieldErrors.isEmpty ? errorMessage : null,
+        fieldErrors: fieldErrors,
       );
       return false;
     }
@@ -101,7 +126,11 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     String? barcode,
     double? price,
   }) async {
-    state = state.copyWith(status: ProductFormStatus.loading, errorMessage: null);
+    state = state.copyWith(
+      status: ProductFormStatus.loading,
+      errorMessage: null,
+      fieldErrors: {},
+    );
 
     try {
       final product = await _repository.updateProduct(
@@ -125,15 +154,32 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
       return true;
     } catch (e) {
       String errorMessage = 'Failed to update product';
+      Map<String, String> fieldErrors = {};
+
       if (e is DioException && e.response?.data != null) {
         final data = e.response!.data;
         if (data is Map) {
+          // Parse field-level validation errors
+          final errors = data['errors'];
+          if (errors is List && errors.isNotEmpty) {
+            for (final error in errors) {
+              if (error is Map) {
+                final field = error['path'] as String?;
+                final msg = error['msg'] as String?;
+                if (field != null && msg != null) {
+                  fieldErrors[field] = msg;
+                }
+              }
+            }
+          }
           errorMessage = data['message'] ?? errorMessage;
         }
       }
+
       state = state.copyWith(
         status: ProductFormStatus.error,
-        errorMessage: errorMessage,
+        errorMessage: fieldErrors.isEmpty ? errorMessage : null,
+        fieldErrors: fieldErrors,
       );
       return false;
     }
@@ -175,19 +221,16 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     state = state.copyWith(status: ProductFormStatus.loading, errorMessage: null);
 
     try {
-      final product = await _repository.adjustStock(
+      await _repository.adjustStock(
         id: id,
         adjustment: adjustment,
         reason: reason,
       );
 
-      state = state.copyWith(
-        status: ProductFormStatus.success,
-        product: product,
-      );
+      state = state.copyWith(status: ProductFormStatus.success);
 
-      // Update in products list
-      _ref.read(productsProvider.notifier).updateProductInList(product);
+      // Refresh products list to show updated stock
+      _ref.read(productsProvider.notifier).refresh();
 
       return true;
     } catch (e) {

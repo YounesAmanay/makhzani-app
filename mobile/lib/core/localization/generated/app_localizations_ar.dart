@@ -398,6 +398,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get common_ok => 'موافق';
 
   @override
+  String get common_clear => 'مسح';
+
+  @override
   String get common_close => 'إغلاق';
 
   @override
@@ -509,6 +512,32 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get comingSoon_description => 'هذه الميزة قيد التطوير';
+
+  @override
+  String get sort_nameAsc => 'الاسم أ→ي';
+
+  @override
+  String get sort_nameDesc => 'الاسم ي→أ';
+
+  @override
+  String get sort_stockLow => 'المخزون: الأقل أولاً';
+
+  @override
+  String get sort_stockHigh => 'المخزون: الأكثر أولاً';
+
+  @override
+  String get sort_priceLow => 'السعر: الأقل أولاً';
+
+  @override
+  String get sort_priceHigh => 'السعر: الأكثر أولاً';
+
+  @override
+  String get sort_newest => 'الأحدث أولاً';
+
+  @override
+  String products_resultsCount(int count) {
+    return '$count منتج';
+  }
 
   @override
   String get currency_mad => 'درهم';

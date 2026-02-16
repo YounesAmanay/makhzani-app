@@ -3,7 +3,10 @@
     "allow": [
       "Bash(mkdir:*)",
       "Bash(git commit:*)",
-      "Bash(npm run test-models:*)"
+      "Bash(npm run test-models:*)",
+      "Bash(git add:*)",
+      "Bash(flutter gen-l10n:*)",
+      "Bash(flutter analyze:*)"
     ],
     "deny": [],
     "ask": []

@@ -22,7 +22,7 @@ abstract class ProductsRemoteDataSource {
 
   Future<void> deleteProduct(String id);
 
-  Future<ProductModel> adjustStock(String id, int adjustment, String? reason);
+  Future<int> adjustStock(String id, int adjustment, String? reason);
 }
 
 class ProductsRemoteDataSourceImpl implements ProductsRemoteDataSource {
@@ -86,7 +86,7 @@ class ProductsRemoteDataSourceImpl implements ProductsRemoteDataSource {
   }
 
   @override
-  Future<ProductModel> adjustStock(String id, int adjustment, String? reason) async {
+  Future<int> adjustStock(String id, int adjustment, String? reason) async {
     final response = await _apiClient.post(
       ApiEndpoints.adjustStock(id),
       data: {
@@ -94,6 +94,6 @@ class ProductsRemoteDataSourceImpl implements ProductsRemoteDataSource {
         if (reason != null) 'reason': reason,
       },
     );
-    return ProductModel.fromJson(response.data['data']['product']);
+    return response.data['data']['product']['new_stock'] as int;
   }
 }

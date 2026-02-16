@@ -1,32 +1,34 @@
 /// Stock Adjustment Sheet
 ///
-/// Bottom sheet for adjusting product stock with signed number input.
-/// Use positive numbers to add stock, negative to remove.
+/// Bottom sheet for adjusting product stock with stepper UI.
+/// Shows [-] button, editable stock value, [+] button.
 library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../domain/entities/product.dart';
+import '../providers/product_form_provider.dart';
 
-class StockAdjustmentSheet extends StatefulWidget {
+class StockAdjustmentSheet extends ConsumerStatefulWidget {
   final Product product;
-  final Function(int adjustment, String? reason) onSubmit;
+  final VoidCallback? onSuccess;
 
   const StockAdjustmentSheet({
     super.key,
     required this.product,
-    required this.onSubmit,
+    this.onSuccess,
   });
 
   /// Shows the stock adjustment bottom sheet
   static void show({
     required BuildContext context,
     required Product product,
-    required Function(int adjustment, String? reason) onSubmit,
+    VoidCallback? onSuccess,
   }) {
     showModalBottomSheet(
       context: context,
@@ -38,32 +40,89 @@ class StockAdjustmentSheet extends StatefulWidget {
       ),
       builder: (context) => StockAdjustmentSheet(
         product: product,
-        onSubmit: onSubmit,
+        onSuccess: onSuccess,
       ),
     );
   }
 
   @override
-  State<StockAdjustmentSheet> createState() => _StockAdjustmentSheetState();
+  ConsumerState<StockAdjustmentSheet> createState() =>
+      _StockAdjustmentSheetState();
 }
 
-class _StockAdjustmentSheetState extends State<StockAdjustmentSheet> {
-  final _adjustmentController = TextEditingController();
+class _StockAdjustmentSheetState extends ConsumerState<StockAdjustmentSheet> {
+  late final TextEditingController _stockController;
   final _reasonController = TextEditingController();
+  bool _isSubmitting = false;
+  String? _errorMessage;
 
-  int get _adjustment {
-    final text = _adjustmentController.text.trim();
+  int get _currentValue {
+    final text = _stockController.text.trim();
     if (text.isEmpty) return 0;
     return int.tryParse(text) ?? 0;
   }
 
-  int get _newStock => widget.product.currentStock + _adjustment;
+  int get _adjustment => _currentValue - widget.product.currentStock;
+
+  bool get _hasChanged => _adjustment != 0;
+
+  bool get _isValid => _currentValue >= 0 && _hasChanged;
+
+  @override
+  void initState() {
+    super.initState();
+    _stockController = TextEditingController(
+      text: widget.product.currentStock.toString(),
+    );
+  }
 
   @override
   void dispose() {
-    _adjustmentController.dispose();
+    _stockController.dispose();
     _reasonController.dispose();
     super.dispose();
+  }
+
+  void _increment() {
+    final newValue = _currentValue + 1;
+    _stockController.text = newValue.toString();
+    setState(() {});
+  }
+
+  void _decrement() {
+    if (_currentValue <= 0) return;
+    final newValue = _currentValue - 1;
+    _stockController.text = newValue.toString();
+    setState(() {});
+  }
+
+  Future<void> _handleSubmit() async {
+    if (!_isValid) return;
+
+    setState(() {
+      _isSubmitting = true;
+      _errorMessage = null;
+    });
+
+    final success = await ref.read(productFormProvider.notifier).adjustStock(
+          id: widget.product.id,
+          adjustment: _adjustment,
+          reason: _reasonController.text.trim().isEmpty
+              ? null
+              : _reasonController.text.trim(),
+        );
+
+    if (!mounted) return;
+
+    setState(() => _isSubmitting = false);
+
+    if (success) {
+      Navigator.of(context).pop();
+      widget.onSuccess?.call();
+    } else {
+      final errorMsg = ref.read(productFormProvider).errorMessage;
+      setState(() => _errorMessage = errorMsg ?? context.l10n.error_generic);
+    }
   }
 
   @override
@@ -103,91 +162,104 @@ class _StockAdjustmentSheetState extends State<StockAdjustmentSheet> {
                 ),
                 const SizedBox(height: AppDimensions.marginSmall),
 
-                // Product info
+                // Product name
+                Text(
+                  widget.product.name,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.textTheme.bodySmall?.color,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+
+                const SizedBox(height: AppDimensions.marginXLarge),
+
+                // Stepper row: [-]  input  [+]
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Flexible(
-                      child: Text(
-                        widget.product.name,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w500,
+                    // Decrement button
+                    _StepperButton(
+                      icon: Icons.remove,
+                      onPressed: _currentValue > 0 ? _decrement : null,
+                    ),
+
+                    const SizedBox(width: AppDimensions.marginLarge),
+
+                    // Editable stock value
+                    SizedBox(
+                      width: 100,
+                      child: TextField(
+                        controller: _stockController,
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.displaySmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: _adjustment > 0
+                              ? AppColors.success
+                              : _adjustment < 0
+                                  ? AppColors.error
+                                  : null,
                         ),
-                        overflow: TextOverflow.ellipsis,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        onChanged: (_) => setState(() {}),
                       ),
                     ),
-                    Text(
-                      '  •  ',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.textTheme.bodySmall?.color,
-                      ),
-                    ),
-                    Text(
-                      '${widget.product.currentStock} ${widget.product.unit}',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.textTheme.bodySmall?.color,
-                      ),
+
+                    const SizedBox(width: AppDimensions.marginLarge),
+
+                    // Increment button
+                    _StepperButton(
+                      icon: Icons.add,
+                      onPressed: _increment,
                     ),
                   ],
                 ),
+
+                // Unit label
+                Center(
+                  child: Text(
+                    widget.product.unit,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.textTheme.bodySmall?.color,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: AppDimensions.marginMedium),
+
+                // Adjustment indicator
+                if (_hasChanged)
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimensions.paddingMedium,
+                        vertical: AppDimensions.paddingSmall,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _adjustment > 0
+                            ? AppColors.successBackground
+                            : AppColors.errorBackground,
+                        borderRadius:
+                            BorderRadius.circular(AppDimensions.radiusLarge),
+                      ),
+                      child: Text(
+                        '${_adjustment > 0 ? '+' : ''}$_adjustment ${widget.product.unit}',
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color:
+                              _adjustment > 0 ? AppColors.success : AppColors.error,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
 
                 const SizedBox(height: AppDimensions.marginLarge),
-
-                // Adjustment field with signed input
-                TextField(
-                  controller: _adjustmentController,
-                  keyboardType: const TextInputType.numberWithOptions(signed: true),
-                  textInputAction: TextInputAction.next,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'^-?\d*')),
-                  ],
-                  decoration: InputDecoration(
-                    labelText: context.l10n.products_adjustment,
-                    hintText: context.l10n.products_adjustmentHint,
-                    suffixText: widget.product.unit,
-                    helperText: context.l10n.products_adjustmentHelper,
-                    helperMaxLines: 2,
-                  ),
-                  onChanged: (_) => setState(() {}),
-                ),
-
-                const SizedBox(height: AppDimensions.marginMedium),
-
-                // New stock preview
-                Container(
-                  padding: const EdgeInsets.all(AppDimensions.paddingMedium),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${context.l10n.products_newStock}:',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      Text(
-                        '$_newStock ${widget.product.unit}',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: _newStock < 0 ? AppColors.error : null,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                if (_newStock < 0) ...[
-                  const SizedBox(height: AppDimensions.marginSmall),
-                  Text(
-                    context.l10n.products_stockNegativeError,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.error,
-                    ),
-                  ),
-                ],
-
-                const SizedBox(height: AppDimensions.marginMedium),
 
                 // Reason field
                 TextField(
@@ -198,9 +270,38 @@ class _StockAdjustmentSheetState extends State<StockAdjustmentSheet> {
                     labelText: context.l10n.products_reason,
                   ),
                   onSubmitted: (_) {
-                    if (_canSubmit()) _handleSubmit();
+                    if (_isValid) _handleSubmit();
                   },
                 ),
+
+                // Error message
+                if (_errorMessage != null) ...[
+                  const SizedBox(height: AppDimensions.marginMedium),
+                  Container(
+                    padding: const EdgeInsets.all(AppDimensions.paddingMedium),
+                    decoration: BoxDecoration(
+                      color: AppColors.errorBackground,
+                      borderRadius:
+                          BorderRadius.circular(AppDimensions.radiusSmall),
+                      border:
+                          Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.error_outline, color: AppColors.error, size: 20),
+                        const SizedBox(width: AppDimensions.marginSmall),
+                        Expanded(
+                          child: Text(
+                            _errorMessage!,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: AppColors.error,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
 
                 const SizedBox(height: AppDimensions.marginLarge),
 
@@ -208,8 +309,17 @@ class _StockAdjustmentSheetState extends State<StockAdjustmentSheet> {
                 SizedBox(
                   height: AppDimensions.buttonHeightLarge,
                   child: ElevatedButton(
-                    onPressed: _canSubmit() ? _handleSubmit : null,
-                    child: Text(context.l10n.products_adjustStock),
+                    onPressed: _isValid && !_isSubmitting ? _handleSubmit : null,
+                    child: _isSubmitting
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.white,
+                            ),
+                          )
+                        : Text(context.l10n.products_adjustStock),
                   ),
                 ),
 
@@ -221,17 +331,40 @@ class _StockAdjustmentSheetState extends State<StockAdjustmentSheet> {
       ),
     );
   }
+}
 
-  bool _canSubmit() {
-    return _adjustment != 0 && _newStock >= 0;
-  }
+/// Circular stepper button (+ or -)
+class _StepperButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback? onPressed;
 
-  void _handleSubmit() {
-    final reason = _reasonController.text.trim();
-    widget.onSubmit(
-      _adjustment,
-      reason.isEmpty ? null : reason,
+  const _StepperButton({
+    required this.icon,
+    this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDisabled = onPressed == null;
+
+    return Material(
+      color: isDisabled
+          ? theme.colorScheme.surfaceContainerHighest
+          : AppColors.primary,
+      shape: const CircleBorder(),
+      child: InkWell(
+        onTap: onPressed,
+        customBorder: const CircleBorder(),
+        child: SizedBox(
+          width: 48,
+          height: 48,
+          child: Icon(
+            icon,
+            color: isDisabled ? theme.textTheme.bodySmall?.color : AppColors.white,
+          ),
+        ),
+      ),
     );
-    Navigator.of(context).pop();
   }
 }

@@ -862,6 +862,12 @@ abstract class AppLocalizations {
   /// **'OK'**
   String get common_ok;
 
+  /// No description provided for @common_clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get common_clear;
+
   /// No description provided for @common_close.
   ///
   /// In en, this message translates to:
@@ -1083,6 +1089,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This feature is under development'**
   String get comingSoon_description;
+
+  /// No description provided for @sort_nameAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Name A→Z'**
+  String get sort_nameAsc;
+
+  /// No description provided for @sort_nameDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Name Z→A'**
+  String get sort_nameDesc;
+
+  /// No description provided for @sort_stockLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock: Low first'**
+  String get sort_stockLow;
+
+  /// No description provided for @sort_stockHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock: High first'**
+  String get sort_stockHigh;
+
+  /// No description provided for @sort_priceLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Price: Low first'**
+  String get sort_priceLow;
+
+  /// No description provided for @sort_priceHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Price: High first'**
+  String get sort_priceHigh;
+
+  /// No description provided for @sort_newest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first'**
+  String get sort_newest;
+
+  /// No description provided for @products_resultsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} products'**
+  String products_resultsCount(int count);
 
   /// No description provided for @currency_mad.
   ///

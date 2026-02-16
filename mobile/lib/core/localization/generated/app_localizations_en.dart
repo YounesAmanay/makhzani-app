@@ -402,6 +402,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get common_ok => 'OK';
 
   @override
+  String get common_clear => 'Clear';
+
+  @override
   String get common_close => 'Close';
 
   @override
@@ -513,6 +516,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get comingSoon_description => 'This feature is under development';
+
+  @override
+  String get sort_nameAsc => 'Name A→Z';
+
+  @override
+  String get sort_nameDesc => 'Name Z→A';
+
+  @override
+  String get sort_stockLow => 'Stock: Low first';
+
+  @override
+  String get sort_stockHigh => 'Stock: High first';
+
+  @override
+  String get sort_priceLow => 'Price: Low first';
+
+  @override
+  String get sort_priceHigh => 'Price: High first';
+
+  @override
+  String get sort_newest => 'Newest first';
+
+  @override
+  String products_resultsCount(int count) {
+    return '$count products';
+  }
 
   @override
   String get currency_mad => 'MAD';
