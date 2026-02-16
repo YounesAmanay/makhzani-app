@@ -365,7 +365,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get orders_selectSupplier => 'Selectionner un fournisseur';
 
   @override
-  String get orders_items => 'Articles';
+  String get orders_items => 'articles';
 
   @override
   String get orders_addItem => 'Ajouter un article';
@@ -404,7 +404,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get orders_empty => 'Aucune commande pour le moment';
 
   @override
-  String get orders_emptyDescription => 'Creez votre premier bon de commande';
+  String get orders_emptyDescription =>
+      'Creez votre premiere commande d\'achat pour suivre l\'inventaire';
 
   @override
   String get profile => 'Profil';
@@ -657,4 +658,52 @@ class AppLocalizationsFr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get orders_title => 'Commandes d\'achat';
+
+  @override
+  String get orders_add => 'Nouvelle commande';
+
+  @override
+  String get orders_orderNumber => 'Numero de commande';
+
+  @override
+  String get orders_totalItems => 'Total articles';
+
+  @override
+  String get orders_totalValue => 'Valeur totale';
+
+  @override
+  String get orders_notes => 'Notes';
+
+  @override
+  String get orders_statusDraft => 'Brouillon';
+
+  @override
+  String get orders_statusGenerated => 'Pret';
+
+  @override
+  String get orders_statusSent => 'Envoye';
+
+  @override
+  String get orders_filterSupplier => 'Filtrer par fournisseur';
+
+  @override
+  String get orders_filterStatus => 'Filtrer par statut';
+
+  @override
+  String get orders_filterAll => 'Toutes les commandes';
+
+  @override
+  String get orders_filterAllSuppliers => 'Tous les fournisseurs';
+
+  @override
+  String get orders_createdAt => 'Cree le';
+
+  @override
+  String get orders_sentAt => 'Envoye le';
+
+  @override
+  String get orders_item => 'article';
 }

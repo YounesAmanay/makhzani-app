@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../dashboard/presentation/screens/dashboard_screen.dart';
-import '../../../orders/presentation/screens/orders_placeholder_screen.dart';
+import '../../../orders/presentation/screens/orders_screen.dart';
 import '../../../products/presentation/screens/products_screen.dart';
 import '../../../suppliers/presentation/screens/suppliers_screen.dart';
 import '../providers/navigation_provider.dart';
@@ -27,7 +27,7 @@ class MainShellScreen extends ConsumerWidget {
           DashboardScreen(),
           ProductsScreen(),
           SuppliersScreen(),
-          OrdersPlaceholderScreen(),
+          OrdersScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

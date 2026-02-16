@@ -775,7 +775,7 @@ abstract class AppLocalizations {
   /// No description provided for @orders_items.
   ///
   /// In en, this message translates to:
-  /// **'Items'**
+  /// **'items'**
   String get orders_items;
 
   /// No description provided for @orders_addItem.
@@ -853,7 +853,7 @@ abstract class AppLocalizations {
   /// No description provided for @orders_emptyDescription.
   ///
   /// In en, this message translates to:
-  /// **'Create your first purchase order'**
+  /// **'Create your first purchase order to track inventory'**
   String get orders_emptyDescription;
 
   /// No description provided for @profile.
@@ -1317,6 +1317,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =0{No items} =1{1 item} other{{count} items}}'**
   String itemCountPlural(int count);
+
+  /// No description provided for @orders_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase Orders'**
+  String get orders_title;
+
+  /// No description provided for @orders_add.
+  ///
+  /// In en, this message translates to:
+  /// **'New Order'**
+  String get orders_add;
+
+  /// No description provided for @orders_orderNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Number'**
+  String get orders_orderNumber;
+
+  /// No description provided for @orders_totalItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Items'**
+  String get orders_totalItems;
+
+  /// No description provided for @orders_totalValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Value'**
+  String get orders_totalValue;
+
+  /// No description provided for @orders_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get orders_notes;
+
+  /// No description provided for @orders_statusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get orders_statusDraft;
+
+  /// No description provided for @orders_statusGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get orders_statusGenerated;
+
+  /// No description provided for @orders_statusSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get orders_statusSent;
+
+  /// No description provided for @orders_filterSupplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by Supplier'**
+  String get orders_filterSupplier;
+
+  /// No description provided for @orders_filterStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by Status'**
+  String get orders_filterStatus;
+
+  /// No description provided for @orders_filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All Orders'**
+  String get orders_filterAll;
+
+  /// No description provided for @orders_filterAllSuppliers.
+  ///
+  /// In en, this message translates to:
+  /// **'All Suppliers'**
+  String get orders_filterAllSuppliers;
+
+  /// No description provided for @orders_createdAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get orders_createdAt;
+
+  /// No description provided for @orders_sentAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get orders_sentAt;
+
+  /// No description provided for @orders_item.
+  ///
+  /// In en, this message translates to:
+  /// **'item'**
+  String get orders_item;
 }
 
 class _AppLocalizationsDelegate

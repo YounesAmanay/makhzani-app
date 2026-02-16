@@ -234,5 +234,27 @@
   },
 
   "itemCount": "{count} عناصر",
-  "itemCountPlural": "{count, plural, =0{لا توجد عناصر} =1{عنصر واحد} =2{عنصران} few{{count} عناصر} many{{count} عنصر} other{{count} عنصر}}"
+  "itemCountPlural": "{count, plural, =0{لا توجد عناصر} =1{عنصر واحد} =2{عنصران} few{{count} عناصر} many{{count} عنصر} other{{count} عنصر}}",
+
+  "orders_title": "أوامر الشراء",
+  "orders_empty": "لا توجد أوامر بعد",
+  "orders_emptyDescription": "قم بإنشاء أول أمر شراء لتتبع المخزون",
+  "orders_add": "أمر جديد",
+  "orders_orderNumber": "رقم الأمر",
+  "orders_supplier": "المورد",
+  "orders_totalItems": "إجمالي العناصر",
+  "orders_totalValue": "القيمة الإجمالية",
+  "orders_notes": "ملاحظات",
+  "orders_status": "الحالة",
+  "orders_statusDraft": "مسودة",
+  "orders_statusGenerated": "جاهز",
+  "orders_statusSent": "مرسل",
+  "orders_filterSupplier": "تصفية حسب المورد",
+  "orders_filterStatus": "تصفية حسب الحالة",
+  "orders_filterAll": "جميع الأوامر",
+  "orders_filterAllSuppliers": "جميع الموردين",
+  "orders_createdAt": "تم الإنشاء",
+  "orders_sentAt": "تم الإرسال",
+  "orders_items": "عناصر",
+  "orders_item": "عنصر"
 }

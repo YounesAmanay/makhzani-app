@@ -269,5 +269,27 @@
     "placeholders": {
       "count": {"type": "int"}
     }
-  }
+  },
+
+  "orders_title": "Commandes d'achat",
+  "orders_empty": "Aucune commande pour le moment",
+  "orders_emptyDescription": "Creez votre premiere commande d'achat pour suivre l'inventaire",
+  "orders_add": "Nouvelle commande",
+  "orders_orderNumber": "Numero de commande",
+  "orders_supplier": "Fournisseur",
+  "orders_totalItems": "Total articles",
+  "orders_totalValue": "Valeur totale",
+  "orders_notes": "Notes",
+  "orders_status": "Statut",
+  "orders_statusDraft": "Brouillon",
+  "orders_statusGenerated": "Pret",
+  "orders_statusSent": "Envoye",
+  "orders_filterSupplier": "Filtrer par fournisseur",
+  "orders_filterStatus": "Filtrer par statut",
+  "orders_filterAll": "Toutes les commandes",
+  "orders_filterAllSuppliers": "Tous les fournisseurs",
+  "orders_createdAt": "Cree le",
+  "orders_sentAt": "Envoye le",
+  "orders_items": "articles",
+  "orders_item": "article"
 }

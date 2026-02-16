@@ -354,7 +354,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get orders_selectSupplier => 'اختر المورد';
 
   @override
-  String get orders_items => 'العناصر';
+  String get orders_items => 'عناصر';
 
   @override
   String get orders_addItem => 'إضافة عنصر';
@@ -390,10 +390,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get orders_downloadPdf => 'تحميل PDF';
 
   @override
-  String get orders_empty => 'لا توجد طلبات بعد';
+  String get orders_empty => 'لا توجد أوامر بعد';
 
   @override
-  String get orders_emptyDescription => 'أنشئ طلب الشراء الأول';
+  String get orders_emptyDescription => 'قم بإنشاء أول أمر شراء لتتبع المخزون';
 
   @override
   String get profile => 'الملف الشخصي';
@@ -647,4 +647,52 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get orders_title => 'أوامر الشراء';
+
+  @override
+  String get orders_add => 'أمر جديد';
+
+  @override
+  String get orders_orderNumber => 'رقم الأمر';
+
+  @override
+  String get orders_totalItems => 'إجمالي العناصر';
+
+  @override
+  String get orders_totalValue => 'القيمة الإجمالية';
+
+  @override
+  String get orders_notes => 'ملاحظات';
+
+  @override
+  String get orders_statusDraft => 'مسودة';
+
+  @override
+  String get orders_statusGenerated => 'جاهز';
+
+  @override
+  String get orders_statusSent => 'مرسل';
+
+  @override
+  String get orders_filterSupplier => 'تصفية حسب المورد';
+
+  @override
+  String get orders_filterStatus => 'تصفية حسب الحالة';
+
+  @override
+  String get orders_filterAll => 'جميع الأوامر';
+
+  @override
+  String get orders_filterAllSuppliers => 'جميع الموردين';
+
+  @override
+  String get orders_createdAt => 'تم الإنشاء';
+
+  @override
+  String get orders_sentAt => 'تم الإرسال';
+
+  @override
+  String get orders_item => 'عنصر';
 }

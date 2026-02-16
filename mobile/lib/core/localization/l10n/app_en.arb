@@ -269,5 +269,27 @@
     "placeholders": {
       "count": {"type": "int"}
     }
-  }
+  },
+
+  "orders_title": "Purchase Orders",
+  "orders_empty": "No orders yet",
+  "orders_emptyDescription": "Create your first purchase order to track inventory",
+  "orders_add": "New Order",
+  "orders_orderNumber": "Order Number",
+  "orders_supplier": "Supplier",
+  "orders_totalItems": "Total Items",
+  "orders_totalValue": "Total Value",
+  "orders_notes": "Notes",
+  "orders_status": "Status",
+  "orders_statusDraft": "Draft",
+  "orders_statusGenerated": "Ready",
+  "orders_statusSent": "Sent",
+  "orders_filterSupplier": "Filter by Supplier",
+  "orders_filterStatus": "Filter by Status",
+  "orders_filterAll": "All Orders",
+  "orders_filterAllSuppliers": "All Suppliers",
+  "orders_createdAt": "Created",
+  "orders_sentAt": "Sent",
+  "orders_items": "items",
+  "orders_item": "item"
 }
