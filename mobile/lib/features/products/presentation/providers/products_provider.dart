@@ -12,6 +12,8 @@ import '../../domain/entities/product.dart';
 import '../../domain/entities/pagination.dart';
 import '../../domain/repositories/products_repository.dart';
 
+const _sentinel = Object();
+
 enum ProductsStatus { initial, loading, loaded, loadingMore, error }
 
 enum ProductSort {
@@ -51,7 +53,7 @@ class ProductsState {
     ProductsStatus? status,
     List<Product>? products,
     Pagination? pagination,
-    String? search,
+    Object? search = _sentinel,
     bool? lowStockFilter,
     ProductSort? sortBy,
     String? errorMessage,
@@ -60,7 +62,7 @@ class ProductsState {
       status: status ?? this.status,
       products: products ?? this.products,
       pagination: pagination ?? this.pagination,
-      search: search ?? this.search,
+      search: search == _sentinel ? this.search : search as String?,
       lowStockFilter: lowStockFilter ?? this.lowStockFilter,
       sortBy: sortBy ?? this.sortBy,
       errorMessage: errorMessage ?? this.errorMessage,

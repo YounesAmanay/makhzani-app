@@ -122,34 +122,38 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
   }
 
   Widget _buildFilterChips(ProductsState state) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDimensions.paddingMedium,
-        vertical: AppDimensions.paddingSmall,
-      ),
-      child: Row(
-        children: [
-          // Low stock filter
-          AppFilterChip(
-            label: context.l10n.products_lowStockOnly,
-            icon: Icons.warning_amber_rounded,
-            isActive: state.lowStockFilter,
-            onTap: () {
-              ref.read(productsProvider.notifier).toggleLowStockFilter();
-            },
-          ),
-          const SizedBox(width: AppDimensions.marginSmall),
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.paddingMedium,
+          vertical: AppDimensions.paddingSmall,
+        ),
+        child: Row(
+          children: [
+            // Low stock filter
+            AppFilterChip(
+              label: context.l10n.products_lowStockOnly,
+              icon: Icons.warning_amber_rounded,
+              isActive: state.lowStockFilter,
+              showClose: false,
+              onTap: () {
+                ref.read(productsProvider.notifier).toggleLowStockFilter();
+              },
+            ),
+            const SizedBox(width: AppDimensions.marginSmall),
 
-          // Sort chip
-          AppFilterChip(
-            label: _sortLabel(context, state.sortBy),
-            icon: Icons.sort,
-            isActive: state.sortBy != ProductSort.nameAsc,
-            onTap: _showSortSheet,
-            showClose: false,
-          ),
-        ],
+            // Sort chip
+            AppFilterChip(
+              label: _sortLabel(context, state.sortBy),
+              icon: Icons.sort,
+              isActive: state.sortBy != ProductSort.nameAsc,
+              showClose: false,
+              onTap: _showSortSheet,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -182,21 +186,27 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
 
       case ProductsStatus.error:
         return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.error_outline, size: 48, color: AppColors.error),
-              const SizedBox(height: AppDimensions.marginMedium),
-              Text(
-                state.errorMessage ?? context.l10n.error_generic,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              const SizedBox(height: AppDimensions.marginMedium),
-              ElevatedButton(
-                onPressed: () => ref.read(productsProvider.notifier).refresh(),
-                child: Text(context.l10n.common_retry),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDimensions.paddingLarge,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                const SizedBox(height: AppDimensions.marginMedium),
+                Text(
+                  state.errorMessage ?? context.l10n.error_generic,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppDimensions.marginMedium),
+                ElevatedButton(
+                  onPressed: () => ref.read(productsProvider.notifier).refresh(),
+                  child: Text(context.l10n.common_retry),
+                ),
+              ],
+            ),
           ),
         );
 
@@ -209,47 +219,49 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
 
   Widget _buildEmptyState(ProductsState state) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            state.hasActiveFilters
-                ? Icons.search_off
-                : Icons.inventory_2_outlined,
-            size: 64,
-            color: AppColors.iconSecondary,
-          ),
-          const SizedBox(height: AppDimensions.marginMedium),
-          Text(
-            state.hasActiveFilters
-                ? context.l10n.products_noResults
-                : context.l10n.products_empty,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: AppDimensions.marginSmall),
-          Text(
-            state.hasActiveFilters
-                ? context.l10n.products_adjustFilters
-                : context.l10n.products_emptyDescription,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-            textAlign: TextAlign.center,
-          ),
-          if (!state.hasActiveFilters) ...[
-            const SizedBox(height: AppDimensions.marginLarge),
-            SizedBox(
-              width: 200,
-              child: ElevatedButton.icon(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.paddingLarge,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              state.hasActiveFilters
+                  ? Icons.search_off
+                  : Icons.inventory_2_outlined,
+              size: 64,
+              color: AppColors.iconSecondary,
+            ),
+            const SizedBox(height: AppDimensions.marginMedium),
+            Text(
+              state.hasActiveFilters
+                  ? context.l10n.products_noResults
+                  : context.l10n.products_empty,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: AppDimensions.marginSmall),
+            Text(
+              state.hasActiveFilters
+                  ? context.l10n.products_adjustFilters
+                  : context.l10n.products_emptyDescription,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+            if (!state.hasActiveFilters) ...[
+              const SizedBox(height: AppDimensions.marginLarge),
+              ElevatedButton.icon(
                 onPressed: () {
                   Navigator.of(context).pushNamed('/products/create');
                 },
                 icon: const Icon(Icons.add),
                 label: Text(context.l10n.products_add),
               ),
-            ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
