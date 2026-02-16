@@ -95,6 +95,16 @@
   "suppliers_empty": "No suppliers yet",
   "suppliers_emptyDescription": "Add your first supplier to manage your purchases",
   "suppliers_unknown": "Unknown Supplier",
+  "suppliers_searchHint": "Search suppliers...",
+  "suppliers_noResults": "No suppliers found",
+  "suppliers_adjustFilters": "Try adjusting your search",
+  "suppliers_businessName": "Business Name",
+  "suppliers_totalOrders": "{count} orders",
+  "@suppliers_totalOrders": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "orders": "Orders",
   "orders_purchase": "Purchase Orders",

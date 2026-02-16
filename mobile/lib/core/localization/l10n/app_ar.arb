@@ -85,6 +85,16 @@
   "suppliers_empty": "لا يوجد موردون بعد",
   "suppliers_emptyDescription": "أضف موردك الأول لإدارة مشترياتك",
   "suppliers_unknown": "مورد غير معروف",
+  "suppliers_searchHint": "البحث عن الموردين...",
+  "suppliers_noResults": "لم يتم العثور على موردين",
+  "suppliers_adjustFilters": "جرب تعديل البحث",
+  "suppliers_businessName": "اسم النشاط التجاري",
+  "suppliers_totalOrders": "{count} طلبات",
+  "@suppliers_totalOrders": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "orders": "الطلبات",
   "orders_purchase": "طلبات الشراء",

@@ -260,6 +260,23 @@ class AppLocalizationsFr extends AppLocalizations {
   String get suppliers_unknown => 'Fournisseur inconnu';
 
   @override
+  String get suppliers_searchHint => 'Rechercher des fournisseurs...';
+
+  @override
+  String get suppliers_noResults => 'Aucun fournisseur trouve';
+
+  @override
+  String get suppliers_adjustFilters => 'Essayez d\'ajuster votre recherche';
+
+  @override
+  String get suppliers_businessName => 'Nom de l\'entreprise';
+
+  @override
+  String suppliers_totalOrders(int count) {
+    return '$count commandes';
+  }
+
+  @override
   String get orders => 'Commandes';
 
   @override

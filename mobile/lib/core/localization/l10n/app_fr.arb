@@ -95,6 +95,16 @@
   "suppliers_empty": "Aucun fournisseur pour le moment",
   "suppliers_emptyDescription": "Ajoutez votre premier fournisseur pour gerer vos achats",
   "suppliers_unknown": "Fournisseur inconnu",
+  "suppliers_searchHint": "Rechercher des fournisseurs...",
+  "suppliers_noResults": "Aucun fournisseur trouve",
+  "suppliers_adjustFilters": "Essayez d'ajuster votre recherche",
+  "suppliers_businessName": "Nom de l'entreprise",
+  "suppliers_totalOrders": "{count} commandes",
+  "@suppliers_totalOrders": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "orders": "Commandes",
   "orders_purchase": "Bons de commande",

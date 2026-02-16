@@ -574,6 +574,36 @@ abstract class AppLocalizations {
   /// **'Unknown Supplier'**
   String get suppliers_unknown;
 
+  /// No description provided for @suppliers_searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search suppliers...'**
+  String get suppliers_searchHint;
+
+  /// No description provided for @suppliers_noResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No suppliers found'**
+  String get suppliers_noResults;
+
+  /// No description provided for @suppliers_adjustFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your search'**
+  String get suppliers_adjustFilters;
+
+  /// No description provided for @suppliers_businessName.
+  ///
+  /// In en, this message translates to:
+  /// **'Business Name'**
+  String get suppliers_businessName;
+
+  /// No description provided for @suppliers_totalOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} orders'**
+  String suppliers_totalOrders(int count);
+
   /// No description provided for @orders.
   ///
   /// In en, this message translates to:

@@ -250,6 +250,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String get suppliers_unknown => 'مورد غير معروف';
 
   @override
+  String get suppliers_searchHint => 'البحث عن الموردين...';
+
+  @override
+  String get suppliers_noResults => 'لم يتم العثور على موردين';
+
+  @override
+  String get suppliers_adjustFilters => 'جرب تعديل البحث';
+
+  @override
+  String get suppliers_businessName => 'اسم النشاط التجاري';
+
+  @override
+  String suppliers_totalOrders(int count) {
+    return '$count طلبات';
+  }
+
+  @override
   String get orders => 'الطلبات';
 
   @override
