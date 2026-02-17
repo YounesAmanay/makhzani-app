@@ -1413,6 +1413,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'item'**
   String get orders_item;
+
+  /// No description provided for @orders_createTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Purchase Order'**
+  String get orders_createTitle;
+
+  /// No description provided for @orders_supplierRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier is required'**
+  String get orders_supplierRequired;
+
+  /// No description provided for @orders_products.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get orders_products;
+
+  /// No description provided for @orders_addProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Product'**
+  String get orders_addProduct;
+
+  /// No description provided for @orders_selectProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Product'**
+  String get orders_selectProduct;
+
+  /// No description provided for @orders_quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get orders_quantity;
+
+  /// No description provided for @orders_unitPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit Price'**
+  String get orders_unitPrice;
+
+  /// No description provided for @orders_itemTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get orders_itemTotal;
+
+  /// No description provided for @orders_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get orders_remove;
+
+  /// No description provided for @orders_grandTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Grand Total'**
+  String get orders_grandTotal;
+
+  /// No description provided for @orders_notesOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (optional)'**
+  String get orders_notesOptional;
+
+  /// No description provided for @orders_notesPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add delivery instructions or notes'**
+  String get orders_notesPlaceholder;
+
+  /// No description provided for @orders_createButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Order'**
+  String get orders_createButton;
+
+  /// No description provided for @orders_atLeastOneProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one product'**
+  String get orders_atLeastOneProduct;
+
+  /// No description provided for @orders_quantityRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity is required'**
+  String get orders_quantityRequired;
+
+  /// No description provided for @orders_quantityMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity must be greater than 0'**
+  String get orders_quantityMin;
+
+  /// No description provided for @orders_priceMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Price must be 0 or greater'**
+  String get orders_priceMin;
+
+  /// No description provided for @orders_noSuppliersAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No suppliers available'**
+  String get orders_noSuppliersAvailable;
+
+  /// No description provided for @orders_addSupplierFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to add a supplier first'**
+  String get orders_addSupplierFirst;
+
+  /// No description provided for @orders_noProductsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No products available'**
+  String get orders_noProductsAvailable;
+
+  /// No description provided for @orders_addProductFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to add products first'**
+  String get orders_addProductFirst;
+
+  /// No description provided for @orders_productAlreadyAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'This product is already added'**
+  String get orders_productAlreadyAdded;
+
+  /// No description provided for @orders_orderCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Order created successfully'**
+  String get orders_orderCreated;
+
+  /// No description provided for @orders_errorSupplierNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier not found'**
+  String get orders_errorSupplierNotFound;
+
+  /// No description provided for @orders_errorProductsNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'One or more products not found'**
+  String get orders_errorProductsNotFound;
 }
 
 class _AppLocalizationsDelegate

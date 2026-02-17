@@ -11,4 +11,10 @@ abstract class OrdersRepository {
     String? supplierId,
     String? status, // 'draft', 'sent', 'all'
   });
+
+  Future<Order> createOrder({
+    required String supplierId,
+    required List<Map<String, dynamic>> items,
+    String? notes,
+  });
 }

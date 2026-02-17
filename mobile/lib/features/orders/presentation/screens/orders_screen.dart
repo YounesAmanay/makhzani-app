@@ -78,8 +78,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: Navigate to create order screen
-          debugPrint('Create order');
+          Navigator.of(context).pushNamed('/orders/create');
         },
         tooltip: context.l10n.orders_add,
         child: const Icon(Icons.add),
@@ -122,8 +121,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
       description: context.l10n.orders_emptyDescription,
       actionLabel: context.l10n.orders_add,
       onAction: () {
-        // TODO: Navigate to create order screen
-        debugPrint('Create order');
+        Navigator.of(context).pushNamed('/orders/create');
       },
     );
   }

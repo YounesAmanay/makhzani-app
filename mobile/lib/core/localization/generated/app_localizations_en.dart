@@ -698,4 +698,79 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orders_item => 'item';
+
+  @override
+  String get orders_createTitle => 'Create Purchase Order';
+
+  @override
+  String get orders_supplierRequired => 'Supplier is required';
+
+  @override
+  String get orders_products => 'Products';
+
+  @override
+  String get orders_addProduct => 'Add Product';
+
+  @override
+  String get orders_selectProduct => 'Select Product';
+
+  @override
+  String get orders_quantity => 'Quantity';
+
+  @override
+  String get orders_unitPrice => 'Unit Price';
+
+  @override
+  String get orders_itemTotal => 'Total';
+
+  @override
+  String get orders_remove => 'Remove';
+
+  @override
+  String get orders_grandTotal => 'Grand Total';
+
+  @override
+  String get orders_notesOptional => 'Notes (optional)';
+
+  @override
+  String get orders_notesPlaceholder => 'Add delivery instructions or notes';
+
+  @override
+  String get orders_createButton => 'Create Order';
+
+  @override
+  String get orders_atLeastOneProduct => 'Add at least one product';
+
+  @override
+  String get orders_quantityRequired => 'Quantity is required';
+
+  @override
+  String get orders_quantityMin => 'Quantity must be greater than 0';
+
+  @override
+  String get orders_priceMin => 'Price must be 0 or greater';
+
+  @override
+  String get orders_noSuppliersAvailable => 'No suppliers available';
+
+  @override
+  String get orders_addSupplierFirst => 'You need to add a supplier first';
+
+  @override
+  String get orders_noProductsAvailable => 'No products available';
+
+  @override
+  String get orders_addProductFirst => 'You need to add products first';
+
+  @override
+  String get orders_productAlreadyAdded => 'This product is already added';
+
+  @override
+  String get orders_orderCreated => 'Order created successfully';
+
+  @override
+  String get orders_errorSupplierNotFound => 'Supplier not found';
+
+  @override
+  String get orders_errorProductsNotFound => 'One or more products not found';
 }

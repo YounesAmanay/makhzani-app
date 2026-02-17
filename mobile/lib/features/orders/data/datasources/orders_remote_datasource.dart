@@ -13,6 +13,8 @@ abstract class OrdersRemoteDataSource {
     String? supplierId,
     String? status,
   });
+
+  Future<OrderModel> createOrder(Map<String, dynamic> data);
 }
 
 class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
@@ -49,5 +51,16 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
           .toList(),
       pagination: OrderPaginationModel.fromJson(paginationJson),
     );
+  }
+
+  @override
+  Future<OrderModel> createOrder(Map<String, dynamic> data) async {
+    final response = await _apiClient.post(
+      ApiEndpoints.orders,
+      data: data,
+    );
+
+    final orderJson = response.data['data']['order'] as Map<String, dynamic>;
+    return OrderModel.fromJson(orderJson);
   }
 }

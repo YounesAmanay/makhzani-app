@@ -695,4 +695,79 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get orders_item => 'عنصر';
+
+  @override
+  String get orders_createTitle => 'إنشاء أمر شراء';
+
+  @override
+  String get orders_supplierRequired => 'المورد مطلوب';
+
+  @override
+  String get orders_products => 'المنتجات';
+
+  @override
+  String get orders_addProduct => 'إضافة منتج';
+
+  @override
+  String get orders_selectProduct => 'اختر منتج';
+
+  @override
+  String get orders_quantity => 'الكمية';
+
+  @override
+  String get orders_unitPrice => 'السعر للوحدة';
+
+  @override
+  String get orders_itemTotal => 'المجموع';
+
+  @override
+  String get orders_remove => 'إزالة';
+
+  @override
+  String get orders_grandTotal => 'المجموع الكلي';
+
+  @override
+  String get orders_notesOptional => 'ملاحظات (اختياري)';
+
+  @override
+  String get orders_notesPlaceholder => 'أضف تعليمات التسليم أو الملاحظات';
+
+  @override
+  String get orders_createButton => 'إنشاء الأمر';
+
+  @override
+  String get orders_atLeastOneProduct => 'أضف منتجاً واحداً على الأقل';
+
+  @override
+  String get orders_quantityRequired => 'الكمية مطلوبة';
+
+  @override
+  String get orders_quantityMin => 'يجب أن تكون الكمية أكبر من 0';
+
+  @override
+  String get orders_priceMin => 'يجب أن يكون السعر 0 أو أكثر';
+
+  @override
+  String get orders_noSuppliersAvailable => 'لا يوجد موردون متاحون';
+
+  @override
+  String get orders_addSupplierFirst => 'تحتاج إلى إضافة مورد أولاً';
+
+  @override
+  String get orders_noProductsAvailable => 'لا توجد منتجات متاحة';
+
+  @override
+  String get orders_addProductFirst => 'تحتاج إلى إضافة منتجات أولاً';
+
+  @override
+  String get orders_productAlreadyAdded => 'تم إضافة هذا المنتج بالفعل';
+
+  @override
+  String get orders_orderCreated => 'تم إنشاء الأمر بنجاح';
+
+  @override
+  String get orders_errorSupplierNotFound => 'المورد غير موجود';
+
+  @override
+  String get orders_errorProductsNotFound => 'منتج واحد أو أكثر غير موجود';
 }

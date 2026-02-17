@@ -30,4 +30,20 @@ class OrdersRepositoryImpl implements OrdersRepository {
       pagination: result.pagination.toEntity(),
     );
   }
+
+  @override
+  Future<Order> createOrder({
+    required String supplierId,
+    required List<Map<String, dynamic>> items,
+    String? notes,
+  }) async {
+    final data = <String, dynamic>{
+      'supplier_id': supplierId,
+      'items': items,
+      if (notes != null) 'notes': notes,
+    };
+
+    final model = await _remoteDataSource.createOrder(data);
+    return model.toEntity();
+  }
 }

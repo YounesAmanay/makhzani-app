@@ -39,19 +39,29 @@ class OrderModel {
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
-    final status = json['status'] as Map<String, dynamic>;
+    // Handle both list response (has 'status' object) and create response (no 'status')
+    final status = json['status'] as Map<String, dynamic>?;
+
+    // For create response, calculate from items if total_items not provided
+    final totalItems = json['total_items'] as int? ??
+        (json['items'] as List?)?.length ?? 0;
+
+    // For create response, total_quantity might not be provided
+    final totalQuantity = json['total_quantity'] != null
+        ? (json['total_quantity'] as num).toDouble()
+        : 0.0;
 
     return OrderModel(
       id: json['id'] as String,
       orderNumber: json['order_number'] as String,
       supplier: OrderSupplierModel.fromJson(json['supplier'] as Map<String, dynamic>),
-      totalItems: json['total_items'] as int,
-      totalQuantity: (json['total_quantity'] as num).toDouble(),
+      totalItems: totalItems,
+      totalQuantity: totalQuantity,
       totalValue: (json['total_value'] as num).toDouble(),
       notes: json['notes'] as String?,
-      pdfGenerated: status['pdf_generated'] as bool,
-      sent: status['sent'] as bool,
-      sentVia: status['sent_via'] as String?,
+      pdfGenerated: status?['pdf_generated'] as bool? ?? false,
+      sent: status?['sent'] as bool? ?? false,
+      sentVia: status?['sent_via'] as String?,
       pdfUrl: json['pdf_url'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),
       pdfGeneratedAt: json['pdf_generated_at'] != null

@@ -8,6 +8,7 @@ import 'core/theme/app_theme.dart';
 import 'core/theme/theme_provider.dart';
 import 'features/auth/presentation/screens/phone_input_screen.dart';
 import 'features/auth/presentation/screens/splash_screen.dart';
+import 'features/orders/presentation/screens/order_form_screen.dart';
 import 'features/products/presentation/screens/product_detail_screen.dart';
 import 'features/products/presentation/screens/product_form_screen.dart';
 import 'features/settings/presentation/screens/settings_placeholder_screen.dart';
@@ -62,6 +63,7 @@ class MakhzaniApp extends ConsumerWidget {
         '/main': (context) => const MainShellScreen(),
         '/products/create': (context) => const ProductFormScreen(),
         '/suppliers/create': (context) => const SupplierFormScreen(),
+        '/orders/create': (context) => const OrderFormScreen(),
         '/settings': (context) => const SettingsPlaceholderScreen(),
       },
       onGenerateRoute: (settings) {

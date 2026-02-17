@@ -362,7 +362,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get orders_supplier => 'Fournisseur';
 
   @override
-  String get orders_selectSupplier => 'Selectionner un fournisseur';
+  String get orders_selectSupplier => 'Selectionner le fournisseur';
 
   @override
   String get orders_items => 'articles';
@@ -706,4 +706,83 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get orders_item => 'article';
+
+  @override
+  String get orders_createTitle => 'Creer une commande d\'achat';
+
+  @override
+  String get orders_supplierRequired => 'Le fournisseur est requis';
+
+  @override
+  String get orders_products => 'Produits';
+
+  @override
+  String get orders_addProduct => 'Ajouter un produit';
+
+  @override
+  String get orders_selectProduct => 'Selectionner un produit';
+
+  @override
+  String get orders_quantity => 'Quantite';
+
+  @override
+  String get orders_unitPrice => 'Prix unitaire';
+
+  @override
+  String get orders_itemTotal => 'Total';
+
+  @override
+  String get orders_remove => 'Supprimer';
+
+  @override
+  String get orders_grandTotal => 'Total general';
+
+  @override
+  String get orders_notesOptional => 'Notes (optionnel)';
+
+  @override
+  String get orders_notesPlaceholder =>
+      'Ajouter des instructions de livraison ou des notes';
+
+  @override
+  String get orders_createButton => 'Creer la commande';
+
+  @override
+  String get orders_atLeastOneProduct => 'Ajoutez au moins un produit';
+
+  @override
+  String get orders_quantityRequired => 'La quantite est requise';
+
+  @override
+  String get orders_quantityMin => 'La quantite doit etre superieure a 0';
+
+  @override
+  String get orders_priceMin => 'Le prix doit etre 0 ou plus';
+
+  @override
+  String get orders_noSuppliersAvailable => 'Aucun fournisseur disponible';
+
+  @override
+  String get orders_addSupplierFirst =>
+      'Vous devez d\'abord ajouter un fournisseur';
+
+  @override
+  String get orders_noProductsAvailable => 'Aucun produit disponible';
+
+  @override
+  String get orders_addProductFirst =>
+      'Vous devez d\'abord ajouter des produits';
+
+  @override
+  String get orders_productAlreadyAdded => 'Ce produit est deja ajoute';
+
+  @override
+  String get orders_orderCreated => 'Commande creee avec succes';
+
+  @override
+  String get orders_errorSupplierNotFound => 'Fournisseur non trouve';
+
+  @override
+  String get orders_errorProductsNotFound =>
+      'Un ou plusieurs produits introuvables';
 }
