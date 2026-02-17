@@ -216,8 +216,9 @@ class _ProfileSheet extends ConsumerWidget {
               trailing: Switch.adaptive(
                 value: isDark,
                 onChanged: (value) {
-                  ref.read(themeModeProvider.notifier).state =
-                      value ? ThemeMode.dark : ThemeMode.light;
+                  ref.read(themeModeProvider.notifier).setThemeMode(
+                        value ? ThemeMode.dark : ThemeMode.light,
+                      );
                 },
                 activeTrackColor: AppColors.primary.withValues(alpha: 0.5),
                 activeThumbColor: AppColors.primary,
@@ -242,11 +243,9 @@ class _ProfileSheet extends ConsumerWidget {
                 ],
               ),
               onTap: () {
-                if (isArabic) {
-                  ref.read(localeProvider.notifier).state = const Locale('en');
-                } else {
-                  ref.read(localeProvider.notifier).state = const Locale('ar');
-                }
+                ref.read(localeProvider.notifier).setLocale(
+                      isArabic ? const Locale('en') : const Locale('ar'),
+                    );
                 Navigator.of(context).pop();
               },
             ),
