@@ -52,6 +52,7 @@ class _SuppliersScreenState extends ConsumerState<SuppliersScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'suppliers_fab',
         onPressed: () {
           Navigator.of(context).pushNamed('/suppliers/create');
         },

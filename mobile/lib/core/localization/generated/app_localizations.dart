@@ -736,126 +736,6 @@ abstract class AppLocalizations {
   /// **'Select City'**
   String get suppliers_citySelect;
 
-  /// No description provided for @orders.
-  ///
-  /// In en, this message translates to:
-  /// **'Orders'**
-  String get orders;
-
-  /// No description provided for @orders_purchase.
-  ///
-  /// In en, this message translates to:
-  /// **'Purchase Orders'**
-  String get orders_purchase;
-
-  /// No description provided for @orders_create.
-  ///
-  /// In en, this message translates to:
-  /// **'Create Order'**
-  String get orders_create;
-
-  /// No description provided for @orders_edit.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit Order'**
-  String get orders_edit;
-
-  /// No description provided for @orders_supplier.
-  ///
-  /// In en, this message translates to:
-  /// **'Supplier'**
-  String get orders_supplier;
-
-  /// No description provided for @orders_selectSupplier.
-  ///
-  /// In en, this message translates to:
-  /// **'Select Supplier'**
-  String get orders_selectSupplier;
-
-  /// No description provided for @orders_items.
-  ///
-  /// In en, this message translates to:
-  /// **'items'**
-  String get orders_items;
-
-  /// No description provided for @orders_addItem.
-  ///
-  /// In en, this message translates to:
-  /// **'Add Item'**
-  String get orders_addItem;
-
-  /// No description provided for @orders_total.
-  ///
-  /// In en, this message translates to:
-  /// **'Total'**
-  String get orders_total;
-
-  /// No description provided for @orders_status.
-  ///
-  /// In en, this message translates to:
-  /// **'Status'**
-  String get orders_status;
-
-  /// No description provided for @orders_status_draft.
-  ///
-  /// In en, this message translates to:
-  /// **'Draft'**
-  String get orders_status_draft;
-
-  /// No description provided for @orders_status_sent.
-  ///
-  /// In en, this message translates to:
-  /// **'Sent'**
-  String get orders_status_sent;
-
-  /// No description provided for @orders_status_received.
-  ///
-  /// In en, this message translates to:
-  /// **'Received'**
-  String get orders_status_received;
-
-  /// No description provided for @orders_status_cancelled.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancelled'**
-  String get orders_status_cancelled;
-
-  /// No description provided for @orders_markSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Mark as Sent'**
-  String get orders_markSent;
-
-  /// No description provided for @orders_markReceived.
-  ///
-  /// In en, this message translates to:
-  /// **'Mark as Received'**
-  String get orders_markReceived;
-
-  /// No description provided for @orders_generatePdf.
-  ///
-  /// In en, this message translates to:
-  /// **'Generate PDF'**
-  String get orders_generatePdf;
-
-  /// No description provided for @orders_downloadPdf.
-  ///
-  /// In en, this message translates to:
-  /// **'Download PDF'**
-  String get orders_downloadPdf;
-
-  /// No description provided for @orders_empty.
-  ///
-  /// In en, this message translates to:
-  /// **'No orders yet'**
-  String get orders_empty;
-
-  /// No description provided for @orders_emptyDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Create your first purchase order to track inventory'**
-  String get orders_emptyDescription;
-
   /// No description provided for @profile.
   ///
   /// In en, this message translates to:
@@ -1318,11 +1198,29 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{No items} =1{1 item} other{{count} items}}'**
   String itemCountPlural(int count);
 
+  /// No description provided for @orders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get orders;
+
   /// No description provided for @orders_title.
   ///
   /// In en, this message translates to:
   /// **'Purchase Orders'**
   String get orders_title;
+
+  /// No description provided for @orders_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders yet'**
+  String get orders_empty;
+
+  /// No description provided for @orders_emptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first purchase order to track inventory'**
+  String get orders_emptyDescription;
 
   /// No description provided for @orders_add.
   ///
@@ -1335,6 +1233,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Order Number'**
   String get orders_orderNumber;
+
+  /// No description provided for @orders_supplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier'**
+  String get orders_supplier;
 
   /// No description provided for @orders_totalItems.
   ///
@@ -1353,6 +1257,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notes'**
   String get orders_notes;
+
+  /// No description provided for @orders_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get orders_status;
 
   /// No description provided for @orders_statusDraft.
   ///
@@ -1408,6 +1318,12 @@ abstract class AppLocalizations {
   /// **'Sent'**
   String get orders_sentAt;
 
+  /// No description provided for @orders_items.
+  ///
+  /// In en, this message translates to:
+  /// **'items'**
+  String get orders_items;
+
   /// No description provided for @orders_item.
   ///
   /// In en, this message translates to:
@@ -1419,6 +1335,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create Purchase Order'**
   String get orders_createTitle;
+
+  /// No description provided for @orders_selectSupplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Supplier'**
+  String get orders_selectSupplier;
 
   /// No description provided for @orders_supplierRequired.
   ///
@@ -1563,6 +1485,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'One or more products not found'**
   String get orders_errorProductsNotFound;
+
+  /// No description provided for @orders_orderDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Details'**
+  String get orders_orderDetails;
+
+  /// No description provided for @orders_orderNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Order not found'**
+  String get orders_orderNotFound;
+
+  /// No description provided for @orders_totalQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Quantity'**
+  String get orders_totalQuantity;
+
+  /// No description provided for @orders_generatePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate PDF'**
+  String get orders_generatePdf;
+
+  /// No description provided for @orders_downloadPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Download PDF'**
+  String get orders_downloadPdf;
+
+  /// No description provided for @orders_markAsSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Sent'**
+  String get orders_markAsSent;
+
+  /// No description provided for @orders_pdfGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF generated successfully'**
+  String get orders_pdfGenerated;
+
+  /// No description provided for @orders_markedAsSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Order marked as sent'**
+  String get orders_markedAsSent;
+
+  /// No description provided for @orders_pdfNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF not available'**
+  String get orders_pdfNotAvailable;
+
+  /// No description provided for @orders_downloadingPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening PDF...'**
+  String get orders_downloadingPdf;
+
+  /// No description provided for @orders_markSentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How was the order sent?'**
+  String get orders_markSentTitle;
+
+  /// No description provided for @orders_markSentDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the method used to send the order'**
+  String get orders_markSentDescription;
+
+  /// No description provided for @orders_sentViaWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get orders_sentViaWhatsApp;
+
+  /// No description provided for @orders_sentViaEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get orders_sentViaEmail;
+
+  /// No description provided for @orders_sentViaPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Call'**
+  String get orders_sentViaPhone;
+
+  /// No description provided for @orders_sentViaInPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'In Person'**
+  String get orders_sentViaInPerson;
+
+  /// No description provided for @common_minutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min ago'**
+  String common_minutesAgo(int count);
+
+  /// No description provided for @common_hoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}h ago'**
+  String common_hoursAgo(int count);
 }
 
 class _AppLocalizationsDelegate

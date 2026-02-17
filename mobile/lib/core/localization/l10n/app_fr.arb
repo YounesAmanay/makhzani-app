@@ -128,27 +128,6 @@
   "suppliers_phoneHelper": "Format : +212XXXXXXXXX (9 chiffres apres +212)",
   "suppliers_citySelect": "Selectionner la ville",
 
-  "orders": "Commandes",
-  "orders_purchase": "Bons de commande",
-  "orders_create": "Creer une commande",
-  "orders_edit": "Modifier la commande",
-  "orders_supplier": "Fournisseur",
-  "orders_selectSupplier": "Selectionner un fournisseur",
-  "orders_items": "Articles",
-  "orders_addItem": "Ajouter un article",
-  "orders_total": "Total",
-  "orders_status": "Statut",
-  "orders_status_draft": "Brouillon",
-  "orders_status_sent": "Envoyee",
-  "orders_status_received": "Recue",
-  "orders_status_cancelled": "Annulee",
-  "orders_markSent": "Marquer comme envoyee",
-  "orders_markReceived": "Marquer comme recue",
-  "orders_generatePdf": "Generer PDF",
-  "orders_downloadPdf": "Telecharger PDF",
-  "orders_empty": "Aucune commande pour le moment",
-  "orders_emptyDescription": "Creez votre premier bon de commande",
-
   "profile": "Profil",
   "profile_businessName": "Nom de l'entreprise",
   "profile_ownerName": "Nom du proprietaire",
@@ -271,6 +250,7 @@
     }
   },
 
+  "orders": "Commandes",
   "orders_title": "Commandes d'achat",
   "orders_empty": "Aucune commande pour le moment",
   "orders_emptyDescription": "Creez votre premiere commande d'achat pour suivre l'inventaire",
@@ -317,5 +297,37 @@
   "orders_productAlreadyAdded": "Ce produit est deja ajoute",
   "orders_orderCreated": "Commande creee avec succes",
   "orders_errorSupplierNotFound": "Fournisseur non trouve",
-  "orders_errorProductsNotFound": "Un ou plusieurs produits introuvables"
+  "orders_errorProductsNotFound": "Un ou plusieurs produits introuvables",
+  "orders_orderDetails": "Details de la commande",
+  "orders_orderNotFound": "Commande non trouvee",
+  "orders_totalQuantity": "Quantite totale",
+  "orders_generatePdf": "Generer PDF",
+  "orders_downloadPdf": "Telecharger PDF",
+  "orders_markAsSent": "Marquer comme envoye",
+  "orders_pdfGenerated": "PDF genere avec succes",
+  "orders_markedAsSent": "Commande marquee comme envoyee",
+  "orders_pdfNotAvailable": "PDF non disponible",
+  "orders_downloadingPdf": "Ouverture du PDF...",
+  "orders_markSentTitle": "Comment la commande a-t-elle ete envoyee?",
+  "orders_markSentDescription": "Selectionnez la methode utilisee pour envoyer la commande",
+  "orders_sentViaWhatsApp": "WhatsApp",
+  "orders_sentViaEmail": "Email",
+  "orders_sentViaPhone": "Appel telephonique",
+  "orders_sentViaInPerson": "En personne",
+  "common_minutesAgo": "il y a {count} min",
+  "@common_minutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "common_hoursAgo": "il y a {count}h",
+  "@common_hoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

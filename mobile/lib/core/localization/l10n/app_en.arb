@@ -128,27 +128,6 @@
   "suppliers_phoneHelper": "Format: +212XXXXXXXXX (9 digits after +212)",
   "suppliers_citySelect": "Select City",
 
-  "orders": "Orders",
-  "orders_purchase": "Purchase Orders",
-  "orders_create": "Create Order",
-  "orders_edit": "Edit Order",
-  "orders_supplier": "Supplier",
-  "orders_selectSupplier": "Select Supplier",
-  "orders_items": "Items",
-  "orders_addItem": "Add Item",
-  "orders_total": "Total",
-  "orders_status": "Status",
-  "orders_status_draft": "Draft",
-  "orders_status_sent": "Sent",
-  "orders_status_received": "Received",
-  "orders_status_cancelled": "Cancelled",
-  "orders_markSent": "Mark as Sent",
-  "orders_markReceived": "Mark as Received",
-  "orders_generatePdf": "Generate PDF",
-  "orders_downloadPdf": "Download PDF",
-  "orders_empty": "No orders yet",
-  "orders_emptyDescription": "Create your first purchase order",
-
   "profile": "Profile",
   "profile_businessName": "Business Name",
   "profile_ownerName": "Owner Name",
@@ -271,6 +250,7 @@
     }
   },
 
+  "orders": "Orders",
   "orders_title": "Purchase Orders",
   "orders_empty": "No orders yet",
   "orders_emptyDescription": "Create your first purchase order to track inventory",
@@ -317,5 +297,37 @@
   "orders_productAlreadyAdded": "This product is already added",
   "orders_orderCreated": "Order created successfully",
   "orders_errorSupplierNotFound": "Supplier not found",
-  "orders_errorProductsNotFound": "One or more products not found"
+  "orders_errorProductsNotFound": "One or more products not found",
+  "orders_orderDetails": "Order Details",
+  "orders_orderNotFound": "Order not found",
+  "orders_totalQuantity": "Total Quantity",
+  "orders_generatePdf": "Generate PDF",
+  "orders_downloadPdf": "Download PDF",
+  "orders_markAsSent": "Mark as Sent",
+  "orders_pdfGenerated": "PDF generated successfully",
+  "orders_markedAsSent": "Order marked as sent",
+  "orders_pdfNotAvailable": "PDF not available",
+  "orders_downloadingPdf": "Opening PDF...",
+  "orders_markSentTitle": "How was the order sent?",
+  "orders_markSentDescription": "Select the method used to send the order",
+  "orders_sentViaWhatsApp": "WhatsApp",
+  "orders_sentViaEmail": "Email",
+  "orders_sentViaPhone": "Phone Call",
+  "orders_sentViaInPerson": "In Person",
+  "common_minutesAgo": "{count} min ago",
+  "@common_minutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "common_hoursAgo": "{count}h ago",
+  "@common_hoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

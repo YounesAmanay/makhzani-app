@@ -118,27 +118,6 @@
   "suppliers_phoneHelper": "التنسيق: +212XXXXXXXXX (9 أرقام بعد +212)",
   "suppliers_citySelect": "اختر المدينة",
 
-  "orders": "الطلبات",
-  "orders_purchase": "طلبات الشراء",
-  "orders_create": "إنشاء طلب",
-  "orders_edit": "تعديل الطلب",
-  "orders_supplier": "المورد",
-  "orders_selectSupplier": "اختر المورد",
-  "orders_items": "العناصر",
-  "orders_addItem": "إضافة عنصر",
-  "orders_total": "المجموع",
-  "orders_status": "الحالة",
-  "orders_status_draft": "مسودة",
-  "orders_status_sent": "مُرسل",
-  "orders_status_received": "مُستلم",
-  "orders_status_cancelled": "ملغي",
-  "orders_markSent": "تحديد كمُرسل",
-  "orders_markReceived": "تحديد كمُستلم",
-  "orders_generatePdf": "إنشاء PDF",
-  "orders_downloadPdf": "تحميل PDF",
-  "orders_empty": "لا توجد طلبات بعد",
-  "orders_emptyDescription": "أنشئ طلب الشراء الأول",
-
   "profile": "الملف الشخصي",
   "profile_businessName": "اسم النشاط التجاري",
   "profile_ownerName": "اسم المالك",
@@ -236,6 +215,7 @@
   "itemCount": "{count} عناصر",
   "itemCountPlural": "{count, plural, =0{لا توجد عناصر} =1{عنصر واحد} =2{عنصران} few{{count} عناصر} many{{count} عنصر} other{{count} عنصر}}",
 
+  "orders": "الطلبات",
   "orders_title": "أوامر الشراء",
   "orders_empty": "لا توجد أوامر بعد",
   "orders_emptyDescription": "قم بإنشاء أول أمر شراء لتتبع المخزون",
@@ -282,5 +262,37 @@
   "orders_productAlreadyAdded": "تم إضافة هذا المنتج بالفعل",
   "orders_orderCreated": "تم إنشاء الأمر بنجاح",
   "orders_errorSupplierNotFound": "المورد غير موجود",
-  "orders_errorProductsNotFound": "منتج واحد أو أكثر غير موجود"
+  "orders_errorProductsNotFound": "منتج واحد أو أكثر غير موجود",
+  "orders_orderDetails": "تفاصيل الطلب",
+  "orders_orderNotFound": "الطلب غير موجود",
+  "orders_totalQuantity": "الكمية الإجمالية",
+  "orders_generatePdf": "إنشاء PDF",
+  "orders_downloadPdf": "تحميل PDF",
+  "orders_markAsSent": "وضع علامة كمرسل",
+  "orders_pdfGenerated": "تم إنشاء PDF بنجاح",
+  "orders_markedAsSent": "تم وضع علامة على الطلب كمرسل",
+  "orders_pdfNotAvailable": "PDF غير متاح",
+  "orders_downloadingPdf": "فتح PDF...",
+  "orders_markSentTitle": "كيف تم إرسال الطلب؟",
+  "orders_markSentDescription": "اختر الطريقة المستخدمة لإرسال الطلب",
+  "orders_sentViaWhatsApp": "واتساب",
+  "orders_sentViaEmail": "البريد الإلكتروني",
+  "orders_sentViaPhone": "مكالمة هاتفية",
+  "orders_sentViaInPerson": "شخصياً",
+  "common_minutesAgo": "منذ {count} دقيقة",
+  "@common_minutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "common_hoursAgo": "منذ {count} ساعة",
+  "@common_hoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

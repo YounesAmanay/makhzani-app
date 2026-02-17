@@ -89,7 +89,7 @@ class OrdersNotifier extends StateNotifier<OrdersState> {
     } catch (e) {
       state = state.copyWith(
         status: OrdersStatus.error,
-        errorMessage: 'Failed to load orders',
+        errorMessage: e.toString(),
       );
     }
   }
@@ -116,7 +116,7 @@ class OrdersNotifier extends StateNotifier<OrdersState> {
     } catch (e) {
       state = state.copyWith(
         status: OrdersStatus.loaded,
-        errorMessage: 'Failed to load more orders',
+        errorMessage: e.toString(),
       );
     }
   }

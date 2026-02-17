@@ -2,6 +2,7 @@
 library;
 
 import '../entities/order.dart';
+import '../entities/order_detail.dart';
 import '../entities/pagination.dart';
 
 abstract class OrdersRepository {
@@ -17,4 +18,10 @@ abstract class OrdersRepository {
     required List<Map<String, dynamic>> items,
     String? notes,
   });
+
+  Future<OrderDetail> getOrder(String id);
+
+  Future<void> generatePdf(String id);
+
+  Future<void> markSent(String id, String sentVia);
 }

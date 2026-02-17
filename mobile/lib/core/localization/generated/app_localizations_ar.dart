@@ -336,66 +336,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get suppliers_citySelect => 'اختر المدينة';
 
   @override
-  String get orders => 'الطلبات';
-
-  @override
-  String get orders_purchase => 'طلبات الشراء';
-
-  @override
-  String get orders_create => 'إنشاء طلب';
-
-  @override
-  String get orders_edit => 'تعديل الطلب';
-
-  @override
-  String get orders_supplier => 'المورد';
-
-  @override
-  String get orders_selectSupplier => 'اختر المورد';
-
-  @override
-  String get orders_items => 'عناصر';
-
-  @override
-  String get orders_addItem => 'إضافة عنصر';
-
-  @override
-  String get orders_total => 'المجموع';
-
-  @override
-  String get orders_status => 'الحالة';
-
-  @override
-  String get orders_status_draft => 'مسودة';
-
-  @override
-  String get orders_status_sent => 'مُرسل';
-
-  @override
-  String get orders_status_received => 'مُستلم';
-
-  @override
-  String get orders_status_cancelled => 'ملغي';
-
-  @override
-  String get orders_markSent => 'تحديد كمُرسل';
-
-  @override
-  String get orders_markReceived => 'تحديد كمُستلم';
-
-  @override
-  String get orders_generatePdf => 'إنشاء PDF';
-
-  @override
-  String get orders_downloadPdf => 'تحميل PDF';
-
-  @override
-  String get orders_empty => 'لا توجد أوامر بعد';
-
-  @override
-  String get orders_emptyDescription => 'قم بإنشاء أول أمر شراء لتتبع المخزون';
-
-  @override
   String get profile => 'الملف الشخصي';
 
   @override
@@ -649,13 +589,25 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get orders => 'الطلبات';
+
+  @override
   String get orders_title => 'أوامر الشراء';
+
+  @override
+  String get orders_empty => 'لا توجد أوامر بعد';
+
+  @override
+  String get orders_emptyDescription => 'قم بإنشاء أول أمر شراء لتتبع المخزون';
 
   @override
   String get orders_add => 'أمر جديد';
 
   @override
   String get orders_orderNumber => 'رقم الأمر';
+
+  @override
+  String get orders_supplier => 'المورد';
 
   @override
   String get orders_totalItems => 'إجمالي العناصر';
@@ -665,6 +617,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get orders_notes => 'ملاحظات';
+
+  @override
+  String get orders_status => 'الحالة';
 
   @override
   String get orders_statusDraft => 'مسودة';
@@ -694,10 +649,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get orders_sentAt => 'تم الإرسال';
 
   @override
+  String get orders_items => 'عناصر';
+
+  @override
   String get orders_item => 'عنصر';
 
   @override
   String get orders_createTitle => 'إنشاء أمر شراء';
+
+  @override
+  String get orders_selectSupplier => 'اختر المورد';
 
   @override
   String get orders_supplierRequired => 'المورد مطلوب';
@@ -770,4 +731,63 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get orders_errorProductsNotFound => 'منتج واحد أو أكثر غير موجود';
+
+  @override
+  String get orders_orderDetails => 'تفاصيل الطلب';
+
+  @override
+  String get orders_orderNotFound => 'الطلب غير موجود';
+
+  @override
+  String get orders_totalQuantity => 'الكمية الإجمالية';
+
+  @override
+  String get orders_generatePdf => 'إنشاء PDF';
+
+  @override
+  String get orders_downloadPdf => 'تحميل PDF';
+
+  @override
+  String get orders_markAsSent => 'وضع علامة كمرسل';
+
+  @override
+  String get orders_pdfGenerated => 'تم إنشاء PDF بنجاح';
+
+  @override
+  String get orders_markedAsSent => 'تم وضع علامة على الطلب كمرسل';
+
+  @override
+  String get orders_pdfNotAvailable => 'PDF غير متاح';
+
+  @override
+  String get orders_downloadingPdf => 'فتح PDF...';
+
+  @override
+  String get orders_markSentTitle => 'كيف تم إرسال الطلب؟';
+
+  @override
+  String get orders_markSentDescription =>
+      'اختر الطريقة المستخدمة لإرسال الطلب';
+
+  @override
+  String get orders_sentViaWhatsApp => 'واتساب';
+
+  @override
+  String get orders_sentViaEmail => 'البريد الإلكتروني';
+
+  @override
+  String get orders_sentViaPhone => 'مكالمة هاتفية';
+
+  @override
+  String get orders_sentViaInPerson => 'شخصياً';
+
+  @override
+  String common_minutesAgo(int count) {
+    return 'منذ $count دقيقة';
+  }
+
+  @override
+  String common_hoursAgo(int count) {
+    return 'منذ $count ساعة';
+  }
 }

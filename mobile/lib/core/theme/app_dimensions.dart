@@ -35,4 +35,7 @@ class AppDimensions {
   static const double elevationLow = 2.0;
   static const double elevationMedium = 4.0;
   static const double elevationHigh = 8.0;
+
+  // Layout
+  static const double fabClearance = 80.0;
 }

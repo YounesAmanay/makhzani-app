@@ -347,67 +347,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get suppliers_citySelect => 'Selectionner la ville';
 
   @override
-  String get orders => 'Commandes';
-
-  @override
-  String get orders_purchase => 'Bons de commande';
-
-  @override
-  String get orders_create => 'Creer une commande';
-
-  @override
-  String get orders_edit => 'Modifier la commande';
-
-  @override
-  String get orders_supplier => 'Fournisseur';
-
-  @override
-  String get orders_selectSupplier => 'Selectionner le fournisseur';
-
-  @override
-  String get orders_items => 'articles';
-
-  @override
-  String get orders_addItem => 'Ajouter un article';
-
-  @override
-  String get orders_total => 'Total';
-
-  @override
-  String get orders_status => 'Statut';
-
-  @override
-  String get orders_status_draft => 'Brouillon';
-
-  @override
-  String get orders_status_sent => 'Envoyee';
-
-  @override
-  String get orders_status_received => 'Recue';
-
-  @override
-  String get orders_status_cancelled => 'Annulee';
-
-  @override
-  String get orders_markSent => 'Marquer comme envoyee';
-
-  @override
-  String get orders_markReceived => 'Marquer comme recue';
-
-  @override
-  String get orders_generatePdf => 'Generer PDF';
-
-  @override
-  String get orders_downloadPdf => 'Telecharger PDF';
-
-  @override
-  String get orders_empty => 'Aucune commande pour le moment';
-
-  @override
-  String get orders_emptyDescription =>
-      'Creez votre premiere commande d\'achat pour suivre l\'inventaire';
-
-  @override
   String get profile => 'Profil';
 
   @override
@@ -660,13 +599,26 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get orders => 'Commandes';
+
+  @override
   String get orders_title => 'Commandes d\'achat';
+
+  @override
+  String get orders_empty => 'Aucune commande pour le moment';
+
+  @override
+  String get orders_emptyDescription =>
+      'Creez votre premiere commande d\'achat pour suivre l\'inventaire';
 
   @override
   String get orders_add => 'Nouvelle commande';
 
   @override
   String get orders_orderNumber => 'Numero de commande';
+
+  @override
+  String get orders_supplier => 'Fournisseur';
 
   @override
   String get orders_totalItems => 'Total articles';
@@ -676,6 +628,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get orders_notes => 'Notes';
+
+  @override
+  String get orders_status => 'Statut';
 
   @override
   String get orders_statusDraft => 'Brouillon';
@@ -705,10 +660,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get orders_sentAt => 'Envoye le';
 
   @override
+  String get orders_items => 'articles';
+
+  @override
   String get orders_item => 'article';
 
   @override
   String get orders_createTitle => 'Creer une commande d\'achat';
+
+  @override
+  String get orders_selectSupplier => 'Selectionner le fournisseur';
 
   @override
   String get orders_supplierRequired => 'Le fournisseur est requis';
@@ -785,4 +746,64 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get orders_errorProductsNotFound =>
       'Un ou plusieurs produits introuvables';
+
+  @override
+  String get orders_orderDetails => 'Details de la commande';
+
+  @override
+  String get orders_orderNotFound => 'Commande non trouvee';
+
+  @override
+  String get orders_totalQuantity => 'Quantite totale';
+
+  @override
+  String get orders_generatePdf => 'Generer PDF';
+
+  @override
+  String get orders_downloadPdf => 'Telecharger PDF';
+
+  @override
+  String get orders_markAsSent => 'Marquer comme envoye';
+
+  @override
+  String get orders_pdfGenerated => 'PDF genere avec succes';
+
+  @override
+  String get orders_markedAsSent => 'Commande marquee comme envoyee';
+
+  @override
+  String get orders_pdfNotAvailable => 'PDF non disponible';
+
+  @override
+  String get orders_downloadingPdf => 'Ouverture du PDF...';
+
+  @override
+  String get orders_markSentTitle =>
+      'Comment la commande a-t-elle ete envoyee?';
+
+  @override
+  String get orders_markSentDescription =>
+      'Selectionnez la methode utilisee pour envoyer la commande';
+
+  @override
+  String get orders_sentViaWhatsApp => 'WhatsApp';
+
+  @override
+  String get orders_sentViaEmail => 'Email';
+
+  @override
+  String get orders_sentViaPhone => 'Appel telephonique';
+
+  @override
+  String get orders_sentViaInPerson => 'En personne';
+
+  @override
+  String common_minutesAgo(int count) {
+    return 'il y a $count min';
+  }
+
+  @override
+  String common_hoursAgo(int count) {
+    return 'il y a ${count}h';
+  }
 }

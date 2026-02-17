@@ -12,6 +12,7 @@ import '../../../../shared/widgets/app_empty_state.dart';
 import '../../../../shared/widgets/app_error_state.dart';
 import '../../../../shared/widgets/app_loading.dart';
 import '../../../suppliers/presentation/providers/suppliers_provider.dart';
+import '../../domain/entities/order.dart';
 import '../providers/orders_provider.dart';
 import '../widgets/order_filters_sheet.dart';
 import '../widgets/order_list_tile.dart';
@@ -77,6 +78,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'orders_fab',
         onPressed: () {
           Navigator.of(context).pushNamed('/orders/create');
         },
@@ -126,7 +128,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     );
   }
 
-  Widget _buildOrdersList(List orders, OrdersState state) {
+  Widget _buildOrdersList(List<Order> orders, OrdersState state) {
     return RefreshIndicator(
       onRefresh: () => ref.read(ordersProvider.notifier).refresh(),
       child: ListView.builder(
@@ -134,7 +136,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.only(
           top: AppDimensions.paddingSmall,
-          bottom: 80,
+          bottom: AppDimensions.fabClearance,
         ),
         itemCount: orders.length + (state.status == OrdersStatus.loadingMore ? 1 : 0),
         itemBuilder: (context, index) {
@@ -149,8 +151,10 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           return OrderListTile(
             order: order,
             onTap: () {
-              // TODO: Navigate to order detail screen
-              debugPrint('View order: ${order.id}');
+              Navigator.of(context).pushNamed(
+                '/orders/detail',
+                arguments: order.id,
+              );
             },
           );
         },
@@ -214,11 +218,11 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
 
   String _getSupplierName(String supplierId) {
     final suppliersState = ref.read(suppliersProvider);
-    final supplier = suppliersState.allSuppliers.firstWhere(
-      (s) => s.id == supplierId,
-      orElse: () => suppliersState.allSuppliers.first,
-    );
-    return supplier.name;
+    if (suppliersState.allSuppliers.isEmpty) return '...';
+    for (final supplier in suppliersState.allSuppliers) {
+      if (supplier.id == supplierId) return supplier.name;
+    }
+    return '...';
   }
 
   void _showFilters(

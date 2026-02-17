@@ -2,6 +2,7 @@
 library;
 
 import '../../domain/entities/order.dart';
+import '../../domain/entities/order_detail.dart';
 import '../../domain/entities/pagination.dart';
 import '../../domain/repositories/orders_repository.dart';
 import '../datasources/orders_remote_datasource.dart';
@@ -45,5 +46,21 @@ class OrdersRepositoryImpl implements OrdersRepository {
 
     final model = await _remoteDataSource.createOrder(data);
     return model.toEntity();
+  }
+
+  @override
+  Future<OrderDetail> getOrder(String id) async {
+    final model = await _remoteDataSource.getOrder(id);
+    return model.toEntity();
+  }
+
+  @override
+  Future<void> generatePdf(String id) async {
+    await _remoteDataSource.generatePdf(id);
+  }
+
+  @override
+  Future<void> markSent(String id, String sentVia) async {
+    await _remoteDataSource.markSent(id, sentVia);
   }
 }

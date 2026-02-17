@@ -21,7 +21,7 @@ class OrderSupplierModel {
       id: json['id'] as String,
       name: json['name'] as String,
       businessName: json['business_name'] as String?,
-      phoneNumber: json['phone_number'] as String,
+      phoneNumber: json['phone_number'] as String? ?? '',
     );
   }
 

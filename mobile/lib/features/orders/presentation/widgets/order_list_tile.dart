@@ -125,13 +125,13 @@ class OrderListTile extends StatelessWidget {
     final difference = now.difference(date);
 
     if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}m ago';
+      return context.l10n.common_minutesAgo(difference.inMinutes);
     } else if (difference.inHours < 24) {
-      return '${difference.inHours}h ago';
+      return context.l10n.common_hoursAgo(difference.inHours);
     } else if (difference.inDays == 1) {
-      return 'Yesterday';
+      return context.l10n.common_yesterday;
     } else if (difference.inDays < 7) {
-      return '${difference.inDays}d ago';
+      return context.l10n.common_daysAgo(difference.inDays);
     } else {
       return DateFormat('MMM d').format(date);
     }

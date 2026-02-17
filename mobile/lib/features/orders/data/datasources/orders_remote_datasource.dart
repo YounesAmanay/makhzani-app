@@ -3,6 +3,7 @@ library;
 
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
+import '../models/order_detail_model.dart';
 import '../models/order_model.dart';
 import '../models/pagination_model.dart';
 
@@ -15,6 +16,12 @@ abstract class OrdersRemoteDataSource {
   });
 
   Future<OrderModel> createOrder(Map<String, dynamic> data);
+
+  Future<OrderDetailModel> getOrder(String id);
+
+  Future<void> generatePdf(String id);
+
+  Future<void> markSent(String id, String sentVia);
 }
 
 class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
@@ -62,5 +69,26 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
 
     final orderJson = response.data['data']['order'] as Map<String, dynamic>;
     return OrderModel.fromJson(orderJson);
+  }
+
+  @override
+  Future<OrderDetailModel> getOrder(String id) async {
+    final response = await _apiClient.get(ApiEndpoints.orderById(id));
+
+    final orderJson = response.data['data']['order'] as Map<String, dynamic>;
+    return OrderDetailModel.fromJson(orderJson);
+  }
+
+  @override
+  Future<void> generatePdf(String id) async {
+    await _apiClient.post(ApiEndpoints.generatePdf(id));
+  }
+
+  @override
+  Future<void> markSent(String id, String sentVia) async {
+    await _apiClient.post(
+      ApiEndpoints.markSent(id),
+      data: {'sent_via': sentVia},
+    );
   }
 }

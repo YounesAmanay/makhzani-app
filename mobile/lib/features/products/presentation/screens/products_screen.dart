@@ -112,6 +112,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'products_fab',
         onPressed: () {
           Navigator.of(context).pushNamed('/products/create');
         },

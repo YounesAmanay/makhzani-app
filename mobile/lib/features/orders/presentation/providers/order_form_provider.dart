@@ -67,7 +67,7 @@ class OrderFormState {
   });
 
   double get totalValue => items.fold(0, (sum, item) => sum + item.total);
-  int get totalQuantity => items.fold(0, (sum, item) => sum + (item.quantity ?? 0).ceil());
+  double get totalQuantity => items.fold(0.0, (sum, item) => sum + (item.quantity ?? 0));
   bool get canSubmit =>
       supplierId != null &&
       items.isNotEmpty &&
@@ -171,7 +171,7 @@ class OrderFormNotifier extends StateNotifier<OrderFormState> {
   }
 
   void _handleError(dynamic e) {
-    String errorMessage = 'Failed to create order';
+    String errorMessage = e.toString();
     Map<String, String> fieldErrors = {};
 
     if (e is DioException && e.response?.data != null) {

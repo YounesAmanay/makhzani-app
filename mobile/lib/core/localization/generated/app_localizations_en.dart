@@ -341,67 +341,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get suppliers_citySelect => 'Select City';
 
   @override
-  String get orders => 'Orders';
-
-  @override
-  String get orders_purchase => 'Purchase Orders';
-
-  @override
-  String get orders_create => 'Create Order';
-
-  @override
-  String get orders_edit => 'Edit Order';
-
-  @override
-  String get orders_supplier => 'Supplier';
-
-  @override
-  String get orders_selectSupplier => 'Select Supplier';
-
-  @override
-  String get orders_items => 'items';
-
-  @override
-  String get orders_addItem => 'Add Item';
-
-  @override
-  String get orders_total => 'Total';
-
-  @override
-  String get orders_status => 'Status';
-
-  @override
-  String get orders_status_draft => 'Draft';
-
-  @override
-  String get orders_status_sent => 'Sent';
-
-  @override
-  String get orders_status_received => 'Received';
-
-  @override
-  String get orders_status_cancelled => 'Cancelled';
-
-  @override
-  String get orders_markSent => 'Mark as Sent';
-
-  @override
-  String get orders_markReceived => 'Mark as Received';
-
-  @override
-  String get orders_generatePdf => 'Generate PDF';
-
-  @override
-  String get orders_downloadPdf => 'Download PDF';
-
-  @override
-  String get orders_empty => 'No orders yet';
-
-  @override
-  String get orders_emptyDescription =>
-      'Create your first purchase order to track inventory';
-
-  @override
   String get profile => 'Profile';
 
   @override
@@ -652,13 +591,26 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get orders => 'Orders';
+
+  @override
   String get orders_title => 'Purchase Orders';
+
+  @override
+  String get orders_empty => 'No orders yet';
+
+  @override
+  String get orders_emptyDescription =>
+      'Create your first purchase order to track inventory';
 
   @override
   String get orders_add => 'New Order';
 
   @override
   String get orders_orderNumber => 'Order Number';
+
+  @override
+  String get orders_supplier => 'Supplier';
 
   @override
   String get orders_totalItems => 'Total Items';
@@ -668,6 +620,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orders_notes => 'Notes';
+
+  @override
+  String get orders_status => 'Status';
 
   @override
   String get orders_statusDraft => 'Draft';
@@ -697,10 +652,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get orders_sentAt => 'Sent';
 
   @override
+  String get orders_items => 'items';
+
+  @override
   String get orders_item => 'item';
 
   @override
   String get orders_createTitle => 'Create Purchase Order';
+
+  @override
+  String get orders_selectSupplier => 'Select Supplier';
 
   @override
   String get orders_supplierRequired => 'Supplier is required';
@@ -773,4 +734,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orders_errorProductsNotFound => 'One or more products not found';
+
+  @override
+  String get orders_orderDetails => 'Order Details';
+
+  @override
+  String get orders_orderNotFound => 'Order not found';
+
+  @override
+  String get orders_totalQuantity => 'Total Quantity';
+
+  @override
+  String get orders_generatePdf => 'Generate PDF';
+
+  @override
+  String get orders_downloadPdf => 'Download PDF';
+
+  @override
+  String get orders_markAsSent => 'Mark as Sent';
+
+  @override
+  String get orders_pdfGenerated => 'PDF generated successfully';
+
+  @override
+  String get orders_markedAsSent => 'Order marked as sent';
+
+  @override
+  String get orders_pdfNotAvailable => 'PDF not available';
+
+  @override
+  String get orders_downloadingPdf => 'Opening PDF...';
+
+  @override
+  String get orders_markSentTitle => 'How was the order sent?';
+
+  @override
+  String get orders_markSentDescription =>
+      'Select the method used to send the order';
+
+  @override
+  String get orders_sentViaWhatsApp => 'WhatsApp';
+
+  @override
+  String get orders_sentViaEmail => 'Email';
+
+  @override
+  String get orders_sentViaPhone => 'Phone Call';
+
+  @override
+  String get orders_sentViaInPerson => 'In Person';
+
+  @override
+  String common_minutesAgo(int count) {
+    return '$count min ago';
+  }
+
+  @override
+  String common_hoursAgo(int count) {
+    return '${count}h ago';
+  }
 }
