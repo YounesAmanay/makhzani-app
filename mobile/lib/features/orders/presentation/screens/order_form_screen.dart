@@ -25,6 +25,7 @@ class OrderFormScreen extends ConsumerStatefulWidget {
 class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _notesController = TextEditingController();
+  bool _submitted = false;
 
   @override
   void initState() {
@@ -279,8 +280,8 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
           label: Text(context.l10n.orders_addProduct),
         ),
 
-        // Validation message
-        if (formState.items.isEmpty)
+        // Validation message — only shown after first submit attempt
+        if (_submitted && formState.items.isEmpty)
           Padding(
             padding: const EdgeInsets.only(top: AppDimensions.marginSmall),
             child: Text(
@@ -326,6 +327,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
   }
 
   Future<void> _onSubmit() async {
+    setState(() => _submitted = true);
     if (!_formKey.currentState!.validate()) {
       return;
     }

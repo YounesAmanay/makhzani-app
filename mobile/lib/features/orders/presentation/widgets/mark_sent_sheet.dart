@@ -21,7 +21,7 @@ class MarkSentSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(AppDimensions.paddingLarge),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -90,6 +90,7 @@ class MarkSentSheet extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
             child: Text(context.l10n.common_cancel),
           ),
+          SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
         ],
       ),
     );
@@ -146,6 +147,7 @@ class MarkSentSheet extends StatelessWidget {
   }) {
     return showModalBottomSheet<String>(
       context: context,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppDimensions.radiusLarge),

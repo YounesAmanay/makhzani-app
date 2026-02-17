@@ -3,6 +3,7 @@ library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../dashboard/presentation/providers/dashboard_provider.dart';
 import '../../domain/entities/order_detail.dart';
 import '../../domain/repositories/orders_repository.dart';
 import 'orders_provider.dart';
@@ -43,8 +44,9 @@ class OrderDetailState {
 
 class OrderDetailNotifier extends StateNotifier<OrderDetailState> {
   final OrdersRepository _repository;
+  final Ref _ref;
 
-  OrderDetailNotifier(this._repository)
+  OrderDetailNotifier(this._repository, this._ref)
       : super(OrderDetailState(status: OrderDetailStatus.loading));
 
   Future<void> loadOrder(String orderId) async {
@@ -77,6 +79,7 @@ class OrderDetailNotifier extends StateNotifier<OrderDetailState> {
         status: OrderDetailStatus.loaded,
         order: updatedOrder,
       );
+      _ref.read(ordersProvider.notifier).refresh();
       return true;
     } catch (e) {
       state = state.copyWith(
@@ -100,6 +103,8 @@ class OrderDetailNotifier extends StateNotifier<OrderDetailState> {
         status: OrderDetailStatus.loaded,
         order: updatedOrder,
       );
+      _ref.read(ordersProvider.notifier).refresh();
+      _ref.read(dashboardProvider.notifier).refresh();
       return true;
     } catch (e) {
       state = state.copyWith(
@@ -121,7 +126,7 @@ final orderDetailProvider =
     StateNotifierProvider.family<OrderDetailNotifier, OrderDetailState, String>(
   (ref, orderId) {
     final repository = ref.read(ordersRepositoryProvider);
-    final notifier = OrderDetailNotifier(repository);
+    final notifier = OrderDetailNotifier(repository, ref);
     notifier.loadOrder(orderId);
     return notifier;
   },

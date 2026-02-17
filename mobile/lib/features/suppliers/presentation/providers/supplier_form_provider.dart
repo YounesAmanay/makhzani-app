@@ -6,6 +6,7 @@ library;
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../dashboard/presentation/providers/dashboard_provider.dart';
 import '../../domain/entities/supplier.dart';
 import '../../domain/repositories/suppliers_repository.dart';
 import 'suppliers_provider.dart';
@@ -86,8 +87,9 @@ class SupplierFormNotifier extends StateNotifier<SupplierFormState> {
         supplier: supplier,
       );
 
-      // Refresh suppliers list
+      // Refresh suppliers list and dashboard stats
       _ref.read(suppliersProvider.notifier).refresh();
+      _ref.read(dashboardProvider.notifier).refresh();
 
       return true;
     } catch (e) {

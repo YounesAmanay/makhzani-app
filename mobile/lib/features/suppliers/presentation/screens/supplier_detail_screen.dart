@@ -13,6 +13,7 @@ import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../shared/widgets/app_confirm_dialog.dart';
+import '../../../dashboard/presentation/providers/dashboard_provider.dart';
 import '../../domain/entities/supplier.dart';
 import '../../domain/entities/supplier_order.dart';
 import '../providers/suppliers_provider.dart';
@@ -670,6 +671,7 @@ class _SupplierDetailScreenState extends ConsumerState<SupplierDetailScreen> {
       ref.read(suppliersProvider.notifier).removeSupplierFromList(
             widget.supplierId,
           );
+      ref.read(dashboardProvider.notifier).refresh();
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

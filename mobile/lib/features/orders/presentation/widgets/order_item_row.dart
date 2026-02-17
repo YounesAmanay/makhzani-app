@@ -92,7 +92,7 @@ class _OrderItemRowState extends State<OrderItemRow> {
                                   context.l10n.orders_selectProduct,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: widget.item.productName != null
-                                    ? AppColors.textPrimary
+                                    ? null // inherit theme default (works in light + dark)
                                     : AppColors.textTertiary,
                               ),
                             ),

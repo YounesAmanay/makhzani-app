@@ -6,6 +6,7 @@ library;
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../dashboard/presentation/providers/dashboard_provider.dart';
 import '../../domain/entities/order.dart';
 import '../../domain/repositories/orders_repository.dart';
 import 'orders_provider.dart';
@@ -160,8 +161,9 @@ class OrderFormNotifier extends StateNotifier<OrderFormState> {
         createdOrder: order,
       );
 
-      // Refresh orders list
+      // Refresh orders list and dashboard stats
       _ref.read(ordersProvider.notifier).refresh();
+      _ref.read(dashboardProvider.notifier).refresh();
 
       return true;
     } catch (e) {

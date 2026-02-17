@@ -127,7 +127,7 @@ class _ProfileSheet extends ConsumerWidget {
     final isArabic = currentLocale.languageCode == 'ar';
 
     return SafeArea(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: AppDimensions.paddingMedium),
         child: Column(
           mainAxisSize: MainAxisSize.min,

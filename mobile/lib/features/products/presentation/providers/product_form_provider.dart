@@ -6,6 +6,7 @@ library;
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../dashboard/presentation/providers/dashboard_provider.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/repositories/products_repository.dart';
 import 'products_provider.dart';
@@ -80,8 +81,9 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         product: product,
       );
 
-      // Refresh products list
+      // Refresh products list and dashboard stats
       _ref.read(productsProvider.notifier).refresh();
+      _ref.read(dashboardProvider.notifier).refresh();
 
       return true;
     } catch (e) {
@@ -148,8 +150,9 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         product: product,
       );
 
-      // Update in products list
+      // Update in products list and refresh dashboard (low_stock_count may change)
       _ref.read(productsProvider.notifier).updateProductInList(product);
+      _ref.read(dashboardProvider.notifier).refresh();
 
       return true;
     } catch (e) {
@@ -193,8 +196,9 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
       state = state.copyWith(status: ProductFormStatus.success);
 
-      // Remove from products list
+      // Remove from products list and refresh dashboard stats
       _ref.read(productsProvider.notifier).removeProductFromList(id);
+      _ref.read(dashboardProvider.notifier).refresh();
 
       return true;
     } catch (e) {
@@ -229,8 +233,9 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
       state = state.copyWith(status: ProductFormStatus.success);
 
-      // Refresh products list to show updated stock
+      // Refresh products list and dashboard (low_stock_count may change)
       _ref.read(productsProvider.notifier).refresh();
+      _ref.read(dashboardProvider.notifier).refresh();
 
       return true;
     } catch (e) {
