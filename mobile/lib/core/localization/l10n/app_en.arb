@@ -329,5 +329,6 @@
         "type": "int"
       }
     }
-  }
+  },
+  "common_seeAll": "See all"
 }

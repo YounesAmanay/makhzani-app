@@ -1,6 +1,6 @@
 /// Orders Screen
 ///
-/// Main orders list with pagination and filters (supplier, status).
+/// Main orders list with pagination and inline filter chips.
 library;
 
 import 'package:flutter/material.dart';
@@ -10,12 +10,13 @@ import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../shared/widgets/app_empty_state.dart';
 import '../../../../shared/widgets/app_error_state.dart';
+import '../../../../shared/widgets/app_filter_chip.dart';
 import '../../../../shared/widgets/app_loading.dart';
 import '../../../suppliers/presentation/providers/suppliers_provider.dart';
 import '../../domain/entities/order.dart';
 import '../providers/orders_provider.dart';
-import '../widgets/order_filters_sheet.dart';
 import '../widgets/order_list_tile.dart';
+import '../widgets/supplier_picker_sheet.dart';
 
 class OrdersScreen extends ConsumerStatefulWidget {
   const OrdersScreen({super.key});
@@ -59,19 +60,11 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n.orders_title),
-        actions: [
-          // Filter button
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () => _showFilters(context, ordersState, suppliersState),
-            tooltip: context.l10n.common_filter,
-          ),
-        ],
       ),
       body: Column(
         children: [
-          // Filter chips
-          if (ordersState.hasActiveFilters) _buildActiveFilters(ordersState),
+          // Inline filter chips — always visible
+          _buildFilterChips(ordersState, suppliersState),
 
           // Body
           Expanded(child: _buildBody(ordersState)),
@@ -84,6 +77,64 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         },
         tooltip: context.l10n.orders_add,
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  Widget _buildFilterChips(OrdersState ordersState, SuppliersState suppliersState) {
+    final selectedStatus = ordersState.selectedStatus;
+    final selectedSupplierId = ordersState.selectedSupplierId;
+
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.paddingMedium,
+          vertical: AppDimensions.paddingSmall,
+        ),
+        child: Row(
+          children: [
+            // Status: All
+            AppFilterChip(
+              label: context.l10n.orders_filterAll,
+              isActive: selectedStatus == 'all',
+              showClose: false,
+              onTap: () => ref.read(ordersProvider.notifier).filterByStatus('all'),
+            ),
+            const SizedBox(width: AppDimensions.marginSmall),
+
+            // Status: Draft
+            AppFilterChip(
+              label: context.l10n.orders_statusDraft,
+              isActive: selectedStatus == 'draft',
+              showClose: false,
+              onTap: () => ref.read(ordersProvider.notifier).filterByStatus('draft'),
+            ),
+            const SizedBox(width: AppDimensions.marginSmall),
+
+            // Status: Sent
+            AppFilterChip(
+              label: context.l10n.orders_statusSent,
+              isActive: selectedStatus == 'sent',
+              showClose: false,
+              onTap: () => ref.read(ordersProvider.notifier).filterByStatus('sent'),
+            ),
+            const SizedBox(width: AppDimensions.marginSmall),
+
+            // Supplier chip
+            AppFilterChip(
+              label: selectedSupplierId != null
+                  ? _getSupplierName(selectedSupplierId, suppliersState)
+                  : context.l10n.orders_filterAllSuppliers,
+              isActive: selectedSupplierId != null,
+              showClose: selectedSupplierId != null,
+              onTap: selectedSupplierId != null
+                  ? () => ref.read(ordersProvider.notifier).filterBySupplier(null)
+                  : () => _showSupplierPicker(ordersState, suppliersState),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -135,7 +186,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         controller: _scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.only(
-          top: AppDimensions.paddingSmall,
+          top: AppDimensions.paddingMedium,
           bottom: AppDimensions.fabClearance,
         ),
         itemCount: orders.length + (state.status == OrdersStatus.loadingMore ? 1 : 0),
@@ -162,62 +213,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     );
   }
 
-  Widget _buildActiveFilters(OrdersState state) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDimensions.paddingMedium,
-        vertical: AppDimensions.paddingSmall,
-      ),
-      child: Align(
-        alignment: AlignmentDirectional.centerStart,
-        child: Wrap(
-          spacing: AppDimensions.marginSmall,
-          children: [
-            if (state.selectedStatus != 'all')
-              FilterChip(
-                label: Text(_getStatusLabel(state.selectedStatus)),
-                onSelected: (_) {
-                  ref.read(ordersProvider.notifier).filterByStatus('all');
-                },
-                selected: true,
-                showCheckmark: false,
-                deleteIcon: const Icon(Icons.close, size: 18),
-                onDeleted: () {
-                  ref.read(ordersProvider.notifier).filterByStatus('all');
-                },
-              ),
-            if (state.selectedSupplierId != null)
-              FilterChip(
-                label: Text(_getSupplierName(state.selectedSupplierId!)),
-                onSelected: (_) {
-                  ref.read(ordersProvider.notifier).filterBySupplier(null);
-                },
-                selected: true,
-                showCheckmark: false,
-                deleteIcon: const Icon(Icons.close, size: 18),
-                onDeleted: () {
-                  ref.read(ordersProvider.notifier).filterBySupplier(null);
-                },
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String _getStatusLabel(String status) {
-    switch (status) {
-      case 'draft':
-        return context.l10n.orders_statusDraft;
-      case 'sent':
-        return context.l10n.orders_statusSent;
-      default:
-        return context.l10n.orders_filterAll;
-    }
-  }
-
-  String _getSupplierName(String supplierId) {
-    final suppliersState = ref.read(suppliersProvider);
+  String _getSupplierName(String supplierId, SuppliersState suppliersState) {
     if (suppliersState.allSuppliers.isEmpty) return '...';
     for (final supplier in suppliersState.allSuppliers) {
       if (supplier.id == supplierId) return supplier.name;
@@ -225,24 +221,17 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     return '...';
   }
 
-  void _showFilters(
-    BuildContext context,
+  Future<void> _showSupplierPicker(
     OrdersState ordersState,
     SuppliersState suppliersState,
-  ) {
-    OrderFiltersSheet.show(
+  ) async {
+    final supplierId = await SupplierPickerSheet.show(
       context: context,
-      selectedSupplierId: ordersState.selectedSupplierId,
-      selectedStatus: ordersState.selectedStatus,
       suppliers: suppliersState.allSuppliers,
-      onApply: (supplierId, status) {
-        if (supplierId != ordersState.selectedSupplierId) {
-          ref.read(ordersProvider.notifier).filterBySupplier(supplierId);
-        }
-        if (status != ordersState.selectedStatus) {
-          ref.read(ordersProvider.notifier).filterByStatus(status);
-        }
-      },
+      selectedSupplierId: ordersState.selectedSupplierId,
     );
+    if (supplierId != null) {
+      ref.read(ordersProvider.notifier).filterBySupplier(supplierId);
+    }
   }
 }

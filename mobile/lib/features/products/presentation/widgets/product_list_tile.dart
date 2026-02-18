@@ -29,7 +29,7 @@ class ProductListTile extends StatelessWidget {
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+        borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
         child: Padding(
           padding: const EdgeInsets.all(AppDimensions.paddingSmall),
           child: IntrinsicHeight(

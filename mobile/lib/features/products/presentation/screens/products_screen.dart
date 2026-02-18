@@ -274,8 +274,8 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
         controller: _scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.only(
-          top: AppDimensions.paddingSmall,
-          bottom: 80,
+          top: AppDimensions.paddingMedium,
+          bottom: AppDimensions.fabClearance,
         ),
         itemCount: state.products.length + (state.hasMore ? 1 : 0),
         itemBuilder: (context, index) {

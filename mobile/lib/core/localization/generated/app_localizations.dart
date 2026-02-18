@@ -1593,6 +1593,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count}h ago'**
   String common_hoursAgo(int count);
+
+  /// No description provided for @common_seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get common_seeAll;
 }
 
 class _AppLocalizationsDelegate

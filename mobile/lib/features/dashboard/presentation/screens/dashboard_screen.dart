@@ -9,13 +9,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
+import '../../../../shared/widgets/app_error_state.dart';
+import '../../../../shared/widgets/app_loading.dart';
 import '../../../products/presentation/providers/products_provider.dart';
 import '../../../shell/presentation/providers/navigation_provider.dart';
 import '../providers/dashboard_provider.dart';
 import '../widgets/dashboard_app_bar.dart';
 import '../widgets/low_stock_list.dart';
 import '../widgets/recent_orders_list.dart';
-import '../widgets/stats_card.dart';
+import '../../../../shared/widgets/stats_card.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -63,34 +65,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     switch (state.status) {
       case DashboardStatus.initial:
       case DashboardStatus.loading:
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
+        return const AppLoadingScreen();
 
       case DashboardStatus.error:
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                size: 48,
-                color: AppColors.error,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                state.errorMessage ?? context.l10n.error_generic,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  ref.read(dashboardProvider.notifier).refresh();
-                },
-                child: Text(context.l10n.common_retry),
-              ),
-            ],
-          ),
+        return AppErrorState(
+          message: state.errorMessage ?? context.l10n.error_generic,
+          onRetry: () => ref.read(dashboardProvider.notifier).refresh(),
         );
 
       case DashboardStatus.loaded:
@@ -108,7 +88,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 const SizedBox(height: AppDimensions.marginLarge),
 
                 // Low Stock Section
-                _buildSectionHeader(context.l10n.dashboard_lowStock),
+                _buildSectionHeader(
+                  context.l10n.dashboard_lowStock,
+                  onSeeAll: () => _navigateToProducts(lowStockFilter: true),
+                ),
                 const SizedBox(height: AppDimensions.marginSmall),
                 LowStockList(
                   items: state.lowStockItems,
@@ -118,7 +101,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 const SizedBox(height: AppDimensions.marginLarge),
 
                 // Recent Orders Section
-                _buildSectionHeader(context.l10n.dashboard_recentOrders),
+                _buildSectionHeader(
+                  context.l10n.dashboard_recentOrders,
+                  onSeeAll: _navigateToOrders,
+                ),
                 const SizedBox(height: AppDimensions.marginSmall),
                 RecentOrdersList(
                   orders: state.recentOrders,
@@ -137,52 +123,76 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final stats = state.stats;
     if (stats == null) return const SizedBox.shrink();
 
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: AppDimensions.marginSmall,
-      crossAxisSpacing: AppDimensions.marginSmall,
-      childAspectRatio: 1.3,
+    return Column(
       children: [
-        StatsCard(
-          title: context.l10n.nav_products,
-          value: stats.totalProducts.toString(),
-          icon: Icons.inventory_2_outlined,
-          iconColor: AppColors.primary,
-          onTap: _navigateToProducts,
+        Row(
+          children: [
+            Expanded(
+              child: StatsCard(
+                title: context.l10n.nav_products,
+                value: stats.totalProducts.toString(),
+                icon: Icons.inventory_2_outlined,
+                iconColor: AppColors.primary,
+                onTap: _navigateToProducts,
+              ),
+            ),
+            const SizedBox(width: AppDimensions.marginSmall),
+            Expanded(
+              child: StatsCard(
+                title: context.l10n.dashboard_lowStock,
+                value: stats.lowStockProducts.toString(),
+                icon: Icons.warning_amber_outlined,
+                iconColor: stats.lowStockProducts > 0 ? AppColors.warning : AppColors.success,
+                onTap: () => _navigateToProducts(lowStockFilter: true),
+              ),
+            ),
+          ],
         ),
-        StatsCard(
-          title: context.l10n.dashboard_lowStock,
-          value: stats.lowStockProducts.toString(),
-          icon: Icons.warning_amber_outlined,
-          iconColor: stats.lowStockProducts > 0 ? AppColors.warning : AppColors.success,
-          onTap: () => _navigateToProducts(lowStockFilter: true),
-        ),
-        StatsCard(
-          title: context.l10n.nav_suppliers,
-          value: stats.totalSuppliers.toString(),
-          icon: Icons.people_outline,
-          iconColor: AppColors.info,
-          onTap: _navigateToSuppliers,
-        ),
-        StatsCard(
-          title: context.l10n.nav_orders,
-          value: stats.totalOrders.toString(),
-          icon: Icons.receipt_long_outlined,
-          iconColor: AppColors.primary,
-          onTap: _navigateToOrders,
+        const SizedBox(height: AppDimensions.marginSmall),
+        Row(
+          children: [
+            Expanded(
+              child: StatsCard(
+                title: context.l10n.nav_suppliers,
+                value: stats.totalSuppliers.toString(),
+                icon: Icons.people_outline,
+                iconColor: AppColors.info,
+                onTap: _navigateToSuppliers,
+              ),
+            ),
+            const SizedBox(width: AppDimensions.marginSmall),
+            Expanded(
+              child: StatsCard(
+                title: context.l10n.nav_orders,
+                value: stats.totalOrders.toString(),
+                icon: Icons.receipt_long_outlined,
+                iconColor: AppColors.primary,
+                onTap: _navigateToOrders,
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Text(
-      title,
-      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
+  Widget _buildSectionHeader(String title, {VoidCallback? onSeeAll}) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
           ),
+        ),
+        if (onSeeAll != null)
+          TextButton(
+            onPressed: onSeeAll,
+            child: Text(context.l10n.common_seeAll),
+          ),
+      ],
     );
   }
 }

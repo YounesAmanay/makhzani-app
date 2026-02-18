@@ -14,7 +14,7 @@ class StatsCard extends StatelessWidget {
   final IconData icon;
 
   /// Label text (use l10n)
-  final String label;
+  final String title;
 
   /// Value to display (formatted string)
   final String value;
@@ -28,7 +28,7 @@ class StatsCard extends StatelessWidget {
   const StatsCard({
     super.key,
     required this.icon,
-    required this.label,
+    required this.title,
     required this.value,
     this.iconColor,
     this.onTap,
@@ -39,7 +39,7 @@ class StatsCard extends StatelessWidget {
     return Card(
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+        borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
         child: Padding(
           padding: const EdgeInsets.all(AppDimensions.paddingMedium),
           child: Column(
@@ -51,14 +51,17 @@ class StatsCard extends StatelessWidget {
                 color: iconColor ?? AppColors.iconSecondary,
                 size: AppDimensions.iconMedium,
               ),
-              const SizedBox(height: AppDimensions.marginSmall),
+              const SizedBox(height: AppDimensions.marginLarge),
               Text(
                 value,
-                style: AppTextStyles.number,
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: -0.3,
+                    ),
               ),
               const SizedBox(height: AppDimensions.marginXSmall),
               Text(
-                label,
+                title,
                 style: Theme.of(context).textTheme.bodySmall,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

@@ -793,4 +793,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String common_hoursAgo(int count) {
     return '${count}h ago';
   }
+
+  @override
+  String get common_seeAll => 'See all';
 }

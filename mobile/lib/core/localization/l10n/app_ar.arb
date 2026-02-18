@@ -294,5 +294,6 @@
         "type": "int"
       }
     }
-  }
+  },
+  "common_seeAll": "عرض الكل"
 }

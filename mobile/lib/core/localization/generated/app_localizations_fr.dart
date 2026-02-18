@@ -806,4 +806,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String common_hoursAgo(int count) {
     return 'il y a ${count}h';
   }
+
+  @override
+  String get common_seeAll => 'Voir tout';
 }

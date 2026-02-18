@@ -790,4 +790,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String common_hoursAgo(int count) {
     return 'منذ $count ساعة';
   }
+
+  @override
+  String get common_seeAll => 'عرض الكل';
 }

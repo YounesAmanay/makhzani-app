@@ -19,12 +19,14 @@ class PreferencesService {
   ThemeMode getThemeMode() {
     final value = _prefs.getString(StorageKeys.themeMode);
     switch (value) {
-      case 'dark':
-        return ThemeMode.dark;
+      case 'light':
+        return ThemeMode.light;
       case 'system':
         return ThemeMode.system;
+      case 'dark':
+        return ThemeMode.dark;
       default:
-        return ThemeMode.light;
+        return ThemeMode.system;
     }
   }
 
