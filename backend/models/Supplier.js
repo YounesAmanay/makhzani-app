@@ -8,6 +8,14 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: () => uuidv4(),
       primaryKey: true
     },
+    merchant_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: 'merchants',
+        key: 'id'
+      }
+    },
     name: {
       type: DataTypes.STRING(100),
       allowNull: false,
@@ -26,7 +34,6 @@ module.exports = (sequelize, DataTypes) => {
     phone_number: {
       type: DataTypes.STRING(15),
       allowNull: false,
-      unique: true,  // Keep unique - we'll handle duplicates in business logic
       validate: {
         isPhoneNumber(value) {
           const phoneRegex = /^\+212[5-7]\d{8}$/;
@@ -40,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(255),
       allowNull: true,
       validate: {
-        isEmail: true  
+        isEmail: true
       }
     },
     address: {
@@ -54,37 +61,55 @@ module.exports = (sequelize, DataTypes) => {
         isIn: [['Casablanca', 'Rabat', 'Marrakech', 'Agadir', 'Tangier', 'Fes', 'Meknes', 'Other']]
       }
     },
-    is_active: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true
-    },
     supplier_type: {
       type: DataTypes.ENUM('wholesaler', 'distributor', 'manufacturer', 'local_supplier'),
       defaultValue: 'wholesaler'
+    },
+    // Relationship metadata (previously in MerchantSupplier junction table)
+    preferred_contact_method: {
+      type: DataTypes.ENUM('whatsapp', 'phone', 'email'),
+      defaultValue: 'whatsapp',
+      allowNull: true
+    },
+    payment_terms: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    merchant_notes: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    last_order_date: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    total_orders: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    avatar_url: {
+      type: DataTypes.STRING(500),
+      allowNull: true
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
     }
   }, {
     tableName: 'suppliers',
     indexes: [
-      { fields: ['phone_number'] },
-      { fields: ['name'] },
+      // Scoped uniqueness: same merchant cannot have two suppliers with the same phone
+      { unique: true, fields: ['merchant_id', 'phone_number'] },
+      { fields: ['merchant_id'] },
       { fields: ['city'] },
       { fields: ['is_active'] }
     ]
   });
 
   Supplier.associate = function(models) {
-    // Many-to-Many relationship with Merchants through MerchantSupplier
-    Supplier.belongsToMany(models.Merchant, {
-      through: models.MerchantSupplier,
-      foreignKey: 'supplier_id',
-      otherKey: 'merchant_id',
-      as: 'merchants'
-    });
-
-    // Direct access to the junction table
-    Supplier.hasMany(models.MerchantSupplier, {
-      foreignKey: 'supplier_id',
-      as: 'MerchantSuppliers'
+    Supplier.belongsTo(models.Merchant, {
+      foreignKey: 'merchant_id',
+      as: 'merchant'
     });
 
     Supplier.hasMany(models.PurchaseOrder, {

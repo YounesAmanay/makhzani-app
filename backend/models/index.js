@@ -14,7 +14,6 @@ const db = {};
 // Import all models
 db.Merchant = require('./Merchant')(sequelize, Sequelize.DataTypes);
 db.Supplier = require('./Supplier')(sequelize, Sequelize.DataTypes);
-db.MerchantSupplier = require('./MerchantSupplier')(sequelize, Sequelize.DataTypes);
 db.Product = require('./Product')(sequelize, Sequelize.DataTypes);
 db.PurchaseOrder = require('./PurchaseOrder')(sequelize, Sequelize.DataTypes);
 db.PurchaseOrderItem = require('./PurchaseOrderItem')(sequelize, Sequelize.DataTypes);

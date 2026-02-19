@@ -102,6 +102,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      avatar_url: {
+        type: DataTypes.STRING(500),
+        allowNull: true,
+      },
     },
     {
       tableName: "merchants",
@@ -126,18 +130,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Merchant.associate = function (models) {
-    // Many-to-Many relationship with Suppliers (PRIMARY suppliers relationship)
-    Merchant.belongsToMany(models.Supplier, {
-      through: models.MerchantSupplier,
+    // One-to-Many: Merchant owns private suppliers
+    Merchant.hasMany(models.Supplier, {
       foreignKey: "merchant_id",
-      otherKey: "supplier_id",
-      as: "suppliers", // Main suppliers access
-    });
-
-    // Direct access to the junction table (for relationship metadata)
-    Merchant.hasMany(models.MerchantSupplier, {
-      foreignKey: "merchant_id",
-      as: "supplier_relationships", // Different alias for junction table
+      as: "suppliers",
     });
 
     // One-to-Many: Merchant owns many Products
