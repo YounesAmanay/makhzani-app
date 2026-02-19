@@ -56,7 +56,7 @@ class AppTheme {
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-        side: const BorderSide(color: AppColors.borderHover, width: 1),
+        side: const BorderSide(color: AppColors.border, width: 1),
       ),
     ),
 
@@ -294,7 +294,7 @@ class AppTheme {
       shadowColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-        side: const BorderSide(color: Color(0xFF2E2E40), width: 1),
+        side: const BorderSide(color: Color(0xFF252535), width: 1),
       ),
     ),
 
