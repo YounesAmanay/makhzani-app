@@ -18,12 +18,14 @@ class OrdersRepositoryImpl implements OrdersRepository {
     int limit = 20,
     String? supplierId,
     String? status,
+    String? search,
   }) async {
     final result = await _remoteDataSource.getOrders(
       page: page,
       limit: limit,
       supplierId: supplierId,
       status: status,
+      search: search,
     );
 
     return (

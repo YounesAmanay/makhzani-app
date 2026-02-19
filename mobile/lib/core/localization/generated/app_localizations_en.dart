@@ -338,6 +338,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Format: +212XXXXXXXXX (9 digits after +212)';
 
   @override
+  String get suppliers_filterAllCities => 'All Cities';
+
+  @override
   String get suppliers_citySelect => 'Select City';
 
   @override
@@ -595,6 +598,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orders_title => 'Purchase Orders';
+
+  @override
+  String get orders_searchHint => 'Search by order # or supplier...';
 
   @override
   String get orders_empty => 'No orders yet';

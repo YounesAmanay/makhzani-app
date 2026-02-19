@@ -22,6 +22,7 @@ class OrdersState {
   final OrderPagination? pagination;
   final String? selectedSupplierId;
   final String selectedStatus; // 'all', 'draft', 'sent'
+  final String? search;
   final String? errorMessage;
 
   const OrdersState({
@@ -30,13 +31,14 @@ class OrdersState {
     this.pagination,
     this.selectedSupplierId,
     this.selectedStatus = 'all',
+    this.search,
     this.errorMessage,
   });
 
   bool get hasMore => pagination?.hasNextPage ?? false;
   int get currentPage => pagination?.currentPage ?? 1;
   bool get hasActiveFilters =>
-      selectedSupplierId != null || selectedStatus != 'all';
+      selectedSupplierId != null || selectedStatus != 'all' || search != null;
 
   OrdersState copyWith({
     OrdersStatus? status,
@@ -44,6 +46,7 @@ class OrdersState {
     OrderPagination? pagination,
     Object? selectedSupplierId = _sentinel,
     String? selectedStatus,
+    Object? search = _sentinel,
     String? errorMessage,
   }) {
     return OrdersState(
@@ -54,6 +57,7 @@ class OrdersState {
           ? this.selectedSupplierId
           : selectedSupplierId as String?,
       selectedStatus: selectedStatus ?? this.selectedStatus,
+      search: search == _sentinel ? this.search : search as String?,
       errorMessage: errorMessage,
     );
   }
@@ -79,6 +83,7 @@ class OrdersNotifier extends StateNotifier<OrdersState> {
         page: 1,
         supplierId: state.selectedSupplierId,
         status: state.selectedStatus,
+        search: state.search,
       );
 
       state = state.copyWith(
@@ -106,6 +111,7 @@ class OrdersNotifier extends StateNotifier<OrdersState> {
         page: state.currentPage + 1,
         supplierId: state.selectedSupplierId,
         status: state.selectedStatus,
+        search: state.search,
       );
 
       state = state.copyWith(
@@ -137,6 +143,20 @@ class OrdersNotifier extends StateNotifier<OrdersState> {
 
     state = state.copyWith(
       selectedStatus: status,
+      status: OrdersStatus.loading,
+    );
+
+    await loadOrders(refresh: true);
+  }
+
+  Future<void> filterBySearch(String? query) async {
+    final trimmed = query?.trim();
+    final newSearch = (trimmed == null || trimmed.isEmpty) ? null : trimmed;
+
+    if (newSearch == state.search) return;
+
+    state = state.copyWith(
+      search: newSearch,
       status: OrdersStatus.loading,
     );
 

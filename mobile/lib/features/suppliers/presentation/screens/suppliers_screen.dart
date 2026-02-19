@@ -10,6 +10,7 @@ import 'package:hugeicons/hugeicons.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
+import '../../../../shared/widgets/app_filter_chip.dart';
 import '../../../../shared/widgets/app_search_bar.dart';
 import '../providers/suppliers_provider.dart';
 import '../widgets/supplier_list_tile.dart';
@@ -48,6 +49,9 @@ class _SuppliersScreenState extends ConsumerState<SuppliersScreen> {
             },
           ),
 
+          // City filter chips
+          _buildCityChips(state),
+
           // Body
           Expanded(child: _buildBody(state)),
         ],
@@ -59,6 +63,50 @@ class _SuppliersScreenState extends ConsumerState<SuppliersScreen> {
         },
         tooltip: context.l10n.suppliers_add,
         child: HugeIcon(icon: HugeIcons.strokeRoundedPlusSign, size: 24, color: Colors.white),
+      ),
+    );
+  }
+
+
+  static const List<String> _cities = [
+    'Casablanca', 'Rabat', 'Marrakech', 'Agadir', 'Tangier', 'Fes', 'Meknes', 'Other',
+  ];
+
+  Widget _buildCityChips(SuppliersState state) {
+    final selectedCity = state.city;
+
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.paddingMedium,
+          vertical: AppDimensions.paddingSmall,
+        ),
+        child: Row(
+          children: [
+            AppFilterChip(
+              label: context.l10n.suppliers_filterAllCities,
+              isActive: selectedCity == null,
+              showClose: false,
+              onTap: () => ref.read(suppliersProvider.notifier).filterByCity(null),
+            ),
+            ..._cities.map((city) {
+              final isActive = selectedCity == city;
+              return Padding(
+                padding: const EdgeInsetsDirectional.only(start: AppDimensions.marginSmall),
+                child: AppFilterChip(
+                  label: city,
+                  isActive: isActive,
+                  showClose: isActive,
+                  onTap: () => ref.read(suppliersProvider.notifier).filterByCity(
+                    isActive ? null : city,
+                  ),
+                ),
+              );
+            }),
+          ],
+        ),
       ),
     );
   }
@@ -158,8 +206,8 @@ class _SuppliersScreenState extends ConsumerState<SuppliersScreen> {
       child: ListView.builder(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.only(
-          top: AppDimensions.paddingSmall,
-          bottom: 80,
+          top: AppDimensions.paddingMedium,
+          bottom: AppDimensions.fabClearance,
         ),
         itemCount: suppliers.length,
         itemBuilder: (context, index) {

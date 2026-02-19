@@ -1,8 +1,7 @@
 /// Suppliers Provider
 ///
 /// Riverpod provider for suppliers list state management.
-/// Backend returns all suppliers at once (no server pagination/search),
-/// so filtering is done client-side.
+/// Search and city filter are server-side.
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,39 +20,34 @@ class SuppliersState {
   final SuppliersStatus status;
   final List<Supplier> allSuppliers;
   final String? search;
+  final String? city;
   final String? errorMessage;
 
   const SuppliersState({
     this.status = SuppliersStatus.initial,
     this.allSuppliers = const [],
     this.search,
+    this.city,
     this.errorMessage,
   });
 
-  bool get hasActiveFilters => search != null;
+  bool get hasActiveFilters => search != null || city != null;
 
-  List<Supplier> get filteredSuppliers {
-    if (search == null || search!.isEmpty) return allSuppliers;
-
-    final query = search!.toLowerCase();
-    return allSuppliers.where((s) {
-      return s.name.toLowerCase().contains(query) ||
-          s.phoneNumber.contains(query) ||
-          (s.businessName?.toLowerCase().contains(query) ?? false) ||
-          (s.city?.toLowerCase().contains(query) ?? false);
-    }).toList();
-  }
+  // Server returns already-filtered results; expose directly
+  List<Supplier> get filteredSuppliers => allSuppliers;
 
   SuppliersState copyWith({
     SuppliersStatus? status,
     List<Supplier>? allSuppliers,
     Object? search = _sentinel,
+    Object? city = _sentinel,
     String? errorMessage,
   }) {
     return SuppliersState(
       status: status ?? this.status,
       allSuppliers: allSuppliers ?? this.allSuppliers,
       search: search == _sentinel ? this.search : search as String?,
+      city: city == _sentinel ? this.city : city as String?,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -71,7 +65,10 @@ class SuppliersNotifier extends StateNotifier<SuppliersState> {
     );
 
     try {
-      final suppliers = await _repository.getSuppliers();
+      final suppliers = await _repository.getSuppliers(
+        search: state.search,
+        city: state.city,
+      );
       state = state.copyWith(
         status: SuppliersStatus.loaded,
         allSuppliers: suppliers,
@@ -84,11 +81,24 @@ class SuppliersNotifier extends StateNotifier<SuppliersState> {
     }
   }
 
-  void search(String? query) {
+  Future<void> search(String? query) async {
     final trimmed = query?.trim();
+    final newSearch = (trimmed == null || trimmed.isEmpty) ? null : trimmed;
+    if (newSearch == state.search) return;
     state = state.copyWith(
-      search: (trimmed == null || trimmed.isEmpty) ? null : trimmed,
+      search: newSearch,
+      status: SuppliersStatus.loading,
     );
+    await loadSuppliers();
+  }
+
+  Future<void> filterByCity(String? city) async {
+    if (city == state.city) return;
+    state = state.copyWith(
+      city: city,
+      status: SuppliersStatus.loading,
+    );
+    await loadSuppliers();
   }
 
   Future<void> refresh() async {

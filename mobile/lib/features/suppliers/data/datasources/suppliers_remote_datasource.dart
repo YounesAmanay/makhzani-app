@@ -6,7 +6,7 @@ import '../../../../core/constants/api_endpoints.dart';
 import '../models/supplier_model.dart';
 
 abstract class SuppliersRemoteDataSource {
-  Future<List<SupplierModel>> getSuppliers();
+  Future<List<SupplierModel>> getSuppliers({String? search, String? city});
 
   Future<({SupplierModel supplier, List<SupplierOrderModel> recentOrders})>
       getSupplierDetail(String id);
@@ -27,8 +27,16 @@ class SuppliersRemoteDataSourceImpl implements SuppliersRemoteDataSource {
   SuppliersRemoteDataSourceImpl(this._apiClient);
 
   @override
-  Future<List<SupplierModel>> getSuppliers() async {
-    final response = await _apiClient.get(ApiEndpoints.suppliers);
+  Future<List<SupplierModel>> getSuppliers({String? search, String? city}) async {
+    final queryParams = <String, dynamic>{
+      if (search != null && search.isNotEmpty) 'search': search,
+      if (city != null) 'city': city,
+    };
+
+    final response = await _apiClient.get(
+      ApiEndpoints.suppliers,
+      queryParameters: queryParams.isEmpty ? null : queryParams,
+    );
 
     final data = response.data['data'];
     final suppliers = (data['suppliers'] as List)

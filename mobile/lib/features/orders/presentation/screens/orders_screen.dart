@@ -13,6 +13,7 @@ import '../../../../shared/widgets/app_empty_state.dart';
 import '../../../../shared/widgets/app_error_state.dart';
 import '../../../../shared/widgets/app_filter_chip.dart';
 import '../../../../shared/widgets/app_loading.dart';
+import '../../../../shared/widgets/app_search_bar.dart';
 import '../../../suppliers/presentation/providers/suppliers_provider.dart';
 import '../../domain/entities/order.dart';
 import '../providers/orders_provider.dart';
@@ -64,6 +65,13 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
       ),
       body: Column(
         children: [
+          // Search bar
+          AppSearchBar(
+            hintText: context.l10n.orders_searchHint,
+            onSearch: (query) =>
+                ref.read(ordersProvider.notifier).filterBySearch(query),
+          ),
+
           // Inline filter chips — always visible
           _buildFilterChips(ordersState, suppliersState),
 

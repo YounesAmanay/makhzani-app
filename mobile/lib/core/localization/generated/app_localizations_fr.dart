@@ -344,6 +344,9 @@ class AppLocalizationsFr extends AppLocalizations {
       'Format : +212XXXXXXXXX (9 chiffres apres +212)';
 
   @override
+  String get suppliers_filterAllCities => 'Toutes les villes';
+
+  @override
   String get suppliers_citySelect => 'Selectionner la ville';
 
   @override
@@ -603,6 +606,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get orders_title => 'Commandes d\'achat';
+
+  @override
+  String get orders_searchHint => 'Chercher par n° commande ou fournisseur...';
 
   @override
   String get orders_empty => 'Aucune commande pour le moment';

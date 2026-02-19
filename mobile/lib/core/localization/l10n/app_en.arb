@@ -126,6 +126,7 @@
   "suppliers_created": "Supplier added successfully",
   "suppliers_updated": "Supplier updated successfully",
   "suppliers_phoneHelper": "Format: +212XXXXXXXXX (9 digits after +212)",
+  "suppliers_filterAllCities": "All Cities",
   "suppliers_citySelect": "Select City",
 
   "profile": "Profile",
@@ -252,6 +253,7 @@
 
   "orders": "Orders",
   "orders_title": "Purchase Orders",
+  "orders_searchHint": "Search by order # or supplier...",
   "orders_empty": "No orders yet",
   "orders_emptyDescription": "Create your first purchase order to track inventory",
   "orders_add": "New Order",

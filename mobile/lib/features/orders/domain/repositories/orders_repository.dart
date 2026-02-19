@@ -11,6 +11,7 @@ abstract class OrdersRepository {
     int limit = 20,
     String? supplierId,
     String? status, // 'draft', 'sent', 'all'
+    String? search,
   });
 
   Future<Order> createOrder({

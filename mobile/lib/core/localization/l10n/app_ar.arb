@@ -116,6 +116,7 @@
   "suppliers_created": "تم إضافة المورد بنجاح",
   "suppliers_updated": "تم تحديث المورد بنجاح",
   "suppliers_phoneHelper": "التنسيق: +212XXXXXXXXX (9 أرقام بعد +212)",
+  "suppliers_filterAllCities": "كل المدن",
   "suppliers_citySelect": "اختر المدينة",
 
   "profile": "الملف الشخصي",
@@ -217,6 +218,7 @@
 
   "orders": "الطلبات",
   "orders_title": "أوامر الشراء",
+  "orders_searchHint": "البحث برقم الطلب أو المورد...",
   "orders_empty": "لا توجد أوامر بعد",
   "orders_emptyDescription": "قم بإنشاء أول أمر شراء لتتبع المخزون",
   "orders_add": "أمر جديد",

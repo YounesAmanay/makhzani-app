@@ -5,7 +5,7 @@ import '../entities/supplier.dart';
 import '../entities/supplier_order.dart';
 
 abstract class SuppliersRepository {
-  Future<List<Supplier>> getSuppliers();
+  Future<List<Supplier>> getSuppliers({String? search, String? city});
 
   Future<({Supplier supplier, List<SupplierOrder> recentOrders})>
       getSupplierDetail(String id);

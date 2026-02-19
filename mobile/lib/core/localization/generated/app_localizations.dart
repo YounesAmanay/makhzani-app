@@ -730,6 +730,12 @@ abstract class AppLocalizations {
   /// **'Format: +212XXXXXXXXX (9 digits after +212)'**
   String get suppliers_phoneHelper;
 
+  /// No description provided for @suppliers_filterAllCities.
+  ///
+  /// In en, this message translates to:
+  /// **'All Cities'**
+  String get suppliers_filterAllCities;
+
   /// No description provided for @suppliers_citySelect.
   ///
   /// In en, this message translates to:
@@ -1209,6 +1215,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Purchase Orders'**
   String get orders_title;
+
+  /// No description provided for @orders_searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by order # or supplier...'**
+  String get orders_searchHint;
 
   /// No description provided for @orders_empty.
   ///

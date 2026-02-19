@@ -13,6 +13,7 @@ abstract class OrdersRemoteDataSource {
     int limit = 20,
     String? supplierId,
     String? status,
+    String? search,
   });
 
   Future<OrderModel> createOrder(Map<String, dynamic> data);
@@ -35,12 +36,14 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
     int limit = 20,
     String? supplierId,
     String? status,
+    String? search,
   }) async {
     final queryParams = <String, dynamic>{
       'page': page,
       'limit': limit,
       if (supplierId != null) 'supplier_id': supplierId,
       if (status != null) 'status': status,
+      if (search != null) 'search': search,
     };
 
     final response = await _apiClient.get(

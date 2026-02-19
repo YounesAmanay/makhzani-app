@@ -12,8 +12,8 @@ class SuppliersRepositoryImpl implements SuppliersRepository {
   SuppliersRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<List<Supplier>> getSuppliers() async {
-    final models = await _remoteDataSource.getSuppliers();
+  Future<List<Supplier>> getSuppliers({String? search, String? city}) async {
+    final models = await _remoteDataSource.getSuppliers(search: search, city: city);
     return models.map((m) => m.toEntity()).toList();
   }
 

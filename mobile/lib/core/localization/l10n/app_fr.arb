@@ -126,6 +126,7 @@
   "suppliers_created": "Fournisseur ajoute avec succes",
   "suppliers_updated": "Fournisseur mis a jour avec succes",
   "suppliers_phoneHelper": "Format : +212XXXXXXXXX (9 chiffres apres +212)",
+  "suppliers_filterAllCities": "Toutes les villes",
   "suppliers_citySelect": "Selectionner la ville",
 
   "profile": "Profil",
@@ -252,6 +253,7 @@
 
   "orders": "Commandes",
   "orders_title": "Commandes d'achat",
+  "orders_searchHint": "Chercher par n° commande ou fournisseur...",
   "orders_empty": "Aucune commande pour le moment",
   "orders_emptyDescription": "Creez votre premiere commande d'achat pour suivre l'inventaire",
   "orders_add": "Nouvelle commande",

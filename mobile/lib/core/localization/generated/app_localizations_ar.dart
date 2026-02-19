@@ -333,6 +333,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'التنسيق: +212XXXXXXXXX (9 أرقام بعد +212)';
 
   @override
+  String get suppliers_filterAllCities => 'كل المدن';
+
+  @override
   String get suppliers_citySelect => 'اختر المدينة';
 
   @override
@@ -593,6 +596,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get orders_title => 'أوامر الشراء';
+
+  @override
+  String get orders_searchHint => 'البحث برقم الطلب أو المورد...';
 
   @override
   String get orders_empty => 'لا توجد أوامر بعد';
