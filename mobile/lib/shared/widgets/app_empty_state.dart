@@ -5,12 +5,13 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimensions.dart';
 
 class AppEmptyState extends StatelessWidget {
-  /// Icon to display
-  final IconData icon;
+  /// Hugeicon icon data
+  final List<List<dynamic>> icon;
 
   /// Main title text (use l10n)
   final String title;
@@ -41,8 +42,8 @@ class AppEmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
+            HugeIcon(
+              icon: icon,
               size: 64,
               color: AppColors.iconSecondary,
             ),

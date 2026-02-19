@@ -5,6 +5,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -57,7 +58,7 @@ class _SuppliersScreenState extends ConsumerState<SuppliersScreen> {
           Navigator.of(context).pushNamed('/suppliers/create');
         },
         tooltip: context.l10n.suppliers_add,
-        child: const Icon(Icons.add),
+        child: HugeIcon(icon: HugeIcons.strokeRoundedPlusSign, size: 24, color: Colors.white),
       ),
     );
   }
@@ -77,7 +78,7 @@ class _SuppliersScreenState extends ConsumerState<SuppliersScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                HugeIcon(icon: HugeIcons.strokeRoundedAlertCircle, size: 48, color: AppColors.error),
                 const SizedBox(height: AppDimensions.marginMedium),
                 Text(
                   state.errorMessage ?? context.l10n.error_generic,
@@ -111,10 +112,10 @@ class _SuppliersScreenState extends ConsumerState<SuppliersScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              state.hasActiveFilters
-                  ? Icons.search_off
-                  : Icons.people_outline,
+            HugeIcon(
+              icon: state.hasActiveFilters
+                  ? HugeIcons.strokeRoundedSearchRemove
+                  : HugeIcons.strokeRoundedUserMultiple,
               size: 64,
               color: AppColors.iconSecondary,
             ),
@@ -141,7 +142,7 @@ class _SuppliersScreenState extends ConsumerState<SuppliersScreen> {
                 onPressed: () {
                   Navigator.of(context).pushNamed('/suppliers/create');
                 },
-                icon: const Icon(Icons.add),
+                icon: HugeIcon(icon: HugeIcons.strokeRoundedPlusSign, size: 18, color: Colors.white),
                 label: Text(context.l10n.suppliers_add),
               ),
             ],

@@ -5,6 +5,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_dimensions.dart';
@@ -76,7 +77,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           Navigator.of(context).pushNamed('/orders/create');
         },
         tooltip: context.l10n.orders_add,
-        child: const Icon(Icons.add),
+        child: HugeIcon(icon: HugeIcons.strokeRoundedPlusSign, size: 24, color: Colors.white),
       ),
     );
   }
@@ -162,14 +163,14 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
   Widget _buildEmptyState(OrdersState state) {
     if (state.hasActiveFilters) {
       return AppEmptyState(
-        icon: Icons.search_off,
+        icon: HugeIcons.strokeRoundedSearchRemove,
         title: context.l10n.orders_empty,
         description: context.l10n.suppliers_adjustFilters,
       );
     }
 
     return AppEmptyState(
-      icon: Icons.receipt_long_outlined,
+      icon: HugeIcons.strokeRoundedInvoice02,
       title: context.l10n.orders_empty,
       description: context.l10n.orders_emptyDescription,
       actionLabel: context.l10n.orders_add,

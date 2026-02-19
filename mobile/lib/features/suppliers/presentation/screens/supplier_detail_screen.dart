@@ -6,6 +6,7 @@ library;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -655,7 +656,7 @@ class _SupplierDetailScreenState extends ConsumerState<SupplierDetailScreen> {
       message: context.l10n.suppliers_deleteConfirm,
       confirmLabel: context.l10n.common_delete,
       isDestructive: true,
-      icon: Icons.delete_outline,
+      icon: HugeIcons.strokeRoundedDelete01,
     );
 
     if (!confirmed || !mounted) return;

@@ -5,6 +5,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimensions.dart';
 import '../../core/localization/l10n_extension.dart';
@@ -25,8 +26,8 @@ class AppConfirmDialog extends StatelessWidget {
   /// Is this a destructive action (changes confirm button to red)
   final bool isDestructive;
 
-  /// Optional icon to show above title
-  final IconData? icon;
+  /// Optional hugeicon to show above title
+  final List<List<dynamic>>? icon;
 
   const AppConfirmDialog({
     super.key,
@@ -46,7 +47,7 @@ class AppConfirmDialog extends StatelessWidget {
     String? confirmLabel,
     String? cancelLabel,
     bool isDestructive = false,
-    IconData? icon,
+    List<List<dynamic>>? icon,
   }) async {
     final result = await showDialog<bool>(
       context: context,
@@ -85,10 +86,12 @@ class AppConfirmDialog extends StatelessWidget {
                 color: iconColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                icon,
-                size: 28,
-                color: iconColor,
+              child: Center(
+                child: HugeIcon(
+                  icon: icon!,
+                  size: 28,
+                  color: iconColor,
+                ),
               ),
             ),
             const SizedBox(height: AppDimensions.marginMedium),

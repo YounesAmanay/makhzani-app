@@ -25,33 +25,42 @@ class OrderListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(
         horizontal: AppDimensions.paddingMedium,
         vertical: AppDimensions.paddingXSmall,
       ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
-        child: Padding(
-          padding: const EdgeInsets.all(AppDimensions.paddingMedium),
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Status accent bar
-                Container(
-                  width: 3,
-                  decoration: BoxDecoration(
-                    color: _getStatusColor(order.status),
-                    borderRadius: BorderRadius.circular(2),
+      child: Material(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+              border: Border.all(color: theme.colorScheme.outlineVariant),
+            ),
+            padding: const EdgeInsets.all(AppDimensions.paddingMedium),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Status accent bar
+                  Container(
+                    width: 3,
+                    decoration: BoxDecoration(
+                      color: _getStatusColor(order.status),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
-                ),
-                const SizedBox(width: AppDimensions.marginMedium),
+                  const SizedBox(width: AppDimensions.marginMedium),
 
-                // Content
-                Expanded(child: _buildContent(context)),
-              ],
+                  // Content
+                  Expanded(child: _buildContent(context)),
+                ],
+              ),
             ),
           ),
         ),

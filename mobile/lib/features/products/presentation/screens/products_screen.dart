@@ -5,6 +5,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -117,7 +118,11 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
           Navigator.of(context).pushNamed('/products/create');
         },
         tooltip: context.l10n.products_add,
-        child: const Icon(Icons.add),
+        child: HugeIcon(
+          icon: HugeIcons.strokeRoundedPlusSign,
+          size: 24,
+          color: Colors.white,
+        ),
       ),
     );
   }
@@ -136,7 +141,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
             // Low stock filter
             AppFilterChip(
               label: context.l10n.products_lowStockOnly,
-              icon: Icons.warning_amber_rounded,
+              icon: HugeIcons.strokeRoundedAlertDiamond,
               isActive: state.lowStockFilter,
               showClose: false,
               onTap: () {
@@ -148,7 +153,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
             // Sort chip
             AppFilterChip(
               label: _sortLabel(context, state.sortBy),
-              icon: Icons.sort,
+              icon: HugeIcons.strokeRoundedFilterHorizontal,
               isActive: state.sortBy != ProductSort.nameAsc,
               showClose: false,
               onTap: _showSortSheet,
@@ -194,7 +199,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                HugeIcon(icon: HugeIcons.strokeRoundedAlertCircle, size: 48, color: AppColors.error),
                 const SizedBox(height: AppDimensions.marginMedium),
                 Text(
                   state.errorMessage ?? context.l10n.error_generic,
@@ -227,10 +232,10 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              state.hasActiveFilters
-                  ? Icons.search_off
-                  : Icons.inventory_2_outlined,
+            HugeIcon(
+              icon: state.hasActiveFilters
+                  ? HugeIcons.strokeRoundedSearchRemove
+                  : HugeIcons.strokeRoundedPackage,
               size: 64,
               color: AppColors.iconSecondary,
             ),
@@ -257,7 +262,7 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                 onPressed: () {
                   Navigator.of(context).pushNamed('/products/create');
                 },
-                icon: const Icon(Icons.add),
+                icon: HugeIcon(icon: HugeIcons.strokeRoundedPlusSign, size: 18, color: Colors.white),
                 label: Text(context.l10n.products_add),
               ),
             ],

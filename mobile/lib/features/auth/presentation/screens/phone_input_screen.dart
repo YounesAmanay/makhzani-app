@@ -63,6 +63,9 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? const Color(0xFFF0F0F5) : AppColors.textPrimary;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -74,27 +77,75 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
               children: [
                 const Spacer(),
 
-                // Logo/Title section
-                const Icon(
-                  Icons.store_rounded,
-                  size: 80,
-                  color: AppColors.primary,
-                ),
-                const SizedBox(height: AppDimensions.marginMedium),
-                Text(
-                  'Makhzani',
-                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppDimensions.marginSmall),
-                Text(
-                  'Enter your phone number to continue',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                  textAlign: TextAlign.center,
+                // Logo mark + wordmark
+                Column(
+                  children: [
+                    // M square
+                    Container(
+                      width: 72,
+                      height: 72,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.3),
+                            blurRadius: 24,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'M',
+                          style: TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                            letterSpacing: -2,
+                            height: 1,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Wordmark
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'M',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w900,
+                              color: AppColors.primary,
+                              letterSpacing: -1.2,
+                              height: 1,
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'akhzani',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                              color: textColor,
+                              letterSpacing: -1.2,
+                              height: 1,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppDimensions.marginSmall),
+                    Text(
+                      'Enter your phone number to continue',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
 
                 const Spacer(),
@@ -116,10 +167,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            '🇲🇦',
-                            style: TextStyle(fontSize: 20),
-                          ),
+                          const Text('🇲🇦', style: TextStyle(fontSize: 20)),
                           const SizedBox(width: 8),
                           Text(
                             '+212',
@@ -142,7 +190,6 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                     if (value.length != 9) {
                       return 'Phone number must be 9 digits';
                     }
-                    // Morocco mobile numbers start with 5, 6, or 7
                     if (!RegExp(r'^[567]').hasMatch(value)) {
                       return 'Phone number must start with 5, 6, or 7';
                     }

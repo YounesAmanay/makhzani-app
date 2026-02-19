@@ -5,6 +5,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimensions.dart';
 import '../../core/localization/l10n_extension.dart';
@@ -34,8 +35,8 @@ class AppErrorState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.error_outline,
+            HugeIcon(
+              icon: HugeIcons.strokeRoundedAlertCircle,
               size: 64,
               color: AppColors.error,
             ),
@@ -56,7 +57,11 @@ class AppErrorState extends StatelessWidget {
             const SizedBox(height: AppDimensions.marginLarge),
             OutlinedButton.icon(
               onPressed: onRetry,
-              icon: const Icon(Icons.refresh),
+              icon: HugeIcon(
+                icon: HugeIcons.strokeRoundedArrowReloadHorizontal,
+                size: 18,
+                color: AppColors.primary,
+              ),
               label: Text(context.l10n.common_retry),
             ),
           ],

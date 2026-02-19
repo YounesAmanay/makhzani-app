@@ -157,7 +157,6 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                       decoration: InputDecoration(
                         labelText: '${context.l10n.suppliers_name} *',
                         errorText: _fieldErrors['name'],
-                        filled: widget.isEditing,
                       ),
                       textCapitalization: TextCapitalization.words,
                       textInputAction: TextInputAction.next,
@@ -181,7 +180,6 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                         hintText: '+212600000000',
                         helperText: context.l10n.suppliers_phoneHelper,
                         errorText: _fieldErrors['phone_number'],
-                        filled: widget.isEditing,
                       ),
                       keyboardType: TextInputType.phone,
                       textInputAction: TextInputAction.next,
@@ -209,7 +207,6 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                       decoration: InputDecoration(
                         labelText: context.l10n.suppliers_businessName,
                         errorText: _fieldErrors['business_name'],
-                        filled: widget.isEditing,
                       ),
                       textCapitalization: TextCapitalization.words,
                       textInputAction: TextInputAction.next,
@@ -224,7 +221,6 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                         labelText: context.l10n.suppliers_email,
                         hintText: 'supplier@example.com',
                         errorText: _fieldErrors['email'],
-                        filled: widget.isEditing,
                       ),
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
@@ -249,7 +245,6 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                       decoration: InputDecoration(
                         labelText: context.l10n.suppliers_address,
                         errorText: _fieldErrors['address'],
-                        filled: widget.isEditing,
                       ),
                       maxLines: 2,
                       textCapitalization: TextCapitalization.sentences,
@@ -264,7 +259,6 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                       decoration: InputDecoration(
                         labelText: context.l10n.suppliers_city,
                         errorText: _fieldErrors['city'],
-                        filled: widget.isEditing,
                       ),
                       items: [
                         DropdownMenuItem<String>(

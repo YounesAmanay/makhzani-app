@@ -5,6 +5,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -131,7 +132,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               child: StatsCard(
                 title: context.l10n.nav_products,
                 value: stats.totalProducts.toString(),
-                icon: Icons.inventory_2_outlined,
+                icon: HugeIcons.strokeRoundedPackage,
                 iconColor: AppColors.primary,
                 onTap: _navigateToProducts,
               ),
@@ -141,7 +142,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               child: StatsCard(
                 title: context.l10n.dashboard_lowStock,
                 value: stats.lowStockProducts.toString(),
-                icon: Icons.warning_amber_outlined,
+                icon: HugeIcons.strokeRoundedAlertDiamond,
                 iconColor: stats.lowStockProducts > 0 ? AppColors.warning : AppColors.success,
                 onTap: () => _navigateToProducts(lowStockFilter: true),
               ),
@@ -155,7 +156,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               child: StatsCard(
                 title: context.l10n.nav_suppliers,
                 value: stats.totalSuppliers.toString(),
-                icon: Icons.people_outline,
+                icon: HugeIcons.strokeRoundedUserMultiple,
                 iconColor: AppColors.info,
                 onTap: _navigateToSuppliers,
               ),
@@ -165,7 +166,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               child: StatsCard(
                 title: context.l10n.nav_orders,
                 value: stats.totalOrders.toString(),
-                icon: Icons.receipt_long_outlined,
+                icon: HugeIcons.strokeRoundedInvoice02,
                 iconColor: AppColors.primary,
                 onTap: _navigateToOrders,
               ),

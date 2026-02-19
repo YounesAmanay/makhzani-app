@@ -4,6 +4,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimensions.dart';
@@ -12,7 +13,7 @@ class AppFilterChip extends StatelessWidget {
   final String label;
   final bool isActive;
   final VoidCallback onTap;
-  final IconData? icon;
+  final List<List<dynamic>>? icon;
   final bool showClose;
 
   const AppFilterChip({
@@ -29,9 +30,7 @@ class AppFilterChip extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Material(
-      color: isActive
-          ? AppColors.primary
-          : theme.colorScheme.surfaceContainerHighest,
+      color: isActive ? AppColors.primary : theme.colorScheme.surface,
       borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
       child: InkWell(
         onTap: onTap,
@@ -41,16 +40,22 @@ class AppFilterChip extends StatelessWidget {
             horizontal: AppDimensions.paddingMedium,
             vertical: AppDimensions.paddingSmall,
           ),
+          decoration: isActive
+              ? null
+              : BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
+                  border: Border.all(color: theme.colorScheme.outlineVariant),
+                ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null) ...[
-                Icon(
-                  icon,
+                HugeIcon(
+                  icon: icon!,
                   size: 16,
                   color: isActive
                       ? AppColors.white
-                      : theme.textTheme.bodySmall?.color,
+                      : (theme.textTheme.bodySmall?.color ?? AppColors.textSecondary),
                 ),
                 const SizedBox(width: AppDimensions.marginSmall),
               ],
@@ -65,8 +70,8 @@ class AppFilterChip extends StatelessWidget {
               ),
               if (isActive && showClose) ...[
                 const SizedBox(width: AppDimensions.marginSmall),
-                Icon(
-                  Icons.close,
+                HugeIcon(
+                  icon: HugeIcons.strokeRoundedCancelCircle,
                   size: 14,
                   color: AppColors.white,
                 ),

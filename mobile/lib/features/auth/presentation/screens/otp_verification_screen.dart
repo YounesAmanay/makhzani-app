@@ -57,7 +57,6 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
     setState(() => _isLoading = false);
 
     if (success && mounted) {
-      // Navigate to main shell - clear all previous screens
       Navigator.of(context).pushNamedAndRemoveUntil(
         '/main',
         (route) => false,
@@ -95,9 +94,38 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? const Color(0xFFF0F0F5) : AppColors.textPrimary;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Verify Phone'),
+        // Wordmark centered, back arrow on left
+        title: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: 'M',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.primary,
+                  letterSpacing: -0.8,
+                  height: 1,
+                ),
+              ),
+              TextSpan(
+                text: 'akhzani',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: textColor,
+                  letterSpacing: -0.8,
+                  height: 1,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -105,13 +133,30 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 60),
+              const SizedBox(height: 48),
 
-              // Icon
-              const Icon(
-                Icons.lock_outline_rounded,
-                size: 64,
-                color: AppColors.primary,
+              // Small M badge
+              Center(
+                child: Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'M',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.primary,
+                        letterSpacing: -1,
+                        height: 1,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: AppDimensions.marginMedium),
 
@@ -119,8 +164,8 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
               Text(
                 'Enter verification code',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppDimensions.marginSmall),
@@ -129,8 +174,8 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
               Text(
                 'We sent a 4-digit code to\n${widget.phoneNumber}',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
+                      color: AppColors.textSecondary,
+                    ),
                 textAlign: TextAlign.center,
               ),
 
@@ -142,9 +187,9 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  letterSpacing: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                      letterSpacing: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(4),
@@ -154,7 +199,6 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                   counterText: '',
                 ),
                 onChanged: (value) {
-                  // Auto-submit when 4 digits entered
                   if (value.length == 4) {
                     _onVerifyOtp();
                   }

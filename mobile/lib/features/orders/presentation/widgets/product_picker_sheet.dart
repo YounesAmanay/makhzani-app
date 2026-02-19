@@ -4,6 +4,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -90,7 +91,11 @@ class _ProductPickerSheetState extends State<ProductPickerSheet> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close),
+                    icon: HugeIcon(
+                      icon: HugeIcons.strokeRoundedCancelCircle,
+                      size: 22,
+                      color: Theme.of(context).iconTheme.color ?? Colors.grey,
+                    ),
                     onPressed: () => Navigator.of(context).pop(),
                     tooltip: context.l10n.common_cancel,
                   ),
@@ -106,9 +111,13 @@ class _ProductPickerSheetState extends State<ProductPickerSheet> {
               child: TextField(
                 decoration: InputDecoration(
                   hintText: context.l10n.common_search,
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: HugeIcon(
+                      icon: HugeIcons.strokeRoundedSearch01,
+                      size: 20,
+                      color: Theme.of(context).textTheme.bodySmall?.color ?? Colors.grey,
+                    ),
                   ),
                 ),
                 onChanged: (value) {
@@ -127,8 +136,8 @@ class _ProductPickerSheetState extends State<ProductPickerSheet> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(
-                              Icons.search_off,
+                            HugeIcon(
+                              icon: HugeIcons.strokeRoundedSearchRemove,
                               size: 48,
                               color: AppColors.iconSecondary,
                             ),
@@ -214,8 +223,9 @@ class _ProductPickerSheetState extends State<ProductPickerSheet> {
                 ),
               ),
               const SizedBox(width: AppDimensions.marginSmall),
-              Icon(
-                Icons.add_circle_outline,
+              HugeIcon(
+                icon: HugeIcons.strokeRoundedPlusSignCircle,
+                size: 24,
                 color: AppColors.primary,
               ),
             ],

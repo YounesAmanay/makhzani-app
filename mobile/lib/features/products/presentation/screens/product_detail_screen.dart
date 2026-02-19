@@ -5,6 +5,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -343,7 +344,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       message: context.l10n.products_deleteConfirm,
       confirmLabel: context.l10n.common_delete,
       isDestructive: true,
-      icon: Icons.delete_outline,
+      icon: HugeIcons.strokeRoundedDelete01,
     );
 
     if (!confirmed || !mounted) return;

@@ -5,6 +5,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/localization/locale_provider.dart';
@@ -33,27 +34,30 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
       titleSpacing: AppDimensions.paddingMedium,
       title: Row(
         children: [
-          // App logo
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(
-              Icons.inventory_2,
-              size: 20,
-              color: AppColors.white,
-            ),
-          ),
-          const SizedBox(width: AppDimensions.marginSmall),
-          // App name
-          Text(
-            context.l10n.appName,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+          // Wordmark
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: 'M',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.8,
+                        color: AppColors.primary,
+                        fontSize: 22,
+                      ),
                 ),
+                TextSpan(
+                  text: 'akhzani',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.8,
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 22,
+                      ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -79,7 +83,11 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   ),
                 ),
                 const SizedBox(width: 4),
-                const Icon(Icons.arrow_drop_down, size: 20),
+                HugeIcon(
+                  icon: HugeIcons.strokeRoundedArrowDown01,
+                  size: 16,
+                  color: Theme.of(context).iconTheme.color ?? AppColors.textSecondary,
+                ),
               ],
             ),
           ),
@@ -197,7 +205,7 @@ class _ProfileSheet extends ConsumerWidget {
 
             // Settings
             ListTile(
-              leading: const Icon(Icons.settings_outlined),
+              leading: HugeIcon(icon: HugeIcons.strokeRoundedSettings01, size: 22, color: Theme.of(context).iconTheme.color ?? AppColors.textSecondary),
               title: Text(context.l10n.settings),
               onTap: () {
                 Navigator.of(context).pop();
@@ -207,8 +215,10 @@ class _ProfileSheet extends ConsumerWidget {
 
             // Dark mode toggle
             ListTile(
-              leading: Icon(
-                isDark ? Icons.dark_mode : Icons.light_mode_outlined,
+              leading: HugeIcon(
+                icon: isDark ? HugeIcons.strokeRoundedMoon : HugeIcons.strokeRoundedSun01,
+                size: 22,
+                color: Theme.of(context).iconTheme.color ?? AppColors.textSecondary,
               ),
               title: Text(
                 isDark ? context.l10n.theme_dark : context.l10n.theme_light,
@@ -227,7 +237,7 @@ class _ProfileSheet extends ConsumerWidget {
 
             // Language toggle
             ListTile(
-              leading: const Icon(Icons.language_outlined),
+              leading: HugeIcon(icon: HugeIcons.strokeRoundedLanguageCircle, size: 22, color: Theme.of(context).iconTheme.color ?? AppColors.textSecondary),
               title: Text(context.l10n.settings_language),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -239,7 +249,7 @@ class _ProfileSheet extends ConsumerWidget {
                         ),
                   ),
                   const SizedBox(width: 4),
-                  const Icon(Icons.chevron_right, size: 20),
+                  HugeIcon(icon: HugeIcons.strokeRoundedArrowRight01, size: 16, color: Theme.of(context).iconTheme.color ?? AppColors.textSecondary),
                 ],
               ),
               onTap: () {
@@ -254,7 +264,7 @@ class _ProfileSheet extends ConsumerWidget {
 
             // Logout
             ListTile(
-              leading: Icon(Icons.logout, color: AppColors.error),
+              leading: HugeIcon(icon: HugeIcons.strokeRoundedLogout01, size: 22, color: AppColors.error),
               title: Text(
                 context.l10n.logout,
                 style: TextStyle(color: AppColors.error),
@@ -277,7 +287,7 @@ class _ProfileSheet extends ConsumerWidget {
       message: sheetContext.l10n.confirm_logout,
       confirmLabel: sheetContext.l10n.logout,
       isDestructive: true,
-      icon: Icons.logout,
+      icon: HugeIcons.strokeRoundedLogout01,
     );
 
     if (!confirmed) return;

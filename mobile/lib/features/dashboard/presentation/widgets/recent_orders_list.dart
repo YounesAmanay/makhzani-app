@@ -58,7 +58,10 @@ class RecentOrdersList extends StatelessWidget {
       ),
       child: Column(
         children: [
-          ...orders.take(5).map((order) => _RecentOrderTile(order: order)),
+          ...orders.take(5).toList().indexed.map((e) => _RecentOrderTile(
+                order: e.$2,
+                isLast: e.$1 == orders.take(5).length - 1 && orders.length <= 5,
+              )),
           if (orders.length > 5)
             InkWell(
               onTap: onSeeAll,
@@ -97,8 +100,9 @@ class RecentOrdersList extends StatelessWidget {
 
 class _RecentOrderTile extends StatelessWidget {
   final RecentOrder order;
+  final bool isLast;
 
-  const _RecentOrderTile({required this.order});
+  const _RecentOrderTile({required this.order, this.isLast = false});
 
   String _formatDate(BuildContext context, DateTime date) {
     final now = DateTime.now();
@@ -115,12 +119,22 @@ class _RecentOrderTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
+    return InkWell(
+      onTap: () => Navigator.of(context).pushNamed(
+        '/orders/detail',
+        arguments: order.id,
+      ),
+      borderRadius: isLast
+          ? const BorderRadius.vertical(bottom: Radius.circular(AppDimensions.radiusMedium))
+          : BorderRadius.zero,
+      child: Container(
       padding: const EdgeInsets.all(AppDimensions.paddingMedium),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: theme.colorScheme.outlineVariant),
-        ),
+        border: isLast
+            ? null
+            : Border(
+                bottom: BorderSide(color: theme.colorScheme.outlineVariant),
+              ),
       ),
       child: Row(
         children: [
@@ -168,6 +182,7 @@ class _RecentOrderTile extends StatelessWidget {
             color: order.sent ? AppColors.success : AppColors.textDisabled,
           ),
         ],
+      ),
       ),
     );
   }

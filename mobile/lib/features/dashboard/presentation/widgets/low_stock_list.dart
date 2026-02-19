@@ -50,6 +50,8 @@ class LowStockList extends StatelessWidget {
       );
     }
 
+    final visibleItems = items.take(5).toList();
+
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -58,7 +60,10 @@ class LowStockList extends StatelessWidget {
       ),
       child: Column(
         children: [
-          ...items.take(5).map((item) => _LowStockItemTile(item: item)),
+          ...visibleItems.indexed.map((e) => _LowStockItemTile(
+                item: e.$2,
+                isLast: e.$1 == visibleItems.length - 1 && items.length <= 5,
+              )),
           if (items.length > 5)
             InkWell(
               onTap: onSeeAll,
@@ -97,8 +102,9 @@ class LowStockList extends StatelessWidget {
 
 class _LowStockItemTile extends StatelessWidget {
   final LowStockItem item;
+  final bool isLast;
 
-  const _LowStockItemTile({required this.item});
+  const _LowStockItemTile({required this.item, this.isLast = false});
 
   Color get _statusColor {
     if (item.currentStock == 0) return AppColors.error;
@@ -110,12 +116,22 @@ class _LowStockItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
+    return InkWell(
+      onTap: () => Navigator.of(context).pushNamed(
+        '/products/detail',
+        arguments: item.id,
+      ),
+      borderRadius: isLast
+          ? const BorderRadius.vertical(bottom: Radius.circular(AppDimensions.radiusMedium))
+          : BorderRadius.zero,
+      child: Container(
       padding: const EdgeInsets.all(AppDimensions.paddingMedium),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: theme.colorScheme.outlineVariant),
-        ),
+        border: isLast
+            ? null
+            : Border(
+                bottom: BorderSide(color: theme.colorScheme.outlineVariant),
+              ),
       ),
       child: Row(
         children: [
@@ -164,6 +180,7 @@ class _LowStockItemTile extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

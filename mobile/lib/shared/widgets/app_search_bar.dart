@@ -5,6 +5,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 
 import '../../core/localization/l10n_extension.dart';
 import '../../core/theme/app_dimensions.dart';
@@ -66,26 +67,28 @@ class _AppSearchBarState extends State<AppSearchBar> {
         textInputAction: TextInputAction.search,
         decoration: InputDecoration(
           hintText: widget.hintText,
-          prefixIcon: Icon(
-            Icons.search,
-            color: theme.textTheme.bodySmall?.color,
+          prefixIcon: Padding(
+            padding: const EdgeInsets.all(12),
+            child: HugeIcon(
+              icon: HugeIcons.strokeRoundedSearch01,
+              size: 20,
+              color: theme.textTheme.bodySmall?.color ?? Colors.grey,
+            ),
           ),
           suffixIcon: ListenableBuilder(
             listenable: _controller,
             builder: (context, _) {
               if (_controller.text.isEmpty) return const SizedBox.shrink();
               return IconButton(
-                icon: const Icon(Icons.close, size: 20),
+                icon: HugeIcon(
+                  icon: HugeIcons.strokeRoundedCancelCircle,
+                  size: 20,
+                  color: theme.textTheme.bodySmall?.color ?? Colors.grey,
+                ),
                 tooltip: context.l10n.common_clear,
                 onPressed: _onClear,
               );
             },
-          ),
-          filled: true,
-          fillColor: theme.colorScheme.surfaceContainerHighest,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-            borderSide: BorderSide.none,
           ),
           contentPadding: const EdgeInsets.symmetric(
             vertical: AppDimensions.paddingSmall,
