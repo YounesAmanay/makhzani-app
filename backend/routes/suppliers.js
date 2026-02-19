@@ -48,6 +48,7 @@ function formatSupplier(s) {
   return {
     id: s.id, name: s.name, business_name: s.business_name, phone_number: s.phone_number,
     email: s.email, address: s.address, city: s.city, supplier_type: s.supplier_type,
+    avatar_url: s.avatar_url || null,
     relationship: {
       preferred_contact_method: s.preferred_contact_method,
       payment_terms: s.payment_terms,
@@ -171,6 +172,33 @@ router.delete("/:id", authenticateToken, async (req, res) => {
   } catch (error) {
     console.error("Error deleting supplier:", error);
     res.status(500).json({ success: false, message: "Failed to remove supplier", error: process.env.NODE_ENV === "development" ? error.message : "Internal server error" });
+  }
+});
+
+// POST /:id/avatar -- upload supplier avatar
+const { uploadAvatar } = require('../middleware/upload');
+
+router.post('/:id/avatar', authenticateToken, uploadAvatar.single('avatar'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No image file provided' });
+    }
+
+    const supplier = await db.Supplier.findOne({
+      where: { id: req.params.id, merchant_id: req.merchantId, is_active: true }
+    });
+
+    if (!supplier) {
+      return res.status(404).json({ success: false, message: 'Supplier not found' });
+    }
+
+    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+    await supplier.update({ avatar_url: avatarUrl });
+
+    res.json({ success: true, data: { avatar_url: avatarUrl } });
+  } catch (error) {
+    console.error('Error uploading supplier avatar:', error);
+    res.status(500).json({ success: false, message: 'Failed to upload avatar' });
   }
 });
 

@@ -261,7 +261,13 @@ router.get('/:id', authenticateToken, async (req, res) => {
         id: req.params.id,
         merchant_id: req.merchantId,
         is_active: true
-      }
+      },
+      include: [{
+        model: db.ProductImage,
+        as: 'images',
+        attributes: ['id', 'url', 'sort_order'],
+        order: [['sort_order', 'ASC']]
+      }]
     });
 
     if (!product) {
@@ -500,6 +506,89 @@ router.post('/:id/adjust-stock', authenticateToken, checkSubscription, async (re
       message: 'Failed to adjust stock',
       error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
+  }
+});
+
+// Product image routes
+const { uploadProductImages } = require('../middleware/upload');
+const fs = require('fs');
+const path = require('path');
+
+// POST /:id/images — upload up to 5 images
+router.post('/:id/images', authenticateToken, uploadProductImages.array('images', 5), async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ success: false, message: 'No image files provided' });
+    }
+
+    const product = await db.Product.findOne({
+      where: { id: req.params.id, merchant_id: req.merchantId, is_active: true },
+      include: [{ model: db.ProductImage, as: 'images' }]
+    });
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    const currentCount = product.images.length;
+    const remaining = 5 - currentCount;
+
+    if (req.files.length > remaining) {
+      return res.status(400).json({
+        success: false,
+        message: `Maximum 5 images per product. You can add ${remaining} more.`
+      });
+    }
+
+    const created = await Promise.all(req.files.map((file, i) =>
+      db.ProductImage.create({
+        product_id: product.id,
+        url: `/uploads/products/${file.filename}`,
+        sort_order: currentCount + i
+      })
+    ));
+
+    res.json({
+      success: true,
+      data: {
+        images: created.map(img => ({ id: img.id, url: img.url, sort_order: img.sort_order }))
+      }
+    });
+  } catch (error) {
+    console.error('Error uploading product images:', error);
+    res.status(500).json({ success: false, message: 'Failed to upload images' });
+  }
+});
+
+// DELETE /:id/images/:imageId — delete a single product image
+router.delete('/:id/images/:imageId', authenticateToken, async (req, res) => {
+  try {
+    const product = await db.Product.findOne({
+      where: { id: req.params.id, merchant_id: req.merchantId }
+    });
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    const image = await db.ProductImage.findOne({
+      where: { id: req.params.imageId, product_id: req.params.id }
+    });
+
+    if (!image) {
+      return res.status(404).json({ success: false, message: 'Image not found' });
+    }
+
+    // Delete file from disk
+    const filepath = path.join(__dirname, '..', image.url);
+    if (fs.existsSync(filepath)) fs.unlinkSync(filepath);
+
+    await image.destroy();
+
+    res.json({ success: true, message: 'Image deleted' });
+  } catch (error) {
+    console.error('Error deleting product image:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete image' });
   }
 });
 

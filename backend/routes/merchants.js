@@ -243,4 +243,28 @@ router.get('/dashboard-stats', authenticateToken, async (req, res) => {
   }
 });
 
+// POST /avatar -- upload merchant avatar
+const { uploadAvatar } = require('../middleware/upload');
+
+router.post('/avatar', authenticateToken, uploadAvatar.single('avatar'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No image file provided' });
+    }
+
+    const merchant = await db.Merchant.findByPk(req.merchantId);
+    if (!merchant) {
+      return res.status(404).json({ success: false, message: 'Merchant not found' });
+    }
+
+    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+    await merchant.update({ avatar_url: avatarUrl });
+
+    res.json({ success: true, data: { avatar_url: avatarUrl } });
+  } catch (error) {
+    console.error('Error uploading merchant avatar:', error);
+    res.status(500).json({ success: false, message: 'Failed to upload avatar' });
+  }
+});
+
 module.exports = router;

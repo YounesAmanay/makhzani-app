@@ -212,11 +212,11 @@ router.post('/', authenticateToken, checkSubscription, validateOrder, handleVali
   try {
     const { supplier_id, items, notes } = req.body;
 
-    // Verify supplier relationship exists
-    const supplierRelation = await db.MerchantSupplier.findOne({
+    // Verify supplier belongs to this merchant
+    const supplierRelation = await db.Supplier.findOne({
       where: {
+        id: supplier_id,
         merchant_id: req.merchantId,
-        supplier_id: supplier_id,
         is_active: true
       },
       transaction
