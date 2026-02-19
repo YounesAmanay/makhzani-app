@@ -50,7 +50,12 @@ const validateQuery = [
   query('status')
     .optional()
     .isIn(['draft', 'sent', 'all'])
-    .withMessage('Status must be draft, sent, or all')
+    .withMessage('Status must be draft, sent, or all'),
+  query('search')
+    .optional()
+    .isLength({ max: 100 })
+    .withMessage('Search query too long')
+    .trim()
 ];
 
 const handleValidationErrors = (req, res, next) => {
@@ -71,7 +76,7 @@ const handleValidationErrors = (req, res, next) => {
  */
 router.get('/', authenticateToken, validateQuery, handleValidationErrors, async (req, res) => {
   try {
-    const { page = 1, limit = 20, supplier_id, status = 'all' } = req.query;
+    const { page = 1, limit = 20, supplier_id, status = 'all', search } = req.query;
     const offset = (page - 1) * limit;
 
     // Build where conditions
@@ -88,6 +93,33 @@ router.get('/', authenticateToken, validateQuery, handleValidationErrors, async 
       whereConditions.pdf_generated_at = null;
     } else if (status === 'sent') {
       whereConditions.pdf_generated_at = { [db.Sequelize.Op.not]: null };
+    }
+
+    // Search: match order_number OR supplier name/business_name
+    // Use two-query approach to avoid complex JOIN OR issues
+    if (search && search.trim()) {
+      const term = search.trim();
+
+      // Find supplier IDs matching the search term
+      const matchingSuppliers = await db.Supplier.findAll({
+        attributes: ['id'],
+        where: {
+          [db.Sequelize.Op.or]: [
+            { name: { [db.Sequelize.Op.like]: `%${term}%` } },
+            { business_name: { [db.Sequelize.Op.like]: `%${term}%` } }
+          ]
+        }
+      });
+      const matchingSupplierIds = matchingSuppliers.map(s => s.id);
+
+      // Filter: order_number matches OR supplier_id is in matching suppliers
+      const orClauses = [
+        { order_number: { [db.Sequelize.Op.like]: `%${term}%` } }
+      ];
+      if (matchingSupplierIds.length > 0) {
+        orClauses.push({ supplier_id: { [db.Sequelize.Op.in]: matchingSupplierIds } });
+      }
+      whereConditions[db.Sequelize.Op.or] = orClauses;
     }
 
     const { count, rows: orders } = await db.PurchaseOrder.findAndCountAll({
@@ -150,9 +182,12 @@ router.get('/', authenticateToken, validateQuery, handleValidationErrors, async 
           current_page: parseInt(page),
           total_pages: totalPages,
           total_orders: count,
-          has_next_page: page < totalPages,
-          has_prev_page: page > 1,
-          per_page: parseInt(limit)
+          has_next_page: parseInt(page) < totalPages,
+          has_prev_page: parseInt(page) > 1,
+          per_page: parseInt(limit),
+          search: search && search.trim() ? search.trim() : null,
+          supplier_id: supplier_id || null,
+          status
         }
       }
     });

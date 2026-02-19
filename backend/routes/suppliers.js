@@ -59,24 +59,53 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
+const validateSuppliersQuery = [
+  query('search')
+    .optional()
+    .isLength({ max: 100 })
+    .withMessage('Search query too long')
+    .trim(),
+  query('city')
+    .optional()
+    .isIn(['Casablanca', 'Rabat', 'Marrakech', 'Agadir', 'Tangier', 'Fes', 'Meknes', 'Other'])
+    .withMessage('Invalid city')
+];
+
 /**
  * GET /api/suppliers
- * Get merchant's suppliers with relationship details
+ * Get merchant's suppliers with relationship details, optional search and city filter
  */
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', authenticateToken, validateSuppliersQuery, handleValidationErrors, async (req, res) => {
   try {
+    const { search, city } = req.query;
+
+    // Build supplier where clause
+    const supplierWhere = { is_active: true };
+
+    if (city) {
+      supplierWhere.city = city;
+    }
+
+    if (search && search.trim()) {
+      supplierWhere[db.Sequelize.Op.or] = [
+        { name: { [db.Sequelize.Op.like]: `%${search.trim()}%` } },
+        { business_name: { [db.Sequelize.Op.like]: `%${search.trim()}%` } },
+        { phone_number: { [db.Sequelize.Op.like]: `%${search.trim()}%` } }
+      ];
+    }
+
     const suppliers = await db.Supplier.findAll({
       include: [
         {
           model: db.MerchantSupplier,
-          as: 'MerchantSuppliers', // Direct association name
-          where: { 
+          as: 'MerchantSuppliers',
+          where: {
             merchant_id: req.merchantId,
-            is_active: true 
+            is_active: true
           },
           attributes: [
-            'preferred_contact_method', 
-            'payment_terms', 
+            'preferred_contact_method',
+            'payment_terms',
             'merchant_notes',
             'last_order_date',
             'total_orders',
@@ -84,7 +113,7 @@ router.get('/', authenticateToken, async (req, res) => {
           ]
         }
       ],
-      where: { is_active: true }
+      where: supplierWhere
     });
 
     res.json({
@@ -107,7 +136,12 @@ router.get('/', authenticateToken, async (req, res) => {
             total_orders: supplier.MerchantSuppliers[0]?.total_orders || 0,
             linked_since: supplier.MerchantSuppliers[0]?.created_at
           }
-        }))
+        })),
+        meta: {
+          total: suppliers.length,
+          search: search && search.trim() ? search.trim() : null,
+          city: city || null
+        }
       }
     });
 
