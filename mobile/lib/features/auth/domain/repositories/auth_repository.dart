@@ -33,5 +33,13 @@ abstract class AuthRepository {
   /// Uploads a new avatar image; returns the new avatar URL
   Future<String> uploadMerchantAvatar(String filePath);
 
+  /// Updates editable profile fields; returns partial merchant map to merge with state
+  Future<Map<String, dynamic>> updateProfile({
+    String? ownerName,
+    String? shopName,
+    String? address,
+    String? region,
+  });
+
   // Note: Token refresh is handled automatically by ApiClient interceptor
 }

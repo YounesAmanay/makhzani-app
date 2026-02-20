@@ -421,6 +421,21 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get profile_editProfile => 'Edit Profile';
+
+  @override
+  String get profile_shopName => 'Shop Name';
+
+  @override
+  String get profile_address => 'Address';
+
+  @override
+  String get profile_updated => 'Profile updated successfully';
+
+  @override
+  String get profile_selectRegion => 'Select region';
+
+  @override
   String get profile_logout => 'Log Out';
 
   @override
@@ -849,6 +864,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orders_sentViaInPerson => 'In Person';
+
+  @override
+  String get orders_sendViaWhatsApp => 'Send via WhatsApp';
+
+  @override
+  String get orders_generateAndOpen => 'Generate PDF';
+
+  @override
+  String get orders_noWhatsapp => 'WhatsApp is not installed';
+
+  @override
+  String get orders_pdfError => 'Failed to generate PDF. Please try again.';
+
+  @override
+  String get orders_whatsappSent => 'Order sent via WhatsApp';
+
+  @override
+  String get orders_newOrderTitle => 'New Order';
+
+  @override
+  String get orders_selectSupplierHint => 'Search suppliers...';
+
+  @override
+  String get orders_selectSupplierPrompt =>
+      'Select a supplier to start building your order';
+
+  @override
+  String get orders_changeSupplier => 'Change Supplier';
+
+  @override
+  String get orders_selectSupplierAction => 'Select Supplier';
+
+  @override
+  String get orders_recentSuppliers => 'Recent';
+
+  @override
+  String get orders_allSuppliers => 'All Suppliers';
+
+  @override
+  String orders_buildOrderTitle(String supplierName) {
+    return '$supplierName\'s Order';
+  }
+
+  @override
+  String get orders_searchProducts => 'Search products...';
+
+  @override
+  String get orders_addToOrder => 'Add';
+
+  @override
+  String get orders_reviewTitle => 'Review Order';
+
+  @override
+  String get orders_saveAsDraft => 'Save as Draft';
+
+  @override
+  String get orders_draftSaved => 'Order saved as draft';
+
+  @override
+  String get orders_callSupplier => 'Call supplier';
+
+  @override
+  String orders_itemsSummary(int count, String total) {
+    return '$count items · $total MAD';
+  }
+
+  @override
+  String get orders_reviewOrder => 'Review Order';
+
+  @override
+  String get orders_outOfStock => 'Out of stock';
+
+  @override
+  String orders_stockLabel(int count, String unit) {
+    return 'Stock: $count $unit';
+  }
 
   @override
   String common_minutesAgo(int count) {

@@ -29,6 +29,18 @@ class Merchant {
   /// Relative URL path to avatar image (prepend AppConstants.serverUrl)
   final String? avatarUrl;
 
+  /// Owner's personal name (maps to backend "name")
+  final String? ownerName;
+
+  /// Shop / business name (maps to backend "shop_name")
+  final String? shopName;
+
+  /// Physical address
+  final String? address;
+
+  /// Region / city (one of the 8 valid backend values)
+  final String? region;
+
   /// Const constructor - allows compile-time constant creation
   /// All fields are final = immutable (cannot be changed after creation)
   const Merchant({
@@ -38,6 +50,10 @@ class Merchant {
     required this.subscriptionStatus,
     this.trialEndsAt,
     this.avatarUrl,
+    this.ownerName,
+    this.shopName,
+    this.address,
+    this.region,
   });
 
   /// Helper to check if merchant is on active trial

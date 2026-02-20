@@ -67,5 +67,9 @@ class MerchantModel {
     subscriptionStatus: subscriptionStatus,
     trialEndsAt: trialEndsAt,
     avatarUrl: avatarUrl,
+    ownerName: name,
+    shopName: shopName,
+    address: address,
+    region: region,
   );
 }

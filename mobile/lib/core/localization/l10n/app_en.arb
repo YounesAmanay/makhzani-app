@@ -163,6 +163,11 @@
       "date": {"type": "String"}
     }
   },
+  "profile_editProfile": "Edit Profile",
+  "profile_shopName": "Shop Name",
+  "profile_address": "Address",
+  "profile_updated": "Profile updated successfully",
+  "profile_selectRegion": "Select region",
   "profile_logout": "Log Out",
   "profile_logoutTitle": "Log Out",
   "profile_logoutConfirm": "Are you sure you want to log out?",
@@ -340,6 +345,46 @@
   "orders_sentViaEmail": "Email",
   "orders_sentViaPhone": "Phone Call",
   "orders_sentViaInPerson": "In Person",
+  "orders_sendViaWhatsApp": "Send via WhatsApp",
+  "orders_generateAndOpen": "Generate PDF",
+  "orders_noWhatsapp": "WhatsApp is not installed",
+  "orders_pdfError": "Failed to generate PDF. Please try again.",
+  "orders_whatsappSent": "Order sent via WhatsApp",
+  "orders_newOrderTitle": "New Order",
+  "orders_selectSupplierHint": "Search suppliers...",
+  "orders_selectSupplierPrompt": "Select a supplier to start building your order",
+  "orders_changeSupplier": "Change Supplier",
+  "orders_selectSupplierAction": "Select Supplier",
+  "orders_recentSuppliers": "Recent",
+  "orders_allSuppliers": "All Suppliers",
+  "orders_buildOrderTitle": "{supplierName}'s Order",
+  "@orders_buildOrderTitle": {
+    "placeholders": {
+      "supplierName": {"type": "String"}
+    }
+  },
+  "orders_searchProducts": "Search products...",
+  "orders_addToOrder": "Add",
+  "orders_reviewTitle": "Review Order",
+  "orders_saveAsDraft": "Save as Draft",
+  "orders_draftSaved": "Order saved as draft",
+  "orders_callSupplier": "Call supplier",
+  "orders_itemsSummary": "{count} items · {total} MAD",
+  "@orders_itemsSummary": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "total": {"type": "String"}
+    }
+  },
+  "orders_reviewOrder": "Review Order",
+  "orders_outOfStock": "Out of stock",
+  "orders_stockLabel": "Stock: {count} {unit}",
+  "@orders_stockLabel": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "unit": {"type": "String"}
+    }
+  },
   "common_minutesAgo": "{count} min ago",
   "@common_minutesAgo": {
     "placeholders": {

@@ -71,4 +71,19 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<String> uploadMerchantAvatar(String filePath) async {
     return await _remoteDataSource.uploadMerchantAvatar(filePath);
   }
+
+  @override
+  Future<Map<String, dynamic>> updateProfile({
+    String? ownerName,
+    String? shopName,
+    String? address,
+    String? region,
+  }) async {
+    return await _remoteDataSource.updateProfile(
+      ownerName: ownerName,
+      shopName: shopName,
+      address: address,
+      region: region,
+    );
+  }
 }

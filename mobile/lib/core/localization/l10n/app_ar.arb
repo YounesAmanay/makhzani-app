@@ -148,6 +148,11 @@
   "profile_region": "المنطقة",
   "profile_subscription": "الاشتراك",
   "profile_trialEnds": "ينتهي التجريب في {date}",
+  "profile_editProfile": "تعديل الملف الشخصي",
+  "profile_shopName": "اسم المتجر",
+  "profile_address": "العنوان",
+  "profile_updated": "تم تحديث الملف الشخصي بنجاح",
+  "profile_selectRegion": "اختر المنطقة",
   "profile_logout": "تسجيل الخروج",
   "profile_logoutTitle": "تسجيل الخروج",
   "profile_logoutConfirm": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
@@ -305,6 +310,46 @@
   "orders_sentViaEmail": "البريد الإلكتروني",
   "orders_sentViaPhone": "مكالمة هاتفية",
   "orders_sentViaInPerson": "شخصياً",
+  "orders_sendViaWhatsApp": "إرسال عبر واتساب",
+  "orders_generateAndOpen": "إنشاء PDF",
+  "orders_noWhatsapp": "واتساب غير مثبت",
+  "orders_pdfError": "فشل إنشاء PDF. يرجى المحاولة مرة أخرى.",
+  "orders_whatsappSent": "تم إرسال الطلب عبر واتساب",
+  "orders_newOrderTitle": "طلب جديد",
+  "orders_selectSupplierHint": "البحث عن موردين...",
+  "orders_selectSupplierPrompt": "اختر موردًا لبدء إنشاء طلبك",
+  "orders_changeSupplier": "تغيير المورد",
+  "orders_selectSupplierAction": "اختر موردًا",
+  "orders_recentSuppliers": "الأخيرون",
+  "orders_allSuppliers": "جميع الموردين",
+  "orders_buildOrderTitle": "طلب {supplierName}",
+  "@orders_buildOrderTitle": {
+    "placeholders": {
+      "supplierName": {"type": "String"}
+    }
+  },
+  "orders_searchProducts": "البحث عن منتجات...",
+  "orders_addToOrder": "إضافة",
+  "orders_reviewTitle": "مراجعة الطلب",
+  "orders_saveAsDraft": "حفظ كمسودة",
+  "orders_draftSaved": "تم حفظ الطلب كمسودة",
+  "orders_callSupplier": "الاتصال بالمورد",
+  "orders_itemsSummary": "{count} منتجات · {total} درهم",
+  "@orders_itemsSummary": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "total": {"type": "String"}
+    }
+  },
+  "orders_reviewOrder": "مراجعة الطلب",
+  "orders_outOfStock": "نفد المخزون",
+  "orders_stockLabel": "المخزون: {count} {unit}",
+  "@orders_stockLabel": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "unit": {"type": "String"}
+    }
+  },
   "common_minutesAgo": "منذ {count} دقيقة",
   "@common_minutesAgo": {
     "placeholders": {

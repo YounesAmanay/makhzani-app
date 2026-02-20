@@ -98,8 +98,14 @@ class SupplierFormNotifier extends StateNotifier<SupplierFormState> {
     }
   }
 
-  Future<bool> updateSupplierRelationship({
+  Future<bool> updateSupplier({
     required String id,
+    String? name,
+    String? phoneNumber,
+    String? businessName,
+    String? email,
+    String? address,
+    String? city,
     String? preferredContactMethod,
     String? paymentTerms,
     String? merchantNotes,
@@ -111,8 +117,14 @@ class SupplierFormNotifier extends StateNotifier<SupplierFormState> {
     );
 
     try {
-      final supplier = await _repository.updateSupplierRelationship(
+      final supplier = await _repository.updateSupplier(
         id: id,
+        name: name,
+        phoneNumber: phoneNumber,
+        businessName: businessName,
+        email: email,
+        address: address,
+        city: city,
         preferredContactMethod: preferredContactMethod,
         paymentTerms: paymentTerms,
         merchantNotes: merchantNotes,

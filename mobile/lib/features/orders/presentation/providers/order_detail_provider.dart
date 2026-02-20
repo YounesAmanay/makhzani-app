@@ -66,30 +66,33 @@ class OrderDetailNotifier extends StateNotifier<OrderDetailState> {
     }
   }
 
-  Future<bool> generatePdf() async {
-    if (state.order == null) return false;
+  /// Generates PDF and returns the server-relative URL to open immediately.
+  /// Returns null on failure (errorMessage is set in state).
+  Future<String?> generateAndOpenPdf() async {
+    if (state.order == null) return null;
 
     state = state.copyWith(isGeneratingPdf: true);
 
     try {
-      await _repository.generatePdf(state.order!.id);
-      // Re-fetch full order to get updated status
+      final pdfUrl = await _repository.generatePdf(state.order!.id);
+      // Re-fetch to update local order status
       final updatedOrder = await _repository.getOrder(state.order!.id);
       state = OrderDetailState(
         status: OrderDetailStatus.loaded,
         order: updatedOrder,
       );
       _ref.read(ordersProvider.notifier).refresh();
-      return true;
+      return pdfUrl;
     } catch (e) {
       state = state.copyWith(
         isGeneratingPdf: false,
         errorMessage: e.toString(),
       );
-      return false;
+      return null;
     }
   }
 
+  /// Marks the order as sent via the given channel and refreshes state.
   Future<bool> markSent(String sentVia) async {
     if (state.order == null) return false;
 
@@ -97,7 +100,6 @@ class OrderDetailNotifier extends StateNotifier<OrderDetailState> {
 
     try {
       await _repository.markSent(state.order!.id, sentVia);
-      // Re-fetch full order to get updated status
       final updatedOrder = await _repository.getOrder(state.order!.id);
       state = OrderDetailState(
         status: OrderDetailStatus.loaded,

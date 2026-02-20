@@ -22,8 +22,14 @@ abstract class SuppliersRepository {
     String? merchantNotes,
   });
 
-  Future<Supplier> updateSupplierRelationship({
+  Future<Supplier> updateSupplier({
     required String id,
+    String? name,
+    String? phoneNumber,
+    String? businessName,
+    String? email,
+    String? address,
+    String? city,
     String? preferredContactMethod,
     String? paymentTerms,
     String? merchantNotes,

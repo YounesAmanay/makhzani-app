@@ -15,7 +15,7 @@ abstract class SuppliersRemoteDataSource {
 
   Future<SupplierModel> createSupplier(Map<String, dynamic> data);
 
-  Future<SupplierModel> updateSupplierRelationship(
+  Future<SupplierModel> updateSupplier(
     String id,
     Map<String, dynamic> data,
   );
@@ -72,16 +72,12 @@ class SuppliersRemoteDataSourceImpl implements SuppliersRemoteDataSource {
   }
 
   @override
-  Future<SupplierModel> updateSupplierRelationship(
+  Future<SupplierModel> updateSupplier(
     String id,
     Map<String, dynamic> data,
   ) async {
-    await _apiClient.put(ApiEndpoints.supplierById(id), data: data);
-    // Backend returns supplier_id, supplier_name, relationship
-    // We need to reconstruct SupplierModel or fetch again
-    // For simplicity, fetch full supplier detail
-    final detailResult = await getSupplierDetail(id);
-    return detailResult.supplier;
+    final response = await _apiClient.put(ApiEndpoints.supplierById(id), data: data);
+    return SupplierModel.fromJson(response.data['data']['supplier']);
   }
 
   @override

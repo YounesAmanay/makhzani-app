@@ -17,6 +17,13 @@ abstract class AuthRemoteDataSource {
   Future<MerchantModel> getMerchantProfile();
   /// Returns the new avatar URL (relative path)
   Future<String> uploadMerchantAvatar(String filePath);
+  /// Update editable profile fields; returns partial merchant map from backend
+  Future<Map<String, dynamic>> updateProfile({
+    String? ownerName,
+    String? shopName,
+    String? address,
+    String? region,
+  });
   /// Refresh is handled by ApiClient interceptor - no separate call needed
 }
 
@@ -66,5 +73,27 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: formData,
     );
     return response.data['data']['avatar_url'] as String;
+  }
+
+  @override
+  Future<Map<String, dynamic>> updateProfile({
+    String? ownerName,
+    String? shopName,
+    String? address,
+    String? region,
+  }) async {
+    final body = <String, dynamic>{};
+    if (ownerName != null) body['name'] = ownerName;
+    if (shopName != null) body['shop_name'] = shopName;
+    if (address != null) body['address'] = address;
+    if (region != null) body['region'] = region;
+
+    final response = await _apiClient.put(
+      ApiEndpoints.merchantProfile,
+      data: body,
+    );
+    // Backend returns partial merchant (no subscription_status/avatar_url)
+    // Caller merges with existing state
+    return Map<String, dynamic>.from(response.data['data']['merchant'] as Map);
   }
 }

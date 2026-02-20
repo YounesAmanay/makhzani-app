@@ -57,8 +57,8 @@ class OrdersRepositoryImpl implements OrdersRepository {
   }
 
   @override
-  Future<void> generatePdf(String id) async {
-    await _remoteDataSource.generatePdf(id);
+  Future<String> generatePdf(String id) async {
+    return _remoteDataSource.generatePdf(id);
   }
 
   @override

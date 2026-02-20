@@ -17,8 +17,10 @@ import '../../../../shared/widgets/app_search_bar.dart';
 import '../../../suppliers/presentation/providers/suppliers_provider.dart';
 import '../../domain/entities/order.dart';
 import '../providers/orders_provider.dart';
+import '../providers/order_draft_provider.dart';
 import '../widgets/order_list_tile.dart';
 import '../widgets/supplier_picker_sheet.dart';
+import 'order_supplier_pick_screen.dart';
 
 class OrdersScreen extends ConsumerStatefulWidget {
   const OrdersScreen({super.key});
@@ -82,7 +84,12 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
       floatingActionButton: FloatingActionButton(
         heroTag: 'orders_fab',
         onPressed: () {
-          Navigator.of(context).pushNamed('/orders/create');
+          ref.read(orderDraftProvider.notifier).reset();
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => const OrderSupplierPickScreen(),
+            ),
+          );
         },
         tooltip: context.l10n.orders_add,
         child: HugeIcon(icon: HugeIcons.strokeRoundedPlusSign, size: 24, color: Colors.white),
@@ -183,7 +190,12 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
       description: context.l10n.orders_emptyDescription,
       actionLabel: context.l10n.orders_add,
       onAction: () {
-        Navigator.of(context).pushNamed('/orders/create');
+        ref.read(orderDraftProvider.notifier).reset();
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => const OrderSupplierPickScreen(),
+          ),
+        );
       },
     );
   }

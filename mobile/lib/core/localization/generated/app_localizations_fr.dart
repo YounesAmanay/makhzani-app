@@ -427,6 +427,21 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get profile_editProfile => 'Modifier le profil';
+
+  @override
+  String get profile_shopName => 'Nom du magasin';
+
+  @override
+  String get profile_address => 'Adresse';
+
+  @override
+  String get profile_updated => 'Profil mis a jour avec succes';
+
+  @override
+  String get profile_selectRegion => 'Selectionner la region';
+
+  @override
   String get profile_logout => 'Se deconnecter';
 
   @override
@@ -863,6 +878,83 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get orders_sentViaInPerson => 'En personne';
+
+  @override
+  String get orders_sendViaWhatsApp => 'Envoyer par WhatsApp';
+
+  @override
+  String get orders_generateAndOpen => 'Generer PDF';
+
+  @override
+  String get orders_noWhatsapp => 'WhatsApp n\'est pas installe';
+
+  @override
+  String get orders_pdfError =>
+      'Echec de generation du PDF. Veuillez reessayer.';
+
+  @override
+  String get orders_whatsappSent => 'Commande envoyee via WhatsApp';
+
+  @override
+  String get orders_newOrderTitle => 'Nouvelle commande';
+
+  @override
+  String get orders_selectSupplierHint => 'Rechercher des fournisseurs...';
+
+  @override
+  String get orders_selectSupplierPrompt =>
+      'Sélectionnez un fournisseur pour commencer votre commande';
+
+  @override
+  String get orders_changeSupplier => 'Changer le fournisseur';
+
+  @override
+  String get orders_selectSupplierAction => 'Sélectionner un fournisseur';
+
+  @override
+  String get orders_recentSuppliers => 'Recents';
+
+  @override
+  String get orders_allSuppliers => 'Tous les fournisseurs';
+
+  @override
+  String orders_buildOrderTitle(String supplierName) {
+    return 'Commande $supplierName';
+  }
+
+  @override
+  String get orders_searchProducts => 'Rechercher des produits...';
+
+  @override
+  String get orders_addToOrder => 'Ajouter';
+
+  @override
+  String get orders_reviewTitle => 'Verifier la commande';
+
+  @override
+  String get orders_saveAsDraft => 'Enregistrer comme brouillon';
+
+  @override
+  String get orders_draftSaved => 'Commande enregistree comme brouillon';
+
+  @override
+  String get orders_callSupplier => 'Appeler le fournisseur';
+
+  @override
+  String orders_itemsSummary(int count, String total) {
+    return '$count articles · $total MAD';
+  }
+
+  @override
+  String get orders_reviewOrder => 'Verifier la commande';
+
+  @override
+  String get orders_outOfStock => 'En rupture de stock';
+
+  @override
+  String orders_stockLabel(int count, String unit) {
+    return 'Stock: $count $unit';
+  }
 
   @override
   String common_minutesAgo(int count) {

@@ -113,6 +113,62 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = const AuthState(status: AuthStatus.unauthenticated);
   }
 
+  /// Update editable profile fields and patch state
+  Future<void> updateProfile({
+    String? ownerName,
+    String? shopName,
+    String? address,
+    String? region,
+  }) async {
+    try {
+      final partial = await _authRepository.updateProfile(
+        ownerName: ownerName,
+        shopName: shopName,
+        address: address,
+        region: region,
+      );
+      // Backend returns partial merchant — merge with existing state
+      final current = state.merchant!;
+      final newShopName = partial['shop_name'] as String? ?? current.shopName;
+      state = state.copyWith(
+        merchant: Merchant(
+          id: current.id,
+          phoneNumber: current.phoneNumber,
+          businessName: newShopName,
+          subscriptionStatus: current.subscriptionStatus,
+          trialEndsAt: current.trialEndsAt,
+          avatarUrl: current.avatarUrl,
+          ownerName: partial['name'] as String? ?? current.ownerName,
+          shopName: newShopName,
+          address: partial['address'] as String? ?? current.address,
+          region: partial['region'] as String? ?? current.region,
+        ),
+      );
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map) {
+        final errors = data['errors'];
+        if (errors is List && errors.isNotEmpty) {
+          final fieldErrors = <String, String>{};
+          for (final err in errors) {
+            if (err is Map) {
+              final field = err['path'] as String?;
+              final msg = err['msg'] as String?;
+              if (field != null && msg != null) fieldErrors[field] = msg;
+            }
+          }
+          throw ProfileUpdateException(
+            message: data['message'] as String? ?? 'Update failed',
+            fieldErrors: fieldErrors,
+          );
+        }
+      }
+      throw ProfileUpdateException(
+        message: (data is Map ? data['message'] as String? : null) ?? 'Failed to update profile',
+      );
+    }
+  }
+
   /// Upload avatar and patch avatarUrl on the current merchant in state
   Future<void> uploadAvatar(String filePath) async {
     try {
@@ -126,6 +182,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
           subscriptionStatus: current.subscriptionStatus,
           trialEndsAt: current.trialEndsAt,
           avatarUrl: avatarUrl,
+          ownerName: current.ownerName,
+          shopName: current.shopName,
+          address: current.address,
+          region: current.region,
         ),
       );
     } on DioException catch (e) {
@@ -133,6 +193,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
       throw Exception(message);
     }
   }
+}
+
+/// Structured exception for profile update errors — carries field-level errors
+class ProfileUpdateException implements Exception {
+  final String message;
+  final Map<String, String> fieldErrors;
+
+  const ProfileUpdateException({
+    required this.message,
+    this.fieldErrors = const {},
+  });
 }
 
 /// Providers

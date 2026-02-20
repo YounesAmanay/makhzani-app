@@ -416,6 +416,21 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get profile_editProfile => 'تعديل الملف الشخصي';
+
+  @override
+  String get profile_shopName => 'اسم المتجر';
+
+  @override
+  String get profile_address => 'العنوان';
+
+  @override
+  String get profile_updated => 'تم تحديث الملف الشخصي بنجاح';
+
+  @override
+  String get profile_selectRegion => 'اختر المنطقة';
+
+  @override
   String get profile_logout => 'تسجيل الخروج';
 
   @override
@@ -846,6 +861,81 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get orders_sentViaInPerson => 'شخصياً';
+
+  @override
+  String get orders_sendViaWhatsApp => 'إرسال عبر واتساب';
+
+  @override
+  String get orders_generateAndOpen => 'إنشاء PDF';
+
+  @override
+  String get orders_noWhatsapp => 'واتساب غير مثبت';
+
+  @override
+  String get orders_pdfError => 'فشل إنشاء PDF. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get orders_whatsappSent => 'تم إرسال الطلب عبر واتساب';
+
+  @override
+  String get orders_newOrderTitle => 'طلب جديد';
+
+  @override
+  String get orders_selectSupplierHint => 'البحث عن موردين...';
+
+  @override
+  String get orders_selectSupplierPrompt => 'اختر موردًا لبدء إنشاء طلبك';
+
+  @override
+  String get orders_changeSupplier => 'تغيير المورد';
+
+  @override
+  String get orders_selectSupplierAction => 'اختر موردًا';
+
+  @override
+  String get orders_recentSuppliers => 'الأخيرون';
+
+  @override
+  String get orders_allSuppliers => 'جميع الموردين';
+
+  @override
+  String orders_buildOrderTitle(String supplierName) {
+    return 'طلب $supplierName';
+  }
+
+  @override
+  String get orders_searchProducts => 'البحث عن منتجات...';
+
+  @override
+  String get orders_addToOrder => 'إضافة';
+
+  @override
+  String get orders_reviewTitle => 'مراجعة الطلب';
+
+  @override
+  String get orders_saveAsDraft => 'حفظ كمسودة';
+
+  @override
+  String get orders_draftSaved => 'تم حفظ الطلب كمسودة';
+
+  @override
+  String get orders_callSupplier => 'الاتصال بالمورد';
+
+  @override
+  String orders_itemsSummary(int count, String total) {
+    return '$count منتجات · $total درهم';
+  }
+
+  @override
+  String get orders_reviewOrder => 'مراجعة الطلب';
+
+  @override
+  String get orders_outOfStock => 'نفد المخزون';
+
+  @override
+  String orders_stockLabel(int count, String unit) {
+    return 'المخزون: $count $unit';
+  }
 
   @override
   String common_minutesAgo(int count) {

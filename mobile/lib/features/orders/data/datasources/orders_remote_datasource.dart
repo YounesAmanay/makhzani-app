@@ -20,7 +20,8 @@ abstract class OrdersRemoteDataSource {
 
   Future<OrderDetailModel> getOrder(String id);
 
-  Future<void> generatePdf(String id);
+  /// Returns the pdf_url from the server response
+  Future<String> generatePdf(String id);
 
   Future<void> markSent(String id, String sentVia);
 }
@@ -83,8 +84,9 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
   }
 
   @override
-  Future<void> generatePdf(String id) async {
-    await _apiClient.post(ApiEndpoints.generatePdf(id));
+  Future<String> generatePdf(String id) async {
+    final response = await _apiClient.post(ApiEndpoints.generatePdf(id));
+    return response.data['data']['pdf_url'] as String;
   }
 
   @override

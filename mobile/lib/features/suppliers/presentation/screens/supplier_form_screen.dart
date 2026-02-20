@@ -1,8 +1,7 @@
 /// Supplier Form Screen
 ///
-/// Create new supplier or edit relationship details.
-/// Create mode: all fields editable
-/// Edit mode: only relationship fields editable (contact method, payment, notes)
+/// Create new supplier or edit existing supplier details.
+/// All fields are editable in both create and edit modes.
 library;
 
 import 'package:flutter/material.dart';
@@ -153,7 +152,6 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                     // Name
                     TextFormField(
                       controller: _nameController,
-                      enabled: !widget.isEditing,
                       decoration: InputDecoration(
                         labelText: '${context.l10n.suppliers_name} *',
                         errorText: _fieldErrors['name'],
@@ -162,8 +160,7 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (_fieldErrors['name'] != null) return null;
-                        if (!widget.isEditing &&
-                            (value == null || value.trim().isEmpty)) {
+                        if (value == null || value.trim().isEmpty) {
                           return context.l10n.validation_required;
                         }
                         return null;
@@ -174,7 +171,6 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                     // Phone Number
                     TextFormField(
                       controller: _phoneController,
-                      enabled: !widget.isEditing,
                       decoration: InputDecoration(
                         labelText: '${context.l10n.suppliers_phone} *',
                         hintText: '+212600000000',
@@ -185,15 +181,13 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                       textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (_fieldErrors['phone_number'] != null) return null;
-                        if (!widget.isEditing) {
-                          if (value == null || value.trim().isEmpty) {
-                            return context.l10n.validation_required;
-                          }
-                          // Morocco phone format validation
-                          final phoneRegex = RegExp(r'^\+212[5-7]\d{8}$');
-                          if (!phoneRegex.hasMatch(value.trim())) {
-                            return context.l10n.validation_phoneFormat;
-                          }
+                        if (value == null || value.trim().isEmpty) {
+                          return context.l10n.validation_required;
+                        }
+                        // Morocco phone format validation
+                        final phoneRegex = RegExp(r'^\+212[5-7]\d{8}$');
+                        if (!phoneRegex.hasMatch(value.trim())) {
+                          return context.l10n.validation_phoneFormat;
                         }
                         return null;
                       },
@@ -203,7 +197,6 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                     // Business Name
                     TextFormField(
                       controller: _businessNameController,
-                      enabled: !widget.isEditing,
                       decoration: InputDecoration(
                         labelText: context.l10n.suppliers_businessName,
                         errorText: _fieldErrors['business_name'],
@@ -216,7 +209,6 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                     // Email
                     TextFormField(
                       controller: _emailController,
-                      enabled: !widget.isEditing,
                       decoration: InputDecoration(
                         labelText: context.l10n.suppliers_email,
                         hintText: 'supplier@example.com',
@@ -241,7 +233,6 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                     // Address
                     TextFormField(
                       controller: _addressController,
-                      enabled: !widget.isEditing,
                       decoration: InputDecoration(
                         labelText: context.l10n.suppliers_address,
                         errorText: _fieldErrors['address'],
@@ -273,16 +264,13 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
                         ..._cities.map((city) {
                           return DropdownMenuItem(
                             value: city,
-                            enabled: !widget.isEditing,
                             child: Text(city),
                           );
                         }),
                       ],
-                      onChanged: widget.isEditing
-                          ? null
-                          : (value) {
-                              setState(() => _selectedCity = value);
-                            },
+                      onChanged: (value) {
+                        setState(() => _selectedCity = value);
+                      },
                     ),
                     const SizedBox(height: AppDimensions.marginLarge),
 
@@ -389,40 +377,51 @@ class _SupplierFormScreenState extends ConsumerState<SupplierFormScreen> {
 
     setState(() => _isSubmitting = true);
 
+    final notifier = ref.read(supplierFormProvider.notifier);
+    final name = _nameController.text.trim();
+    final phoneNumber = _phoneController.text.trim();
+    final businessName = _businessNameController.text.trim().isEmpty
+        ? null
+        : _businessNameController.text.trim();
+    final email = _emailController.text.trim().isEmpty
+        ? null
+        : _emailController.text.trim();
+    final address = _addressController.text.trim().isEmpty
+        ? null
+        : _addressController.text.trim();
+    final paymentTerms = _paymentTermsController.text.trim().isEmpty
+        ? null
+        : _paymentTermsController.text.trim();
+    final merchantNotes = _notesController.text.trim().isEmpty
+        ? null
+        : _notesController.text.trim();
+
     bool success;
     if (widget.isEditing) {
-      success = await ref.read(supplierFormProvider.notifier).updateSupplierRelationship(
-            id: widget.supplierId!,
-            preferredContactMethod: _selectedContactMethod,
-            paymentTerms: _paymentTermsController.text.trim().isEmpty
-                ? null
-                : _paymentTermsController.text.trim(),
-            merchantNotes: _notesController.text.trim().isEmpty
-                ? null
-                : _notesController.text.trim(),
-          );
+      success = await notifier.updateSupplier(
+        id: widget.supplierId!,
+        name: name,
+        phoneNumber: phoneNumber,
+        businessName: businessName,
+        email: email,
+        address: address,
+        city: _selectedCity,
+        preferredContactMethod: _selectedContactMethod,
+        paymentTerms: paymentTerms,
+        merchantNotes: merchantNotes,
+      );
     } else {
-      success = await ref.read(supplierFormProvider.notifier).createSupplier(
-            name: _nameController.text.trim(),
-            phoneNumber: _phoneController.text.trim(),
-            businessName: _businessNameController.text.trim().isEmpty
-                ? null
-                : _businessNameController.text.trim(),
-            email: _emailController.text.trim().isEmpty
-                ? null
-                : _emailController.text.trim(),
-            address: _addressController.text.trim().isEmpty
-                ? null
-                : _addressController.text.trim(),
-            city: _selectedCity,
-            preferredContactMethod: _selectedContactMethod,
-            paymentTerms: _paymentTermsController.text.trim().isEmpty
-                ? null
-                : _paymentTermsController.text.trim(),
-            merchantNotes: _notesController.text.trim().isEmpty
-                ? null
-                : _notesController.text.trim(),
-          );
+      success = await notifier.createSupplier(
+        name: name,
+        phoneNumber: phoneNumber,
+        businessName: businessName,
+        email: email,
+        address: address,
+        city: _selectedCity,
+        preferredContactMethod: _selectedContactMethod,
+        paymentTerms: paymentTerms,
+        merchantNotes: merchantNotes,
+      );
     }
 
     if (!mounted) return;

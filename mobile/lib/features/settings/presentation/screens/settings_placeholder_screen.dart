@@ -12,6 +12,7 @@ import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import 'edit_profile_screen.dart';
 
 class SettingsPlaceholderScreen extends ConsumerStatefulWidget {
   const SettingsPlaceholderScreen({super.key});
@@ -24,6 +25,39 @@ class SettingsPlaceholderScreen extends ConsumerStatefulWidget {
 class _SettingsPlaceholderScreenState
     extends ConsumerState<SettingsPlaceholderScreen> {
   bool _isUploadingAvatar = false;
+
+  Widget _buildInfoTile(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required String value,
+    bool isLast = false,
+  }) {
+    final theme = Theme.of(context);
+    return Column(
+      children: [
+        ListTile(
+          leading: Icon(icon, size: 20, color: AppColors.textSecondary),
+          title: Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+          subtitle: Text(
+            value,
+            style: theme.textTheme.bodyMedium,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.paddingMedium,
+            vertical: AppDimensions.paddingXSmall,
+          ),
+        ),
+        if (!isLast)
+          const Divider(height: 1, indent: AppDimensions.paddingLarge + 20),
+      ],
+    );
+  }
 
   Future<void> _pickAndUploadAvatar() async {
     final picker = ImagePicker();
@@ -208,10 +242,66 @@ class _SettingsPlaceholderScreenState
                           ),
                         ),
                       ),
+
+                    const SizedBox(height: AppDimensions.marginMedium),
+
+                    // Edit profile button
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const EditProfileScreen(),
+                          ),
+                        ),
+                        icon: const Icon(Icons.edit_outlined, size: 18),
+                        label: Text(context.l10n.profile_editProfile),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
+
+            const SizedBox(height: AppDimensions.marginMedium),
+
+            // Profile details card
+            if (merchant != null)
+              Card(
+                child: Column(
+                  children: [
+                    if (merchant.ownerName?.isNotEmpty == true)
+                      _buildInfoTile(
+                        context,
+                        icon: Icons.person_outline,
+                        label: context.l10n.profile_ownerName,
+                        value: merchant.ownerName!,
+                      ),
+                    if (merchant.shopName?.isNotEmpty == true)
+                      _buildInfoTile(
+                        context,
+                        icon: Icons.store_outlined,
+                        label: context.l10n.profile_shopName,
+                        value: merchant.shopName!,
+                      ),
+                    if (merchant.address?.isNotEmpty == true)
+                      _buildInfoTile(
+                        context,
+                        icon: Icons.location_on_outlined,
+                        label: context.l10n.profile_address,
+                        value: merchant.address!,
+                      ),
+                    if (merchant.region?.isNotEmpty == true)
+                      _buildInfoTile(
+                        context,
+                        icon: Icons.map_outlined,
+                        label: context.l10n.profile_region,
+                        value: merchant.region!,
+                        isLast: true,
+                      ),
+                  ],
+                ),
+              ),
 
             const SizedBox(height: AppDimensions.marginMedium),
 

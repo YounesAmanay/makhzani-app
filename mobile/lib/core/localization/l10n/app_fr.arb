@@ -163,6 +163,11 @@
       "date": {"type": "String"}
     }
   },
+  "profile_editProfile": "Modifier le profil",
+  "profile_shopName": "Nom du magasin",
+  "profile_address": "Adresse",
+  "profile_updated": "Profil mis a jour avec succes",
+  "profile_selectRegion": "Selectionner la region",
   "profile_logout": "Se deconnecter",
   "profile_logoutTitle": "Deconnexion",
   "profile_logoutConfirm": "Etes-vous sur de vouloir vous deconnecter ?",
@@ -340,6 +345,46 @@
   "orders_sentViaEmail": "Email",
   "orders_sentViaPhone": "Appel telephonique",
   "orders_sentViaInPerson": "En personne",
+  "orders_sendViaWhatsApp": "Envoyer par WhatsApp",
+  "orders_generateAndOpen": "Generer PDF",
+  "orders_noWhatsapp": "WhatsApp n'est pas installe",
+  "orders_pdfError": "Echec de generation du PDF. Veuillez reessayer.",
+  "orders_whatsappSent": "Commande envoyee via WhatsApp",
+  "orders_newOrderTitle": "Nouvelle commande",
+  "orders_selectSupplierHint": "Rechercher des fournisseurs...",
+  "orders_selectSupplierPrompt": "Sélectionnez un fournisseur pour commencer votre commande",
+  "orders_changeSupplier": "Changer le fournisseur",
+  "orders_selectSupplierAction": "Sélectionner un fournisseur",
+  "orders_recentSuppliers": "Recents",
+  "orders_allSuppliers": "Tous les fournisseurs",
+  "orders_buildOrderTitle": "Commande {supplierName}",
+  "@orders_buildOrderTitle": {
+    "placeholders": {
+      "supplierName": {"type": "String"}
+    }
+  },
+  "orders_searchProducts": "Rechercher des produits...",
+  "orders_addToOrder": "Ajouter",
+  "orders_reviewTitle": "Verifier la commande",
+  "orders_saveAsDraft": "Enregistrer comme brouillon",
+  "orders_draftSaved": "Commande enregistree comme brouillon",
+  "orders_callSupplier": "Appeler le fournisseur",
+  "orders_itemsSummary": "{count} articles · {total} MAD",
+  "@orders_itemsSummary": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "total": {"type": "String"}
+    }
+  },
+  "orders_reviewOrder": "Verifier la commande",
+  "orders_outOfStock": "En rupture de stock",
+  "orders_stockLabel": "Stock: {count} {unit}",
+  "@orders_stockLabel": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "unit": {"type": "String"}
+    }
+  },
   "common_minutesAgo": "il y a {count} min",
   "@common_minutesAgo": {
     "placeholders": {

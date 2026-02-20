@@ -1,6 +1,7 @@
 /// Order Detail Screen
 ///
-/// Displays full order details with line items and action buttons.
+/// WhatsApp-first layout: primary action is sharing via WhatsApp,
+/// secondary is generate PDF → opens in native viewer in one tap.
 library;
 
 import 'package:flutter/material.dart';
@@ -16,9 +17,8 @@ import '../../domain/entities/order_detail.dart';
 import '../../domain/entities/order_item.dart';
 import '../../domain/entities/order_status.dart';
 import '../providers/order_detail_provider.dart';
-import '../widgets/mark_sent_sheet.dart';
 
-class OrderDetailScreen extends ConsumerWidget {
+class OrderDetailScreen extends ConsumerStatefulWidget {
   final String orderId;
 
   const OrderDetailScreen({
@@ -27,8 +27,13 @@ class OrderDetailScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(orderDetailProvider(orderId));
+  ConsumerState<OrderDetailScreen> createState() => _OrderDetailScreenState();
+}
+
+class _OrderDetailScreenState extends ConsumerState<OrderDetailScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(orderDetailProvider(widget.orderId));
 
     return Scaffold(
       appBar: AppBar(
@@ -38,21 +43,17 @@ class OrderDetailScreen extends ConsumerWidget {
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () {
-                ref.read(orderDetailProvider(orderId).notifier).refresh();
+                ref.read(orderDetailProvider(widget.orderId).notifier).refresh();
               },
               tooltip: context.l10n.common_refresh,
             ),
         ],
       ),
-      body: _buildBody(context, ref, state),
+      body: _buildBody(state),
     );
   }
 
-  Widget _buildBody(
-    BuildContext context,
-    WidgetRef ref,
-    OrderDetailState state,
-  ) {
+  Widget _buildBody(OrderDetailState state) {
     switch (state.status) {
       case OrderDetailStatus.loading:
         return const AppLoadingScreen();
@@ -60,7 +61,7 @@ class OrderDetailScreen extends ConsumerWidget {
         return AppErrorState(
           message: state.errorMessage ?? context.l10n.error_unknown,
           onRetry: () {
-            ref.read(orderDetailProvider(orderId).notifier).refresh();
+            ref.read(orderDetailProvider(widget.orderId).notifier).refresh();
           },
         );
       case OrderDetailStatus.loaded:
@@ -68,19 +69,15 @@ class OrderDetailScreen extends ConsumerWidget {
           return AppErrorState(
             message: context.l10n.orders_orderNotFound,
             onRetry: () {
-              ref.read(orderDetailProvider(orderId).notifier).refresh();
+              ref.read(orderDetailProvider(widget.orderId).notifier).refresh();
             },
           );
         }
-        return _buildContent(context, ref, state);
+        return _buildContent(state);
     }
   }
 
-  Widget _buildContent(
-    BuildContext context,
-    WidgetRef ref,
-    OrderDetailState state,
-  ) {
+  Widget _buildContent(OrderDetailState state) {
     final order = state.order!;
 
     return Column(
@@ -91,38 +88,27 @@ class OrderDetailScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Status Section
-                _buildStatusSection(context, order),
+                _buildStatusSection(order),
                 const SizedBox(height: AppDimensions.marginMedium),
-
-                // Supplier Card
-                _buildSupplierCard(context, order),
+                _buildSupplierCard(order),
                 const SizedBox(height: AppDimensions.marginMedium),
-
-                // Items List
-                _buildItemsList(context, order),
+                _buildItemsList(order),
                 const SizedBox(height: AppDimensions.marginMedium),
-
-                // Notes
                 if (order.notes != null) ...[
-                  _buildNotesCard(context, order),
+                  _buildNotesCard(order),
                   const SizedBox(height: AppDimensions.marginMedium),
                 ],
-
-                // Summary
-                _buildSummaryCard(context, order),
+                _buildSummaryCard(order),
               ],
             ),
           ),
         ),
-
-        // Action Buttons
-        _buildActionButtons(context, ref, state),
+        _buildActionButtons(state),
       ],
     );
   }
 
-  Widget _buildStatusSection(BuildContext context, OrderDetail order) {
+  Widget _buildStatusSection(OrderDetail order) {
     final theme = Theme.of(context);
 
     return Card(
@@ -153,12 +139,12 @@ class OrderDetailScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                _buildStatusBadge(context, order.status),
+                _buildStatusBadge(order.status),
               ],
             ),
             const SizedBox(height: AppDimensions.marginMedium),
             Text(
-              _formatDate(context, order.createdAt),
+              _formatDate(order.createdAt),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -169,8 +155,8 @@ class OrderDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatusBadge(BuildContext context, OrderStatus status) {
-    final (label, color) = _getStatusData(context, status);
+  Widget _buildStatusBadge(OrderStatus status) {
+    final (label, color) = _getStatusData(status);
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -191,20 +177,17 @@ class OrderDetailScreen extends ConsumerWidget {
     );
   }
 
-  (String, Color) _getStatusData(BuildContext context, OrderStatus status) {
-    if (status.isDraft) {
-      return (context.l10n.orders_statusDraft, AppColors.textSecondary);
+  (String, Color) _getStatusData(OrderStatus status) {
+    if (status.isSent) {
+      return (context.l10n.orders_statusSent, AppColors.success);
     }
     if (status.isGenerated) {
       return (context.l10n.orders_statusGenerated, AppColors.info);
     }
-    if (status.isSent) {
-      return (context.l10n.orders_statusSent, AppColors.success);
-    }
     return (context.l10n.orders_statusDraft, AppColors.textSecondary);
   }
 
-  Widget _buildSupplierCard(BuildContext context, OrderDetail order) {
+  Widget _buildSupplierCard(OrderDetail order) {
     final theme = Theme.of(context);
     final supplier = order.supplier;
 
@@ -230,11 +213,7 @@ class OrderDetailScreen extends ConsumerWidget {
             const SizedBox(height: AppDimensions.marginSmall),
             Row(
               children: [
-                Icon(
-                  Icons.phone_outlined,
-                  size: 16,
-                  color: AppColors.textSecondary,
-                ),
+                Icon(Icons.phone_outlined, size: 16, color: AppColors.textSecondary),
                 const SizedBox(width: AppDimensions.marginXSmall),
                 Text(
                   supplier.phoneNumber,
@@ -248,11 +227,7 @@ class OrderDetailScreen extends ConsumerWidget {
               const SizedBox(height: AppDimensions.marginXSmall),
               Row(
                 children: [
-                  Icon(
-                    Icons.business_outlined,
-                    size: 16,
-                    color: AppColors.textSecondary,
-                  ),
+                  Icon(Icons.business_outlined, size: 16, color: AppColors.textSecondary),
                   const SizedBox(width: AppDimensions.marginXSmall),
                   Text(
                     supplier.businessName!,
@@ -269,7 +244,7 @@ class OrderDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildItemsList(BuildContext context, OrderDetail order) {
+  Widget _buildItemsList(OrderDetail order) {
     final theme = Theme.of(context);
 
     return Card(
@@ -285,14 +260,14 @@ class OrderDetailScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppDimensions.marginMedium),
-            ...order.items.map((item) => _buildItemRow(context, item)),
+            ...order.items.map((item) => _buildItemRow(item)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildItemRow(BuildContext context, OrderItem item) {
+  Widget _buildItemRow(OrderItem item) {
     final theme = Theme.of(context);
 
     return Padding(
@@ -333,7 +308,7 @@ class OrderDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildNotesCard(BuildContext context, OrderDetail order) {
+  Widget _buildNotesCard(OrderDetail order) {
     final theme = Theme.of(context);
 
     return Card(
@@ -349,17 +324,14 @@ class OrderDetailScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppDimensions.marginSmall),
-            Text(
-              order.notes!,
-              style: theme.textTheme.bodyMedium,
-            ),
+            Text(order.notes!, style: theme.textTheme.bodyMedium),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSummaryCard(BuildContext context, OrderDetail order) {
+  Widget _buildSummaryCard(OrderDetail order) {
     final theme = Theme.of(context);
 
     return Card(
@@ -428,13 +400,8 @@ class OrderDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildActionButtons(
-    BuildContext context,
-    WidgetRef ref,
-    OrderDetailState state,
-  ) {
+  Widget _buildActionButtons(OrderDetailState state) {
     final order = state.order!;
-    final status = order.status;
 
     return Container(
       padding: const EdgeInsets.all(AppDimensions.paddingMedium),
@@ -452,111 +419,118 @@ class OrderDetailScreen extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Draft state: Generate PDF button
-          if (status.isDraft)
-            ElevatedButton.icon(
-              onPressed: state.isGeneratingPdf
-                  ? null
-                  : () => _onGeneratePdf(context, ref),
-              icon: state.isGeneratingPdf
-                  ? const SizedBox(
-                      height: 16,
-                      width: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.picture_as_pdf),
-              label: Text(context.l10n.orders_generatePdf),
+          // PRIMARY: WhatsApp (always shown)
+          ElevatedButton.icon(
+            onPressed: state.isMarkingSent ? null : () => _onSendWhatsApp(order),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF25D366), // WhatsApp green
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(
+                vertical: AppDimensions.paddingMedium,
+              ),
             ),
+            icon: state.isMarkingSent
+                ? const SizedBox(
+                    height: 16,
+                    width: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                : const Icon(Icons.chat_outlined),
+            label: Text(context.l10n.orders_sendViaWhatsApp),
+          ),
 
-          // Generated state: Download PDF + Mark as Sent
-          if (status.isGenerated) ...[
-            ElevatedButton.icon(
-              onPressed: () => _onDownloadPdf(context, order.pdfUrl),
-              icon: const Icon(Icons.download),
-              label: Text(context.l10n.orders_downloadPdf),
-            ),
-            const SizedBox(height: AppDimensions.marginSmall),
-            OutlinedButton.icon(
-              onPressed: state.isMarkingSent
-                  ? null
-                  : () => _onMarkSent(context, ref),
-              icon: state.isMarkingSent
-                  ? const SizedBox(
-                      height: 16,
-                      width: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.send),
-              label: Text(context.l10n.orders_markAsSent),
-            ),
-          ],
+          const SizedBox(height: AppDimensions.marginSmall),
 
-          // Sent state: Download PDF only
-          if (status.isSent)
-            ElevatedButton.icon(
-              onPressed: () => _onDownloadPdf(context, order.pdfUrl),
-              icon: const Icon(Icons.download),
-              label: Text(context.l10n.orders_downloadPdf),
+          // SECONDARY: Generate PDF → open in viewer
+          OutlinedButton.icon(
+            onPressed: state.isGeneratingPdf ? null : () => _onGenerateAndOpenPdf(order),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(
+                vertical: AppDimensions.paddingMedium,
+              ),
             ),
+            icon: state.isGeneratingPdf
+                ? const SizedBox(
+                    height: 16,
+                    width: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.picture_as_pdf_outlined),
+            label: Text(context.l10n.orders_generateAndOpen),
+          ),
         ],
       ),
     );
   }
 
-  Future<void> _onGeneratePdf(BuildContext context, WidgetRef ref) async {
-    final success = await ref.read(orderDetailProvider(orderId).notifier).generatePdf();
+  Future<void> _onSendWhatsApp(OrderDetail order) async {
+    final phone = order.supplier.phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
 
-    if (!context.mounted) return;
-
-    if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.orders_pdfGenerated),
-          backgroundColor: AppColors.success,
-        ),
+    // Compose WhatsApp message
+    final buffer = StringBuffer();
+    buffer.writeln('*${order.orderNumber}*');
+    buffer.writeln();
+    for (final item in order.items) {
+      buffer.writeln(
+        '• ${item.productName}: ${item.quantity.toStringAsFixed(2)} ${item.productUnit}',
       );
-    } else {
-      final state = ref.read(orderDetailProvider(orderId));
+    }
+    buffer.writeln();
+    buffer.writeln('*Total: ${order.totalValue.toStringAsFixed(2)} MAD*');
+
+    final encoded = Uri.encodeComponent(buffer.toString());
+    final uri = Uri.parse('https://wa.me/$phone?text=$encoded');
+
+    final canOpen = await canLaunchUrl(uri);
+    if (!mounted) return;
+
+    if (!canOpen) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(state.errorMessage ?? context.l10n.error_unknown),
+          content: Text(context.l10n.orders_noWhatsapp),
           backgroundColor: AppColors.error,
         ),
       );
+      return;
     }
+
+    // Launch WhatsApp — fire-and-forget; then mark as sent in background
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+
+    if (!mounted) return;
+
+    // Mark as sent in background (no await — user is already in WhatsApp)
+    ref
+        .read(orderDetailProvider(widget.orderId).notifier)
+        .markSent('whatsapp')
+        .then((_) {
+      // Silently refresh — no SnackBar needed, user is in WhatsApp
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(context.l10n.orders_whatsappSent),
+        backgroundColor: AppColors.success,
+      ),
+    );
   }
 
-  Future<void> _onMarkSent(BuildContext context, WidgetRef ref) async {
-    final sentVia = await MarkSentSheet.show(context: context);
-    if (sentVia == null) return;
+  Future<void> _onGenerateAndOpenPdf(OrderDetail order) async {
+    final pdfUrl = await ref
+        .read(orderDetailProvider(widget.orderId).notifier)
+        .generateAndOpenPdf();
 
-    final success = await ref.read(orderDetailProvider(orderId).notifier).markSent(sentVia);
+    if (!mounted) return;
 
-    if (!context.mounted) return;
-
-    if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.orders_markedAsSent),
-          backgroundColor: AppColors.success,
-        ),
-      );
-    } else {
-      final state = ref.read(orderDetailProvider(orderId));
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(state.errorMessage ?? context.l10n.error_unknown),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    }
-  }
-
-  Future<void> _onDownloadPdf(BuildContext context, String? pdfUrl) async {
     if (pdfUrl == null) {
+      final errorMessage =
+          ref.read(orderDetailProvider(widget.orderId)).errorMessage;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(context.l10n.orders_pdfNotAvailable),
+          content: Text(errorMessage ?? context.l10n.orders_pdfError),
           backgroundColor: AppColors.error,
         ),
       );
@@ -569,17 +543,22 @@ class OrderDetailScreen extends ConsumerWidget {
     try {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } catch (_) {
-      if (!context.mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(context.l10n.orders_pdfNotAvailable),
+          content: Text(context.l10n.orders_pdfError),
           backgroundColor: AppColors.error,
         ),
       );
+      return;
     }
+
+    // Also mark as sent via pdf in background
+    if (!mounted) return;
+    ref.read(orderDetailProvider(widget.orderId).notifier).markSent('pdf');
   }
 
-  String _formatDate(BuildContext context, DateTime date) {
+  String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
 

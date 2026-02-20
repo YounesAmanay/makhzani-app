@@ -22,7 +22,8 @@ abstract class OrdersRepository {
 
   Future<OrderDetail> getOrder(String id);
 
-  Future<void> generatePdf(String id);
+  /// Returns the pdf_url to open immediately after generation
+  Future<String> generatePdf(String id);
 
   Future<void> markSent(String id, String sentVia);
 }

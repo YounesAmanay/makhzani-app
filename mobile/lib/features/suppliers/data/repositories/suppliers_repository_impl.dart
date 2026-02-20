@@ -57,20 +57,32 @@ class SuppliersRepositoryImpl implements SuppliersRepository {
   }
 
   @override
-  Future<Supplier> updateSupplierRelationship({
+  Future<Supplier> updateSupplier({
     required String id,
+    String? name,
+    String? phoneNumber,
+    String? businessName,
+    String? email,
+    String? address,
+    String? city,
     String? preferredContactMethod,
     String? paymentTerms,
     String? merchantNotes,
   }) async {
     final data = <String, dynamic>{
+      if (name != null) 'name': name,
+      if (phoneNumber != null) 'phone_number': phoneNumber,
+      if (businessName != null) 'business_name': businessName,
+      if (email != null) 'email': email,
+      if (address != null) 'address': address,
+      if (city != null) 'city': city,
       if (preferredContactMethod != null)
         'preferred_contact_method': preferredContactMethod,
       if (paymentTerms != null) 'payment_terms': paymentTerms,
       if (merchantNotes != null) 'merchant_notes': merchantNotes,
     };
 
-    final model = await _remoteDataSource.updateSupplierRelationship(id, data);
+    final model = await _remoteDataSource.updateSupplier(id, data);
     return model.toEntity();
   }
 

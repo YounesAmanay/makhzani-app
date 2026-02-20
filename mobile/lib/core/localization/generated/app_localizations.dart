@@ -886,6 +886,36 @@ abstract class AppLocalizations {
   /// **'Trial ends {date}'**
   String profile_trialEnds(String date);
 
+  /// No description provided for @profile_editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get profile_editProfile;
+
+  /// No description provided for @profile_shopName.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop Name'**
+  String get profile_shopName;
+
+  /// No description provided for @profile_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get profile_address;
+
+  /// No description provided for @profile_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profile_updated;
+
+  /// No description provided for @profile_selectRegion.
+  ///
+  /// In en, this message translates to:
+  /// **'Select region'**
+  String get profile_selectRegion;
+
   /// No description provided for @profile_logout.
   ///
   /// In en, this message translates to:
@@ -1707,6 +1737,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'In Person'**
   String get orders_sentViaInPerson;
+
+  /// No description provided for @orders_sendViaWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Send via WhatsApp'**
+  String get orders_sendViaWhatsApp;
+
+  /// No description provided for @orders_generateAndOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate PDF'**
+  String get orders_generateAndOpen;
+
+  /// No description provided for @orders_noWhatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp is not installed'**
+  String get orders_noWhatsapp;
+
+  /// No description provided for @orders_pdfError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to generate PDF. Please try again.'**
+  String get orders_pdfError;
+
+  /// No description provided for @orders_whatsappSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Order sent via WhatsApp'**
+  String get orders_whatsappSent;
+
+  /// No description provided for @orders_newOrderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Order'**
+  String get orders_newOrderTitle;
+
+  /// No description provided for @orders_selectSupplierHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search suppliers...'**
+  String get orders_selectSupplierHint;
+
+  /// No description provided for @orders_selectSupplierPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a supplier to start building your order'**
+  String get orders_selectSupplierPrompt;
+
+  /// No description provided for @orders_changeSupplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Supplier'**
+  String get orders_changeSupplier;
+
+  /// No description provided for @orders_selectSupplierAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Supplier'**
+  String get orders_selectSupplierAction;
+
+  /// No description provided for @orders_recentSuppliers.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get orders_recentSuppliers;
+
+  /// No description provided for @orders_allSuppliers.
+  ///
+  /// In en, this message translates to:
+  /// **'All Suppliers'**
+  String get orders_allSuppliers;
+
+  /// No description provided for @orders_buildOrderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{supplierName}\'s Order'**
+  String orders_buildOrderTitle(String supplierName);
+
+  /// No description provided for @orders_searchProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Search products...'**
+  String get orders_searchProducts;
+
+  /// No description provided for @orders_addToOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get orders_addToOrder;
+
+  /// No description provided for @orders_reviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Order'**
+  String get orders_reviewTitle;
+
+  /// No description provided for @orders_saveAsDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as Draft'**
+  String get orders_saveAsDraft;
+
+  /// No description provided for @orders_draftSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Order saved as draft'**
+  String get orders_draftSaved;
+
+  /// No description provided for @orders_callSupplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Call supplier'**
+  String get orders_callSupplier;
+
+  /// No description provided for @orders_itemsSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} items · {total} MAD'**
+  String orders_itemsSummary(int count, String total);
+
+  /// No description provided for @orders_reviewOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Order'**
+  String get orders_reviewOrder;
+
+  /// No description provided for @orders_outOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of stock'**
+  String get orders_outOfStock;
+
+  /// No description provided for @orders_stockLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock: {count} {unit}'**
+  String orders_stockLabel(int count, String unit);
 
   /// No description provided for @common_minutesAgo.
   ///
