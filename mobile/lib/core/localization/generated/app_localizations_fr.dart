@@ -929,6 +929,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get orders_addToOrder => 'Ajouter';
 
   @override
+  String orders_addToOrderTotal(String total) {
+    return 'Ajouter ($total MAD)';
+  }
+
+  @override
+  String orders_updateTotal(String total) {
+    return 'Mettre a jour ($total MAD)';
+  }
+
+  @override
+  String get orders_removeFromOrder => 'Retirer de la commande';
+
+  @override
+  String get orders_inOrder => 'Dans la commande';
+
+  @override
   String get orders_reviewTitle => 'Verifier la commande';
 
   @override
@@ -946,7 +962,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get orders_reviewOrder => 'Verifier la commande';
+  String get orders_reviewOrder => 'Créer & Vérifier';
 
   @override
   String get orders_outOfStock => 'En rupture de stock';

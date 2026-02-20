@@ -910,6 +910,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get orders_addToOrder => 'إضافة';
 
   @override
+  String orders_addToOrderTotal(String total) {
+    return 'إضافة إلى الطلب ($total MAD)';
+  }
+
+  @override
+  String orders_updateTotal(String total) {
+    return 'تحديث ($total MAD)';
+  }
+
+  @override
+  String get orders_removeFromOrder => 'إزالة من الطلب';
+
+  @override
+  String get orders_inOrder => 'في الطلب';
+
+  @override
   String get orders_reviewTitle => 'مراجعة الطلب';
 
   @override
@@ -927,7 +943,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get orders_reviewOrder => 'مراجعة الطلب';
+  String get orders_reviewOrder => 'إنشاء ومراجعة';
 
   @override
   String get orders_outOfStock => 'نفد المخزون';

@@ -74,9 +74,29 @@ router.get("/", authenticateToken, validateSuppliersQuery, handleValidationError
         { phone_number: { [db.Sequelize.Op.like]: "%" + term + "%" } },
       ];
     }
-    const suppliers = await db.Supplier.findAll({ where, order: [["name", "ASC"]] });
+    const suppliers = await db.Supplier.findAll({
+      where,
+      order: [["name", "ASC"]],
+      include: [{
+        model: db.PurchaseOrder,
+        as: 'purchase_orders',
+        attributes: [],
+        where: { is_active: true },
+        required: false,
+      }],
+      attributes: {
+        include: [[db.Sequelize.fn('COUNT', db.Sequelize.col('purchase_orders.id')), 'order_count']],
+      },
+      group: ['Supplier.id'],
+    });
     res.json({ success: true, data: {
-      suppliers: suppliers.map(formatSupplier),
+      suppliers: suppliers.map(s => ({
+        ...formatSupplier(s),
+        relationship: {
+          ...formatSupplier(s).relationship,
+          total_orders: parseInt(s.dataValues.order_count ?? 0, 10),
+        },
+      })),
       meta: { total: suppliers.length, search: (search && search.trim()) ? search.trim() : null, city: city || null },
     }});
   } catch (error) {

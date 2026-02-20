@@ -330,6 +330,20 @@
   },
   "orders_searchProducts": "البحث عن منتجات...",
   "orders_addToOrder": "إضافة",
+  "orders_addToOrderTotal": "إضافة إلى الطلب ({total} MAD)",
+  "@orders_addToOrderTotal": {
+    "placeholders": {
+      "total": {"type": "String"}
+    }
+  },
+  "orders_updateTotal": "تحديث ({total} MAD)",
+  "@orders_updateTotal": {
+    "placeholders": {
+      "total": {"type": "String"}
+    }
+  },
+  "orders_removeFromOrder": "إزالة من الطلب",
+  "orders_inOrder": "في الطلب",
   "orders_reviewTitle": "مراجعة الطلب",
   "orders_saveAsDraft": "حفظ كمسودة",
   "orders_draftSaved": "تم حفظ الطلب كمسودة",
@@ -341,7 +355,7 @@
       "total": {"type": "String"}
     }
   },
-  "orders_reviewOrder": "مراجعة الطلب",
+  "orders_reviewOrder": "إنشاء ومراجعة",
   "orders_outOfStock": "نفد المخزون",
   "orders_stockLabel": "المخزون: {count} {unit}",
   "@orders_stockLabel": {

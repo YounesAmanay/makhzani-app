@@ -273,6 +273,16 @@ router.post('/', authenticateToken, checkSubscription, validateOrder, handleVali
       orderItems.push(orderItem);
     }
 
+    // Update supplier stats
+    await db.Supplier.increment('total_orders', {
+      where: { id: supplier_id },
+      transaction,
+    });
+    await db.Supplier.update(
+      { last_order_date: new Date() },
+      { where: { id: supplier_id }, transaction }
+    );
+
     await transaction.commit();
 
     // Fetch complete order with associations

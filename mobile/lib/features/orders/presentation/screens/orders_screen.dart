@@ -20,7 +20,7 @@ import '../providers/orders_provider.dart';
 import '../providers/order_draft_provider.dart';
 import '../widgets/order_list_tile.dart';
 import '../widgets/supplier_picker_sheet.dart';
-import 'order_supplier_pick_screen.dart';
+import 'order_screen.dart';
 
 class OrdersScreen extends ConsumerStatefulWidget {
   const OrdersScreen({super.key});
@@ -87,7 +87,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           ref.read(orderDraftProvider.notifier).reset();
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => const OrderSupplierPickScreen(),
+              builder: (_) => const OrderScreen(),
             ),
           );
         },
@@ -193,7 +193,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
         ref.read(orderDraftProvider.notifier).reset();
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => const OrderSupplierPickScreen(),
+            builder: (_) => const OrderScreen(),
           ),
         );
       },

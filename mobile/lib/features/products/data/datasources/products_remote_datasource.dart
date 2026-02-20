@@ -109,13 +109,15 @@ class ProductsRemoteDataSourceImpl implements ProductsRemoteDataSource {
   @override
   Future<ProductImageModel> uploadProductImage(String id, String filePath) async {
     final formData = FormData.fromMap({
-      'image': await MultipartFile.fromFile(filePath),
+      'images': await MultipartFile.fromFile(filePath),
     });
     final response = await _apiClient.post(
       ApiEndpoints.productImages(id),
       data: formData,
     );
-    return ProductImageModel.fromJson(response.data['data']['image']);
+    // Upload response returns { images: [{ id, url, sort_order }] }
+    final raw = (response.data['data']['images'] as List).first as Map<String, dynamic>;
+    return ProductImageModel.fromJson(raw);
   }
 
   @override

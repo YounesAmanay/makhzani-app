@@ -163,10 +163,50 @@ class OrderDraftNotifier extends StateNotifier<OrderDraftState> {
     );
   }
 
+  /// Upsert: adds product if not present, then sets qty + price in one shot.
+  void setItem({
+    required String productId,
+    required String productName,
+    required String productUnit,
+    required double quantity,
+    required double unitPrice,
+  }) {
+    final exists = state.hasProduct(productId);
+    if (!exists) {
+      state = state.copyWith(
+        items: [
+          ...state.items,
+          OrderDraftItem(
+            productId: productId,
+            productName: productName,
+            productUnit: productUnit,
+            quantity: quantity,
+            unitPrice: unitPrice,
+          ),
+        ],
+      );
+    } else {
+      state = state.copyWith(
+        items: state.items.map((i) {
+          return i.productId == productId
+              ? i.copyWith(quantity: quantity, unitPrice: unitPrice)
+              : i;
+        }).toList(),
+      );
+    }
+  }
+
+  void removeItem(String productId) => removeProduct(productId);
+
   void setNotes(String? notes) {
     final trimmed = notes?.trim();
     state = state.copyWith(notes: (trimmed == null || trimmed.isEmpty) ? null : trimmed);
   }
+
+  /// Saves the order as a draft immediately (called when user taps Review).
+  /// Subsequent actions (WhatsApp, PDF, Save Draft) reuse the already-created
+  /// order via [createdOrder] — no duplicate creates.
+  Future<bool> saveDraft() => createOrder();
 
   Future<bool> createOrder() async {
     if (!state.canReview) return false;

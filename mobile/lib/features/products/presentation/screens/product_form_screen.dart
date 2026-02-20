@@ -2,17 +2,27 @@
 ///
 /// Create/Edit product form with scan-first UX.
 /// On create: shows scan hero button → auto-fills from barcode lookup.
+///            Locally-picked images are queued and uploaded after the product
+///            is created (no id yet at pick time).
 /// On edit: loads existing product data directly into fields.
+///          Images can be uploaded / deleted immediately (id already exists).
 library;
 
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
+import '../../../../shared/widgets/app_confirm_dialog.dart';
 import '../../../../shared/widgets/app_loading.dart';
 import '../../domain/entities/barcode_result.dart';
 import '../../domain/entities/product.dart';
@@ -55,6 +65,11 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   bool _hasScanned = false;
   String? _scannedImageUrl;
   String? _dataSource;
+
+  // Image state
+  bool _isUploadingImage = false;
+  // Pending image paths for create mode (uploaded after product is created)
+  final List<String> _pendingImagePaths = [];
 
   static const List<String> _units = [
     'piece',
@@ -170,13 +185,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // ── Scan hero / image (create mode only) ──────────────
-                    if (!widget.isEditing) ...[
-                      _hasScanned
-                          ? _buildImageSection()
-                          : _buildScanHeroButton(),
-                      const SizedBox(height: AppDimensions.marginLarge),
-                    ],
+                    // ── Images ────────────────────────────────────────────
+                    _buildImagesSection(),
+                    const SizedBox(height: AppDimensions.marginLarge),
 
                     // ── Product Name ───────────────────────────────────────
                     TextFormField(
@@ -374,37 +385,177 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   // Widgets
   // ---------------------------------------------------------------------------
 
-  Widget _buildScanHeroButton() {
+  // ---------------------------------------------------------------------------
+  // Images section
+  // ---------------------------------------------------------------------------
+
+  /// Unified images section shown in both create and edit modes.
+  ///
+  /// Create mode: scan hero / scanned image + horizontal list of locally-picked
+  ///              images (uploaded after product creation).
+  /// Edit mode:   horizontal list of server images + "Add Photo" button.
+  Widget _buildImagesSection() {
     final theme = Theme.of(context);
+
+    if (widget.isEditing) {
+      // Edit mode — product already exists, show server images
+      final images = _product?.images ?? [];
+      final canAddMore = images.length + _pendingImagePaths.length < 5;
+
+      return Container(
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+          border: Border.all(color: AppColors.border),
+        ),
+        padding: const EdgeInsets.all(AppDimensions.paddingMedium),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  context.l10n.products_photos,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (canAddMore)
+                  TextButton.icon(
+                    onPressed: _isUploadingImage ? null : _pickAndUploadImage,
+                    icon: _isUploadingImage
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.add_photo_alternate_outlined, size: 18),
+                    label: Text(context.l10n.products_addPhoto),
+                  )
+                else
+                  Text(
+                    context.l10n.products_maxPhotos,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+              ],
+            ),
+            if (images.isNotEmpty) ...[
+              const SizedBox(height: AppDimensions.marginSmall),
+              SizedBox(
+                height: 110,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: images.length,
+                  separatorBuilder: (_, __) =>
+                      const SizedBox(width: AppDimensions.marginSmall),
+                  itemBuilder: (context, index) {
+                    final image = images[index];
+                    return Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+                          child: Image.network(
+                            AppConstants.serverUrl + image.imageUrl,
+                            width: 110,
+                            height: 110,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Positioned(
+                          top: 4,
+                          right: 4,
+                          child: GestureDetector(
+                            onTap: () => _confirmDeleteImage(_product!.id, image.id),
+                            child: Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: AppColors.error,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.close, size: 14, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ] else ...[
+              const SizedBox(height: AppDimensions.marginSmall),
+              Center(
+                child: Text(
+                  context.l10n.products_addPhoto,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      );
+    }
+
+    // Create mode — scan hero + scanned image + pending local images
+    final allImages = <Widget>[];
+
+    // Scanned image or scan hero
+    if (_hasScanned) {
+      allImages.add(_buildScannedImageTile());
+    } else {
+      allImages.add(_buildScanHeroTile());
+    }
+
+    // Locally-picked images (not yet uploaded)
+    for (int i = 0; i < _pendingImagePaths.length; i++) {
+      allImages.add(_buildPendingImageTile(i));
+    }
+
+    // "Add photo" tile (max 5 total including scanned)
+    final totalCount = (_hasScanned ? 1 : 0) + _pendingImagePaths.length;
+    if (totalCount < 5) {
+      allImages.add(_buildAddPhotoTile());
+    }
+
+    return SizedBox(
+      height: 120,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: allImages.length,
+        separatorBuilder: (_, __) => const SizedBox(width: AppDimensions.marginSmall),
+        itemBuilder: (_, index) => allImages[index],
+      ),
+    );
+  }
+
+  Widget _buildScanHeroTile() {
     return GestureDetector(
       onTap: _openScanner,
       child: Container(
+        width: 120,
         height: 120,
         decoration: BoxDecoration(
           color: AppColors.primary.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-          border: Border.all(
-            color: AppColors.primary.withValues(alpha: 0.35),
-          ),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.35)),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.qr_code_scanner_rounded, size: 40, color: AppColors.primary),
-            const SizedBox(height: AppDimensions.marginSmall),
+            Icon(Icons.qr_code_scanner_rounded, size: 32, color: AppColors.primary),
+            const SizedBox(height: 6),
             Text(
               context.l10n.products_scanBarcode,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: AppColors.primary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              context.l10n.products_scanSubtitle,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: AppColors.textSecondary,
-              ),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
           ],
         ),
@@ -412,15 +563,14 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     );
   }
 
-  Widget _buildImageSection() {
+  Widget _buildScannedImageTile() {
     return Stack(
       children: [
-        // Image container
         ClipRRect(
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
           child: SizedBox(
-            height: 180,
-            width: double.infinity,
+            width: 120,
+            height: 120,
             child: _scannedImageUrl != null
                 ? CachedNetworkImage(
                     imageUrl: _scannedImageUrl!,
@@ -431,54 +581,37 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 : _buildImagePlaceholder(),
           ),
         ),
-
-        // Re-scan button (top-right overlay)
+        // Re-scan button
         Positioned(
-          top: AppDimensions.paddingSmall,
-          right: AppDimensions.paddingSmall,
+          top: 4,
+          right: 4,
           child: GestureDetector(
             onTap: _openScanner,
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.paddingSmall,
-                vertical: 6,
-              ),
-              decoration: BoxDecoration(
+              width: 26,
+              height: 26,
+              decoration: const BoxDecoration(
                 color: Colors.black54,
-                borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+                shape: BoxShape.circle,
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.qr_code_scanner, color: Colors.white, size: 14),
-                  const SizedBox(width: 4),
-                  Text(
-                    context.l10n.products_rescan,
-                    style: const TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                ],
-              ),
+              child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 14),
             ),
           ),
         ),
-
-        // Source badge (bottom-left overlay)
+        // Source badge
         if (_dataSource != null)
           Positioned(
-            bottom: AppDimensions.paddingSmall,
-            left: AppDimensions.paddingSmall,
+            bottom: 4,
+            left: 4,
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.paddingSmall,
-                vertical: 3,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
               decoration: BoxDecoration(
                 color: Colors.black54,
                 borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
               ),
               child: Text(
                 _dataSource!,
-                style: const TextStyle(color: Colors.white, fontSize: 10),
+                style: const TextStyle(color: Colors.white, fontSize: 9),
               ),
             ),
           ),
@@ -486,17 +619,136 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     );
   }
 
+  Widget _buildPendingImageTile(int index) {
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+          child: Image.file(
+            File(_pendingImagePaths[index]),
+            width: 120,
+            height: 120,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => _buildImagePlaceholder(),
+          ),
+        ),
+        Positioned(
+          top: 4,
+          right: 4,
+          child: GestureDetector(
+            onTap: () => setState(() => _pendingImagePaths.removeAt(index)),
+            child: Container(
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                color: AppColors.error,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.close, size: 14, color: Colors.white),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAddPhotoTile() {
+    return GestureDetector(
+      onTap: _isUploadingImage ? null : _pickLocalImage,
+      child: Container(
+        width: 120,
+        height: 120,
+        decoration: BoxDecoration(
+          color: AppColors.surfaceHover,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.add_photo_alternate_outlined, size: 28, color: AppColors.iconSecondary),
+            const SizedBox(height: 6),
+            Text(
+              context.l10n.products_addPhoto,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildImagePlaceholder() {
     return Container(
       color: AppColors.surfaceHover,
       child: Center(
-        child: Icon(
-          Icons.image_outlined,
-          size: 48,
-          color: AppColors.iconSecondary,
-        ),
+        child: Icon(Icons.image_outlined, size: 36, color: AppColors.iconSecondary),
       ),
     );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Image actions
+  // ---------------------------------------------------------------------------
+
+  /// Create mode: pick from gallery and queue locally (upload after save).
+  Future<void> _pickLocalImage() async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    if (image == null || !mounted) return;
+    setState(() => _pendingImagePaths.add(image.path));
+  }
+
+  /// Edit mode: pick from gallery and upload immediately.
+  Future<void> _pickAndUploadImage() async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    if (image == null || !mounted) return;
+
+    setState(() => _isUploadingImage = true);
+    try {
+      final repository = ref.read(productsRepositoryProvider);
+      await repository.uploadProductImage(widget.productId!, image.path);
+      await _loadProduct();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.error_generic),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isUploadingImage = false);
+    }
+  }
+
+  Future<void> _confirmDeleteImage(String productId, String imageId) async {
+    final confirmed = await AppConfirmDialog.show(
+      context: context,
+      title: context.l10n.products_deletePhoto,
+      message: context.l10n.confirm_delete,
+      confirmLabel: context.l10n.common_delete,
+      isDestructive: true,
+    );
+    if (!confirmed || !mounted) return;
+
+    try {
+      final repository = ref.read(productsRepositoryProvider);
+      await repository.deleteProductImage(productId, imageId);
+      await _loadProduct();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.error_generic),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 
   Widget _buildSectionHeader(String title) {
@@ -569,6 +821,40 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
       setState(() => _isSubmitting = false);
 
       if (success) {
+        // In create mode, upload the scanned image (remote URL) + any
+        // locally-picked images.  All are best-effort — product is already
+        // saved so we never block navigation on image upload failure.
+        if (!widget.isEditing) {
+          final newProductId = ref.read(productFormProvider).product?.id;
+          if (newProductId != null) {
+            final repository = ref.read(productsRepositoryProvider);
+
+            // 1. Download the barcode-scanned image to a temp file, then upload
+            if (_scannedImageUrl != null) {
+              try {
+                final tmpDir = await getTemporaryDirectory();
+                final ext = _scannedImageUrl!.contains('.png') ? 'png' : 'jpg';
+                final tmpPath = '${tmpDir.path}/scanned_image.$ext';
+                await Dio().download(_scannedImageUrl!, tmpPath);
+                await repository.uploadProductImage(newProductId, tmpPath);
+                await File(tmpPath).delete(); // clean up temp file
+              } catch (_) {
+                // Best-effort
+              }
+            }
+
+            // 2. Upload locally-picked images
+            for (final path in _pendingImagePaths) {
+              try {
+                await repository.uploadProductImage(newProductId, path);
+              } catch (_) {
+                // Best-effort
+              }
+            }
+          }
+        }
+
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(

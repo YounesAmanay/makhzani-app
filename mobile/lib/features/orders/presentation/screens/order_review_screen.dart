@@ -1,65 +1,55 @@
-/// Order Review Screen — Step 3 of 3
+/// Order Review / Detail Screen
 ///
-/// Read-only summary of the draft order.
-/// Primary action: Send via WhatsApp.
-/// Secondary: Generate PDF → opens in native viewer.
-/// Tertiary: Save as Draft.
+/// Unified detail view for any order — new or existing.
+/// Always receives an [orderId] and loads via [orderDetailProvider].
 library;
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
-import '../providers/order_draft_provider.dart';
-import '../providers/orders_provider.dart';
+import '../../../../shared/widgets/widgets.dart';
+import '../../domain/entities/order_detail.dart';
+import '../../domain/entities/order_status.dart';
+import '../providers/order_detail_provider.dart';
 
 class OrderReviewScreen extends ConsumerStatefulWidget {
-  const OrderReviewScreen({super.key});
+  final String orderId;
+
+  const OrderReviewScreen({super.key, required this.orderId});
 
   @override
   ConsumerState<OrderReviewScreen> createState() => _OrderReviewScreenState();
 }
 
 class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
-  final _notesController = TextEditingController();
   bool _isSendingWhatsApp = false;
   bool _isGeneratingPdf = false;
-  bool _isSavingDraft = false;
 
-  @override
-  void initState() {
-    super.initState();
-    final draft = ref.read(orderDraftProvider);
-    if (draft.notes != null) _notesController.text = draft.notes!;
-  }
+  // ── WhatsApp ──────────────────────────────────────────────────────────────
 
-  @override
-  void dispose() {
-    _notesController.dispose();
-    super.dispose();
-  }
-
-  // ── WhatsApp ────────────────────────────────────────────────────────────────
-
-  Future<void> _onSendWhatsApp() async {
-    final draft = ref.read(orderDraftProvider);
+  Future<void> _onSendWhatsApp(OrderDetail order) async {
     final phone =
-        draft.supplierPhone?.replaceAll(RegExp(r'[^\d+]'), '') ?? '';
+        order.supplier.phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
 
     final buffer = StringBuffer();
-    buffer.writeln('Bonjour ${draft.supplierName},');
+    buffer.writeln('Bonjour ${order.supplier.name},');
     buffer.writeln();
     buffer.writeln('Voici ma commande:');
-    for (final item in draft.items) {
-      buffer.writeln(
-          '- ${item.productName} x${item.quantity.toStringAsFixed(item.quantity % 1 == 0 ? 0 : 1)} ${item.productUnit}');
+    for (final item in order.items) {
+      final qtyStr = item.quantity
+          .toStringAsFixed(item.quantity % 1 == 0 ? 0 : 1);
+      buffer.writeln('- ${item.productName} x$qtyStr ${item.productUnit}');
     }
     buffer.writeln();
-    buffer.writeln('Total: ${draft.totalValue.toStringAsFixed(2)} MAD');
+    buffer.writeln('Total: ${order.totalValue.toStringAsFixed(2)} MAD');
     buffer.writeln();
     buffer.write('Merci');
 
@@ -70,241 +60,239 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
     if (!mounted) return;
 
     if (!canOpen) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.orders_noWhatsapp),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(context.l10n.orders_noWhatsapp),
+        backgroundColor: AppColors.error,
+      ));
       return;
     }
 
     setState(() => _isSendingWhatsApp = true);
-
-    // Sync notes to draft before creating order
-    ref
-        .read(orderDraftProvider.notifier)
-        .setNotes(_notesController.text);
-
-    // Open WhatsApp immediately — don't wait for order creation
     await launchUrl(uri, mode: LaunchMode.externalApplication);
-
     if (!mounted) return;
 
-    // Create order in background after WhatsApp opens
-    final success =
-        await ref.read(orderDraftProvider.notifier).createOrder();
+    // Mark as sent in background — non-fatal
+    ref
+        .read(orderDetailProvider(widget.orderId).notifier)
+        .markSent('whatsapp');
 
-    if (!mounted) return;
     setState(() => _isSendingWhatsApp = false);
-
-    if (success) {
-      // Mark as sent via whatsapp
-      final createdOrder = ref.read(orderDraftProvider).createdOrder;
-      if (createdOrder != null) {
-        final repository = ref.read(ordersRepositoryProvider);
-        try {
-          await repository.markSent(createdOrder.id, 'whatsapp');
-        } catch (_) {
-          // Non-fatal — order is already created
-        }
-      }
-
-      ref.read(orderDraftProvider.notifier).reset();
-      // Pop all three order screens back to the orders list
-      if (mounted) {
-        Navigator.of(context).popUntil(
-          (route) => route.settings.name == '/orders' || route.isFirst,
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.l10n.orders_whatsappSent),
-            backgroundColor: AppColors.success,
-          ),
-        );
-      }
-    } else {
-      if (!mounted) return;
-      final errorMsg = ref.read(orderDraftProvider).errorMessage;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMsg ?? context.l10n.error_unknown),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    }
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(context.l10n.orders_whatsappSent),
+      backgroundColor: AppColors.success,
+    ));
   }
 
-  // ── Generate PDF ─────────────────────────────────────────────────────────────
+  // ── Generate PDF ──────────────────────────────────────────────────────────
 
   Future<void> _onGeneratePdf() async {
     setState(() => _isGeneratingPdf = true);
 
-    ref.read(orderDraftProvider.notifier).setNotes(_notesController.text);
-
-    final success = await ref.read(orderDraftProvider.notifier).createOrder();
+    // Step 1: generate PDF on server, get relative URL back
+    final pdfUrl = await ref
+        .read(orderDetailProvider(widget.orderId).notifier)
+        .generateAndOpenPdf();
 
     if (!mounted) return;
 
-    if (!success) {
+    if (pdfUrl == null) {
       setState(() => _isGeneratingPdf = false);
-      final errorMsg = ref.read(orderDraftProvider).errorMessage;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMsg ?? context.l10n.error_unknown),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      final errorMsg =
+          ref.read(orderDetailProvider(widget.orderId)).errorMessage;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(errorMsg ?? context.l10n.orders_pdfError),
+        backgroundColor: AppColors.error,
+      ));
       return;
     }
 
-    // Generate PDF for the created order
-    final createdOrder = ref.read(orderDraftProvider).createdOrder;
-    if (createdOrder == null) {
-      setState(() => _isGeneratingPdf = false);
-      return;
-    }
-
+    // Step 2: download to external storage (visible in Files app, no permission needed)
     try {
-      final repository = ref.read(ordersRepositoryProvider);
-      final pdfUrl = await repository.generatePdf(createdOrder.id);
-
-      ref.read(ordersProvider.notifier).refresh();
-      ref.read(orderDraftProvider.notifier).reset();
-
-      if (!mounted) return;
-      setState(() => _isGeneratingPdf = false);
-
       final fullUrl = '${AppConstants.serverUrl}$pdfUrl';
-      final uri = Uri.parse(fullUrl);
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+      final fileName = pdfUrl.split('/').last;
+
+      // Prefer external app storage (Android/data/com.app/files/) — no permission required.
+      // Falls back to temp dir if external storage is unavailable.
+      final dir =
+          await getExternalStorageDirectory() ?? await getTemporaryDirectory();
+      final filePath = '${dir.path}/$fileName';
+
+      await Dio().download(fullUrl, filePath);
 
       if (!mounted) return;
-      Navigator.of(context).popUntil(
-        (route) => route.settings.name == '/orders' || route.isFirst,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.orders_pdfGenerated),
-          backgroundColor: AppColors.success,
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
       setState(() => _isGeneratingPdf = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+
+      // Step 3: open with native PDF viewer
+      final result = await OpenFile.open(filePath);
+      if (result.type != ResultType.done && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(context.l10n.orders_pdfError),
           backgroundColor: AppColors.error,
-        ),
-      );
+        ));
+      }
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isGeneratingPdf = false);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(context.l10n.orders_pdfError),
+        backgroundColor: AppColors.error,
+      ));
     }
   }
 
-  // ── Save as Draft ─────────────────────────────────────────────────────────────
+  // ── Helpers ───────────────────────────────────────────────────────────────
 
-  Future<void> _onSaveAsDraft() async {
-    setState(() => _isSavingDraft = true);
-
-    ref.read(orderDraftProvider.notifier).setNotes(_notesController.text);
-
-    final success = await ref.read(orderDraftProvider.notifier).createOrder();
-
-    if (!mounted) return;
-    setState(() => _isSavingDraft = false);
-
-    if (success) {
-      ref.read(orderDraftProvider.notifier).reset();
-      Navigator.of(context).popUntil(
-        (route) => route.settings.name == '/orders' || route.isFirst,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.orders_draftSaved),
-          backgroundColor: AppColors.success,
+  Widget _appCard({required Widget child}) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.border),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
         ),
-      );
-    } else {
-      final errorMsg = ref.read(orderDraftProvider).errorMessage;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMsg ?? context.l10n.error_unknown),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    }
-  }
-
-  // ── Build ─────────────────────────────────────────────────────────────────────
-
-  @override
-  Widget build(BuildContext context) {
-    final draft = ref.watch(orderDraftProvider);
-    final isAnyLoading =
-        _isSendingWhatsApp || _isGeneratingPdf || _isSavingDraft;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.l10n.orders_reviewTitle),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppDimensions.paddingMedium),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Supplier card
-                  _buildSupplierCard(draft),
-                  const SizedBox(height: AppDimensions.marginMedium),
-
-                  // Items list
-                  _buildItemsCard(draft),
-                  const SizedBox(height: AppDimensions.marginMedium),
-
-                  // Notes
-                  TextField(
-                    controller: _notesController,
-                    decoration: InputDecoration(
-                      labelText: context.l10n.orders_notesOptional,
-                      hintText: context.l10n.orders_notesPlaceholder,
-                    ),
-                    maxLines: 3,
-                    maxLength: 500,
-                    textCapitalization: TextCapitalization.sentences,
-                    onChanged: (v) =>
-                        ref.read(orderDraftProvider.notifier).setNotes(v),
-                  ),
-                  const SizedBox(height: AppDimensions.marginMedium),
-
-                  // Total card
-                  _buildTotalCard(draft),
-                ],
-              ),
-            ),
-          ),
-
-          // Action buttons
-          _buildActionButtons(draft, isAnyLoading),
-        ],
+        child: child,
       ),
     );
   }
 
-  Widget _buildSupplierCard(OrderDraftState draft) {
+  // ── Build ─────────────────────────────────────────────────────────────────
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(orderDetailProvider(widget.orderId));
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          state.order?.orderNumber ?? context.l10n.orders_orderDetails,
+        ),
+        actions: [
+          if (state.order != null)
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              tooltip: context.l10n.common_refresh,
+              onPressed: () => ref
+                  .read(orderDetailProvider(widget.orderId).notifier)
+                  .refresh(),
+            ),
+        ],
+      ),
+      body: switch (state.status) {
+        OrderDetailStatus.loading => const AppLoadingScreen(),
+        OrderDetailStatus.error => AppErrorState(
+            message: state.errorMessage ?? context.l10n.error_unknown,
+            onRetry: () => ref
+                .read(orderDetailProvider(widget.orderId).notifier)
+                .refresh(),
+          ),
+        OrderDetailStatus.loaded when state.order == null => AppErrorState(
+            message: context.l10n.orders_orderNotFound,
+            onRetry: () => ref
+                .read(orderDetailProvider(widget.orderId).notifier)
+                .refresh(),
+          ),
+        OrderDetailStatus.loaded => _buildContent(state.order!),
+      },
+    );
+  }
+
+  Widget _buildContent(OrderDetail order) {
+    final isAnyLoading = _isSendingWhatsApp || _isGeneratingPdf;
+
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppDimensions.paddingMedium),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildHeaderCard(order),
+                const SizedBox(height: AppDimensions.marginMedium),
+                _buildSupplierCard(order),
+                const SizedBox(height: AppDimensions.marginMedium),
+                _buildItemsAndTotalCard(order),
+                if (order.notes != null) ...[
+                  const SizedBox(height: AppDimensions.marginMedium),
+                  _buildNotesCard(order.notes!),
+                ],
+              ],
+            ),
+          ),
+        ),
+        _buildActionBar(order, isAnyLoading),
+      ],
+    );
+  }
+
+  // ── Cards ─────────────────────────────────────────────────────────────────
+
+  Widget _buildHeaderCard(OrderDetail order) {
     final theme = Theme.of(context);
-    return Card(
+    final (statusLabel, statusColor) = _statusData(order.status);
+
+    return _appCard(
+      child: Padding(
+        padding: const EdgeInsets.all(AppDimensions.paddingMedium),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    order.orderNumber,
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.paddingSmall + 2, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: statusColor.withValues(alpha: 0.12),
+                    borderRadius:
+                        BorderRadius.circular(AppDimensions.radiusSmall),
+                  ),
+                  child: Text(
+                    statusLabel,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: statusColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppDimensions.marginXSmall),
+            Text(
+              _formatDate(order.createdAt),
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: AppColors.textSecondary),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSupplierCard(OrderDetail order) {
+    final theme = Theme.of(context);
+    final supplier = order.supplier;
+    final initials =
+        supplier.name.isNotEmpty ? supplier.name[0].toUpperCase() : '?';
+
+    return _appCard(
       child: Padding(
         padding: const EdgeInsets.all(AppDimensions.paddingMedium),
         child: Row(
           children: [
             CircleAvatar(
-              backgroundColor: AppColors.primary.withValues(alpha: 0.12),
+              radius: 22,
+              backgroundColor: AppColors.primary.withValues(alpha: 0.10),
               child: Text(
-                draft.supplierName?.isNotEmpty == true
-                    ? draft.supplierName![0].toUpperCase()
-                    : '?',
+                initials,
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: AppColors.primary,
                   fontWeight: FontWeight.bold,
@@ -317,16 +305,24 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    draft.supplierName ?? '',
+                    supplier.name,
                     style: theme.textTheme.titleSmall
                         ?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  if (draft.supplierPhone != null)
+                  const SizedBox(height: 2),
+                  Text(
+                    supplier.phoneNumber,
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: AppColors.textSecondary),
+                  ),
+                  if (supplier.businessName != null) ...[
+                    const SizedBox(height: 2),
                     Text(
-                      draft.supplierPhone!,
+                      supplier.businessName!,
                       style: theme.textTheme.bodySmall
                           ?.copyWith(color: AppColors.textSecondary),
                     ),
+                  ],
                 ],
               ),
             ),
@@ -336,160 +332,223 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
     );
   }
 
-  Widget _buildItemsCard(OrderDraftState draft) {
+  Widget _buildItemsAndTotalCard(OrderDetail order) {
     final theme = Theme.of(context);
-    return Card(
+
+    return _appCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppDimensions.paddingMedium,
+              AppDimensions.paddingMedium,
+              AppDimensions.paddingMedium,
+              AppDimensions.marginSmall,
+            ),
+            child: Text(
+              context.l10n.orders_items,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+
+          const Divider(height: 1),
+
+          ...order.items.asMap().entries.map((entry) {
+            final item = entry.value;
+            final isLast = entry.key == order.items.length - 1;
+            final qtyStr = item.quantity
+                .toStringAsFixed(item.quantity % 1 == 0 ? 0 : 1);
+
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.paddingMedium,
+                    vertical: AppDimensions.marginSmall + 2,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.productName,
+                              style: theme.textTheme.bodyMedium
+                                  ?.copyWith(fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              '$qtyStr ${item.productUnit}'
+                              ' × ${item.unitPrice.toStringAsFixed(2)} ${context.l10n.currency_mad}',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        '${item.total.toStringAsFixed(2)} ${context.l10n.currency_mad}',
+                        style: theme.textTheme.bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                ),
+                if (!isLast)
+                  const Divider(
+                      height: 1, indent: AppDimensions.paddingMedium),
+              ],
+            );
+          }),
+
+          const Divider(height: 1, thickness: 1),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDimensions.paddingMedium,
+              vertical: AppDimensions.marginSmall + 4,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  context.l10n.orders_totalValue,
+                  style: theme.textTheme.titleSmall
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  '${order.totalValue.toStringAsFixed(2)} ${context.l10n.currency_mad}',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotesCard(String notes) {
+    final theme = Theme.of(context);
+    return _appCard(
       child: Padding(
         padding: const EdgeInsets.all(AppDimensions.paddingMedium),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              context.l10n.orders_items,
-              style: theme.textTheme.titleSmall
-                  ?.copyWith(fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: AppDimensions.marginMedium),
-            ...draft.items.map(
-              (item) => Padding(
-                padding: const EdgeInsets.only(
-                    bottom: AppDimensions.marginSmall),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.productName,
-                            style: theme.textTheme.bodyMedium
-                                ?.copyWith(fontWeight: FontWeight.w500),
-                          ),
-                          Text(
-                            '${item.quantity.toStringAsFixed(item.quantity % 1 == 0 ? 0 : 1)} ${item.productUnit}'
-                            ' × ${item.unitPrice.toStringAsFixed(2)} ${context.l10n.currency_mad}',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Text(
-                      '${item.total.toStringAsFixed(2)} ${context.l10n.currency_mad}',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ],
-                ),
+              context.l10n.orders_notes,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
               ),
             ),
+            const SizedBox(height: AppDimensions.marginSmall),
+            Text(notes, style: theme.textTheme.bodyMedium),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTotalCard(OrderDraftState draft) {
-    final theme = Theme.of(context);
-    return Card(
-      color: AppColors.primary.withValues(alpha: 0.05),
-      child: Padding(
-        padding: const EdgeInsets.all(AppDimensions.paddingMedium),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              context.l10n.orders_totalValue,
-              style: theme.textTheme.titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            Text(
-              '${draft.totalValue.toStringAsFixed(2)} ${context.l10n.currency_mad}',
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.primary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // ── Action bar ────────────────────────────────────────────────────────────
 
-  Widget _buildActionButtons(OrderDraftState draft, bool isAnyLoading) {
-    return Container(
-      padding: const EdgeInsets.all(AppDimensions.paddingMedium),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            offset: const Offset(0, -2),
-            blurRadius: 4,
-          ),
-        ],
-      ),
+  Widget _buildActionBar(OrderDetail order, bool isAnyLoading) {
+    return ColoredBox(
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // PRIMARY: WhatsApp
-          ElevatedButton.icon(
-            onPressed: isAnyLoading ? null : _onSendWhatsApp,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF25D366),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(
-                  vertical: AppDimensions.paddingMedium),
+          const Divider(height: 1),
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppDimensions.paddingMedium,
+                AppDimensions.marginSmall,
+                AppDimensions.paddingMedium,
+                AppDimensions.marginSmall,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    height: 48,
+                    child: ElevatedButton.icon(
+                      onPressed:
+                          isAnyLoading ? null : () => _onSendWhatsApp(order),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF25D366),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              AppDimensions.radiusMedium),
+                        ),
+                      ),
+                      icon: _isSendingWhatsApp
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: Colors.white),
+                            )
+                          : const Icon(Icons.chat_outlined),
+                      label: Text(context.l10n.orders_sendViaWhatsApp),
+                    ),
+                  ),
+                  const SizedBox(height: AppDimensions.marginSmall),
+                  SizedBox(
+                    height: 48,
+                    child: OutlinedButton.icon(
+                      onPressed: isAnyLoading ? null : _onGeneratePdf,
+                      icon: _isGeneratingPdf
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.picture_as_pdf_outlined),
+                      label: Text(context.l10n.orders_generateAndOpen),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            icon: _isSendingWhatsApp
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Colors.white),
-                  )
-                : const Icon(Icons.chat_outlined),
-            label: Text(context.l10n.orders_sendViaWhatsApp),
-          ),
-
-          const SizedBox(height: AppDimensions.marginSmall),
-
-          // SECONDARY: Generate PDF
-          OutlinedButton.icon(
-            onPressed: isAnyLoading ? null : _onGeneratePdf,
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                  vertical: AppDimensions.paddingMedium),
-            ),
-            icon: _isGeneratingPdf
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.picture_as_pdf_outlined),
-            label: Text(context.l10n.orders_generateAndOpen),
-          ),
-
-          const SizedBox(height: AppDimensions.marginXSmall),
-
-          // TERTIARY: Save as draft
-          TextButton(
-            onPressed: isAnyLoading ? null : _onSaveAsDraft,
-            child: _isSavingDraft
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Text(context.l10n.orders_saveAsDraft),
           ),
         ],
       ),
     );
+  }
+
+  // ── Utilities ─────────────────────────────────────────────────────────────
+
+  String _formatDate(DateTime date) {
+    final diff = DateTime.now().difference(date);
+    if (diff.inDays == 0) return context.l10n.common_today;
+    if (diff.inDays == 1) return context.l10n.common_yesterday;
+    if (diff.inDays < 7) return context.l10n.common_daysAgo(diff.inDays);
+    return '${date.day}/${date.month}/${date.year}';
+  }
+
+  (String, Color) _statusData(OrderStatus status) {
+    if (status.isSent) {
+      return (context.l10n.orders_statusSent, AppColors.success);
+    }
+    if (status.isGenerated) {
+      return (context.l10n.orders_statusGenerated, AppColors.info);
+    }
+    return (context.l10n.orders_statusDraft, AppColors.textSecondary);
   }
 }

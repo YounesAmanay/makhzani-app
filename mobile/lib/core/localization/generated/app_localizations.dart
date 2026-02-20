@@ -1828,6 +1828,30 @@ abstract class AppLocalizations {
   /// **'Add'**
   String get orders_addToOrder;
 
+  /// No description provided for @orders_addToOrderTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Order ({total} MAD)'**
+  String orders_addToOrderTotal(String total);
+
+  /// No description provided for @orders_updateTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Update ({total} MAD)'**
+  String orders_updateTotal(String total);
+
+  /// No description provided for @orders_removeFromOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from order'**
+  String get orders_removeFromOrder;
+
+  /// No description provided for @orders_inOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'In Order'**
+  String get orders_inOrder;
+
   /// No description provided for @orders_reviewTitle.
   ///
   /// In en, this message translates to:
@@ -1861,7 +1885,7 @@ abstract class AppLocalizations {
   /// No description provided for @orders_reviewOrder.
   ///
   /// In en, this message translates to:
-  /// **'Review Order'**
+  /// **'Create & Review'**
   String get orders_reviewOrder;
 
   /// No description provided for @orders_outOfStock.

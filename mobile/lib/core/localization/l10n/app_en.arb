@@ -365,6 +365,20 @@
   },
   "orders_searchProducts": "Search products...",
   "orders_addToOrder": "Add",
+  "orders_addToOrderTotal": "Add to Order ({total} MAD)",
+  "@orders_addToOrderTotal": {
+    "placeholders": {
+      "total": {"type": "String"}
+    }
+  },
+  "orders_updateTotal": "Update ({total} MAD)",
+  "@orders_updateTotal": {
+    "placeholders": {
+      "total": {"type": "String"}
+    }
+  },
+  "orders_removeFromOrder": "Remove from order",
+  "orders_inOrder": "In Order",
   "orders_reviewTitle": "Review Order",
   "orders_saveAsDraft": "Save as Draft",
   "orders_draftSaved": "Order saved as draft",
@@ -376,7 +390,7 @@
       "total": {"type": "String"}
     }
   },
-  "orders_reviewOrder": "Review Order",
+  "orders_reviewOrder": "Create & Review",
   "orders_outOfStock": "Out of stock",
   "orders_stockLabel": "Stock: {count} {unit}",
   "@orders_stockLabel": {

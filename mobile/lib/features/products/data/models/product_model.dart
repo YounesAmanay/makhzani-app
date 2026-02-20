@@ -17,7 +17,8 @@ class ProductImageModel {
   factory ProductImageModel.fromJson(Map<String, dynamic> json) {
     return ProductImageModel(
       id: json['id'],
-      imageUrl: json['image_url'],
+      // Backend returns 'url' from the images table; accept both spellings
+      imageUrl: (json['url'] ?? json['image_url']) as String,
       isPrimary: json['is_primary'] ?? false,
     );
   }
