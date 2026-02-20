@@ -224,6 +224,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String get products_adjustmentHelper => 'Use + to add stock, - to remove';
 
   @override
+  String get products_photos => 'Photos';
+
+  @override
+  String get products_addPhoto => 'Add Photo';
+
+  @override
+  String get products_deletePhoto => 'Delete Photo';
+
+  @override
+  String get products_maxPhotos => 'Maximum 5 photos allowed';
+
+  @override
+  String get products_scanBarcode => 'Scan Barcode';
+
+  @override
+  String get products_scanSubtitle => 'Auto-fill product details instantly';
+
+  @override
+  String get products_lookingUp => 'Looking up product...';
+
+  @override
+  String get products_toggleTorch => 'Toggle flashlight';
+
+  @override
+  String get products_rescan => 'Re-scan';
+
+  @override
+  String get products_notFound => 'Product not found';
+
+  @override
+  String get products_notFoundMessage =>
+      'This barcode isn\'t in our database. You can fill the details manually.';
+
+  @override
+  String get products_enterManually => 'Enter Manually';
+
+  @override
+  String get products_scanAgain => 'Scan Again';
+
+  @override
+  String products_autoFilled(String source) {
+    return 'Data from $source';
+  }
+
+  @override
+  String get products_stockSection => 'Stock Information';
+
+  @override
+  String get products_pricingSection => 'Pricing';
+
+  @override
   String get suppliers => 'Suppliers';
 
   @override
@@ -368,6 +419,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String profile_trialEnds(String date) {
     return 'Trial ends $date';
   }
+
+  @override
+  String get profile_logout => 'Log Out';
+
+  @override
+  String get profile_logoutTitle => 'Log Out';
+
+  @override
+  String get profile_logoutConfirm => 'Are you sure you want to log out?';
 
   @override
   String get settings => 'Settings';

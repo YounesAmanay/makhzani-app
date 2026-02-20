@@ -6,7 +6,9 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:image_picker/image_picker.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
@@ -33,6 +35,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   Product? _product;
   bool _isLoading = true;
   bool _isDeleting = false;
+  bool _isUploadingImage = false;
 
   @override
   void initState() {
@@ -190,6 +193,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
 
           const SizedBox(height: AppDimensions.marginMedium),
 
+          // Images Card
+          _buildImagesCard(product),
+
+          const SizedBox(height: AppDimensions.marginMedium),
+
           // Details Card
           Card(
             child: Padding(
@@ -231,6 +239,159 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         ],
       ),
     );
+  }
+
+  Widget _buildImagesCard(Product product) {
+    final theme = Theme.of(context);
+    final images = product.images;
+    final canAddMore = images.length < 5;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppDimensions.paddingMedium),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  context.l10n.products_photos,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (canAddMore)
+                  TextButton.icon(
+                    onPressed: _isUploadingImage ? null : _pickAndUploadImage,
+                    icon: _isUploadingImage
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.add_photo_alternate_outlined, size: 18),
+                    label: Text(context.l10n.products_addPhoto),
+                  )
+                else
+                  Text(
+                    context.l10n.products_maxPhotos,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+              ],
+            ),
+            if (images.isNotEmpty) ...[
+              const SizedBox(height: AppDimensions.marginSmall),
+              SizedBox(
+                height: 120,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: images.length,
+                  separatorBuilder: (_, __) =>
+                      const SizedBox(width: AppDimensions.marginSmall),
+                  itemBuilder: (context, index) {
+                    final image = images[index];
+                    return Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusMedium,
+                          ),
+                          child: Image.network(
+                            AppConstants.serverUrl + image.imageUrl,
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Positioned(
+                          top: 4,
+                          right: 4,
+                          child: GestureDetector(
+                            onTap: () => _confirmDeleteImage(
+                              product.id,
+                              image.id,
+                            ),
+                            child: Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: AppColors.error,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.close,
+                                size: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickAndUploadImage() async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+    if (image == null || !mounted) return;
+
+    setState(() => _isUploadingImage = true);
+
+    try {
+      final repository = ref.read(productsRepositoryProvider);
+      await repository.uploadProductImage(widget.productId, image.path);
+      await _loadProduct();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.error_generic),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isUploadingImage = false);
+    }
+  }
+
+  Future<void> _confirmDeleteImage(String productId, String imageId) async {
+    final confirmed = await AppConfirmDialog.show(
+      context: context,
+      title: context.l10n.products_deletePhoto,
+      message: context.l10n.confirm_delete,
+      confirmLabel: context.l10n.common_delete,
+      isDestructive: true,
+      icon: HugeIcons.strokeRoundedDelete01,
+    );
+    if (!confirmed || !mounted) return;
+
+    try {
+      final repository = ref.read(productsRepositoryProvider);
+      await repository.deleteProductImage(productId, imageId);
+      await _loadProduct();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.error_generic),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 
   Widget _buildDetailRow(String label, String value, {bool isLast = false}) {

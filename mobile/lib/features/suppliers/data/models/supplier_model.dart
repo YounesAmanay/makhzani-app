@@ -13,6 +13,7 @@ class SupplierModel {
   final String? address;
   final String? city;
   final String? supplierType;
+  final String? avatarUrl;
   final SupplierRelationshipModel? relationship;
 
   const SupplierModel({
@@ -24,6 +25,7 @@ class SupplierModel {
     this.address,
     this.city,
     this.supplierType,
+    this.avatarUrl,
     this.relationship,
   });
 
@@ -37,6 +39,7 @@ class SupplierModel {
       address: json['address'],
       city: json['city'],
       supplierType: json['supplier_type'],
+      avatarUrl: json['avatar_url'],
       relationship: json['relationship'] != null
           ? SupplierRelationshipModel.fromJson(json['relationship'])
           : null,
@@ -52,6 +55,7 @@ class SupplierModel {
         address: address,
         city: city,
         supplierType: supplierType,
+        avatarUrl: avatarUrl,
         relationship: relationship?.toEntity(),
       );
 }

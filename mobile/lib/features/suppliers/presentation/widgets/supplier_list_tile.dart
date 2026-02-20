@@ -1,10 +1,11 @@
 /// Supplier List Tile Widget
 ///
-/// Displays a single supplier in a list with phone and city info.
+/// Displays a single supplier in a list with avatar, phone and city info.
 library;
 
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
@@ -40,28 +41,58 @@ class SupplierListTile extends StatelessWidget {
               border: Border.all(color: theme.colorScheme.outlineVariant),
             ),
             padding: const EdgeInsets.all(AppDimensions.paddingMedium),
-            child: _buildContent(context),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _buildAvatar(),
+                const SizedBox(width: AppDimensions.marginMedium),
+                Expanded(child: _buildTextContent(context)),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildContent(BuildContext context) {
+  Widget _buildAvatar() {
+    if (supplier.avatarUrl != null) {
+      return CircleAvatar(
+        radius: 24,
+        backgroundImage: NetworkImage(
+          AppConstants.serverUrl + supplier.avatarUrl!,
+        ),
+        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+      );
+    }
+    return CircleAvatar(
+      radius: 24,
+      backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+      child: Text(
+        supplier.name.isNotEmpty ? supplier.name[0].toUpperCase() : '?',
+        style: const TextStyle(
+          color: AppColors.primary,
+          fontWeight: FontWeight.bold,
+          fontSize: 18,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextContent(BuildContext context) {
     final theme = Theme.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header: name + city chip
         Row(
           children: [
             Expanded(
               child: Text(
                 supplier.name,
                 style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                  fontWeight: FontWeight.w600,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -80,52 +111,50 @@ class SupplierListTile extends StatelessWidget {
                 child: Text(
                   supplier.city!,
                   style: theme.textTheme.labelSmall?.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ),
             ],
           ],
         ),
         const SizedBox(height: AppDimensions.marginXSmall),
-
-        // Subtitle: business name or phone
         Text(
           supplier.businessName?.isNotEmpty == true
               ? supplier.businessName!
               : supplier.phoneNumber,
           style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
-              ),
+            color: AppColors.textSecondary,
+          ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: AppDimensions.marginSmall),
-
-        // Footer: phone (if business name shown above) + total orders
         Row(
           children: [
             if (supplier.businessName?.isNotEmpty == true) ...[
               Text(
                 supplier.phoneNumber,
                 style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.textTertiary,
-                    ),
+                  color: AppColors.textTertiary,
+                ),
               ),
               if (supplier.relationship != null)
                 Text(
                   ' • ',
                   style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.textTertiary,
-                      ),
+                    color: AppColors.textTertiary,
+                  ),
                 ),
             ],
             if (supplier.relationship != null)
               Text(
-                context.l10n.suppliers_totalOrders(supplier.relationship!.totalOrders),
+                context.l10n.suppliers_totalOrders(
+                  supplier.relationship!.totalOrders,
+                ),
                 style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppColors.textTertiary,
-                    ),
+                  color: AppColors.textTertiary,
+                ),
               ),
           ],
         ),

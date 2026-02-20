@@ -514,6 +514,102 @@ abstract class AppLocalizations {
   /// **'Use + to add stock, - to remove'**
   String get products_adjustmentHelper;
 
+  /// No description provided for @products_photos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos'**
+  String get products_photos;
+
+  /// No description provided for @products_addPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Photo'**
+  String get products_addPhoto;
+
+  /// No description provided for @products_deletePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Photo'**
+  String get products_deletePhoto;
+
+  /// No description provided for @products_maxPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum 5 photos allowed'**
+  String get products_maxPhotos;
+
+  /// No description provided for @products_scanBarcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Barcode'**
+  String get products_scanBarcode;
+
+  /// No description provided for @products_scanSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-fill product details instantly'**
+  String get products_scanSubtitle;
+
+  /// No description provided for @products_lookingUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking up product...'**
+  String get products_lookingUp;
+
+  /// No description provided for @products_toggleTorch.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle flashlight'**
+  String get products_toggleTorch;
+
+  /// No description provided for @products_rescan.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-scan'**
+  String get products_rescan;
+
+  /// No description provided for @products_notFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Product not found'**
+  String get products_notFound;
+
+  /// No description provided for @products_notFoundMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This barcode isn\'t in our database. You can fill the details manually.'**
+  String get products_notFoundMessage;
+
+  /// No description provided for @products_enterManually.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Manually'**
+  String get products_enterManually;
+
+  /// No description provided for @products_scanAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Again'**
+  String get products_scanAgain;
+
+  /// No description provided for @products_autoFilled.
+  ///
+  /// In en, this message translates to:
+  /// **'Data from {source}'**
+  String products_autoFilled(String source);
+
+  /// No description provided for @products_stockSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock Information'**
+  String get products_stockSection;
+
+  /// No description provided for @products_pricingSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Pricing'**
+  String get products_pricingSection;
+
   /// No description provided for @suppliers.
   ///
   /// In en, this message translates to:
@@ -789,6 +885,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Trial ends {date}'**
   String profile_trialEnds(String date);
+
+  /// No description provided for @profile_logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Out'**
+  String get profile_logout;
+
+  /// No description provided for @profile_logoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Out'**
+  String get profile_logoutTitle;
+
+  /// No description provided for @profile_logoutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to log out?'**
+  String get profile_logoutConfirm;
 
   /// No description provided for @settings.
   ///

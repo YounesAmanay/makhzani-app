@@ -221,6 +221,57 @@ class AppLocalizationsAr extends AppLocalizations {
   String get products_adjustmentHelper => 'استخدم + لإضافة مخزون، - للإزالة';
 
   @override
+  String get products_photos => 'الصور';
+
+  @override
+  String get products_addPhoto => 'إضافة صورة';
+
+  @override
+  String get products_deletePhoto => 'حذف الصورة';
+
+  @override
+  String get products_maxPhotos => 'الحد الأقصى 5 صور';
+
+  @override
+  String get products_scanBarcode => 'مسح الباركود';
+
+  @override
+  String get products_scanSubtitle => 'ملء تفاصيل المنتج تلقائياً';
+
+  @override
+  String get products_lookingUp => 'جاري البحث عن المنتج...';
+
+  @override
+  String get products_toggleTorch => 'تشغيل/إيقاف الضوء';
+
+  @override
+  String get products_rescan => 'إعادة المسح';
+
+  @override
+  String get products_notFound => 'المنتج غير موجود';
+
+  @override
+  String get products_notFoundMessage =>
+      'هذا الباركود غير موجود في قاعدة بياناتنا. يمكنك ملء التفاصيل يدوياً.';
+
+  @override
+  String get products_enterManually => 'إدخال يدوي';
+
+  @override
+  String get products_scanAgain => 'مسح مرة أخرى';
+
+  @override
+  String products_autoFilled(String source) {
+    return 'بيانات من $source';
+  }
+
+  @override
+  String get products_stockSection => 'معلومات المخزون';
+
+  @override
+  String get products_pricingSection => 'التسعير';
+
+  @override
   String get suppliers => 'الموردون';
 
   @override
@@ -363,6 +414,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String profile_trialEnds(String date) {
     return 'ينتهي التجريب في $date';
   }
+
+  @override
+  String get profile_logout => 'تسجيل الخروج';
+
+  @override
+  String get profile_logoutTitle => 'تسجيل الخروج';
+
+  @override
+  String get profile_logoutConfirm => 'هل أنت متأكد أنك تريد تسجيل الخروج؟';
 
   @override
   String get settings => 'الإعدادات';

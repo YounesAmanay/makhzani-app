@@ -10,6 +10,7 @@ class Supplier {
   final String? address;
   final String? city;
   final String? supplierType;
+  final String? avatarUrl;
   final SupplierRelationship? relationship;
 
   const Supplier({
@@ -21,6 +22,7 @@ class Supplier {
     this.address,
     this.city,
     this.supplierType,
+    this.avatarUrl,
     this.relationship,
   });
 }

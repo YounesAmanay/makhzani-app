@@ -7,9 +7,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
@@ -37,6 +39,7 @@ class _SupplierDetailScreenState extends ConsumerState<SupplierDetailScreen> {
   List<SupplierOrder> _recentOrders = [];
   bool _isLoading = true;
   bool _isDeleting = false;
+  bool _isUploadingAvatar = false;
   String? _errorMessage;
 
   @override
@@ -178,19 +181,53 @@ class _SupplierDetailScreenState extends ConsumerState<SupplierDetailScreen> {
         padding: const EdgeInsets.all(AppDimensions.paddingLarge),
         child: Column(
           children: [
-            // Avatar
-            CircleAvatar(
-              radius: 32,
-              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-              child: Text(
-                supplier.name.isNotEmpty
-                    ? supplier.name[0].toUpperCase()
-                    : '?',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.bold,
+            // Avatar with upload overlay
+            Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                supplier.avatarUrl != null
+                    ? CircleAvatar(
+                        radius: 40,
+                        backgroundImage: NetworkImage(
+                          AppConstants.serverUrl + supplier.avatarUrl!,
+                        ),
+                        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                      )
+                    : CircleAvatar(
+                        radius: 40,
+                        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                        child: Text(
+                          supplier.name.isNotEmpty
+                              ? supplier.name[0].toUpperCase()
+                              : '?',
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                GestureDetector(
+                  onTap: _isUploadingAvatar ? null : _pickAndUploadAvatar,
+                  child: Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    child: _isUploadingAvatar
+                        ? const Padding(
+                            padding: EdgeInsets.all(6),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Icon(Icons.camera_alt, size: 14, color: Colors.white),
+                  ),
                 ),
-              ),
+              ],
             ),
             const SizedBox(height: AppDimensions.marginMedium),
 
@@ -646,6 +683,33 @@ class _SupplierDetailScreenState extends ConsumerState<SupplierDetailScreen> {
     final uri = Uri(scheme: 'mailto', path: email);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
+    }
+  }
+
+  Future<void> _pickAndUploadAvatar() async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+    if (image == null || !mounted) return;
+
+    setState(() => _isUploadingAvatar = true);
+
+    try {
+      final repository = ref.read(suppliersRepositoryProvider);
+      await repository.uploadSupplierAvatar(widget.supplierId, image.path);
+      await _loadSupplier();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.error_generic),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isUploadingAvatar = false);
     }
   }
 

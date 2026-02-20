@@ -69,6 +69,27 @@
   "products_adjustment": "Ajustement",
   "products_adjustmentHint": "+10 ou -5",
   "products_adjustmentHelper": "Utilisez + pour ajouter, - pour retirer",
+  "products_photos": "Photos",
+  "products_addPhoto": "Ajouter une photo",
+  "products_deletePhoto": "Supprimer la photo",
+  "products_maxPhotos": "Maximum 5 photos autorisees",
+  "products_scanBarcode": "Scanner le code-barres",
+  "products_scanSubtitle": "Remplir les details automatiquement",
+  "products_lookingUp": "Recherche du produit...",
+  "products_toggleTorch": "Activer/desactiver la lampe",
+  "products_rescan": "Re-scanner",
+  "products_notFound": "Produit introuvable",
+  "products_notFoundMessage": "Ce code-barres n'est pas dans notre base de donnees. Vous pouvez saisir les details manuellement.",
+  "products_enterManually": "Saisir manuellement",
+  "products_scanAgain": "Scanner a nouveau",
+  "products_autoFilled": "Donnees de {source}",
+  "@products_autoFilled": {
+    "placeholders": {
+      "source": {"type": "String"}
+    }
+  },
+  "products_stockSection": "Informations de stock",
+  "products_pricingSection": "Tarification",
   "products_adjustStock": "Ajuster le stock",
   "products_stockAdjusted": "Stock ajuste avec succes",
   "products_created": "Produit cree avec succes",
@@ -142,6 +163,9 @@
       "date": {"type": "String"}
     }
   },
+  "profile_logout": "Se deconnecter",
+  "profile_logoutTitle": "Deconnexion",
+  "profile_logoutConfirm": "Etes-vous sur de vouloir vous deconnecter ?",
 
   "settings": "Parametres",
   "settings_language": "Langue",

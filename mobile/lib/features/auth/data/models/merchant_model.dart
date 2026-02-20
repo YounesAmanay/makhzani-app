@@ -24,6 +24,7 @@ class MerchantModel {
   final String subscriptionStatus;
   final DateTime? trialEndsAt;
   final bool? isNewUser;
+  final String? avatarUrl;
 
   const MerchantModel({
     required this.id,
@@ -37,6 +38,7 @@ class MerchantModel {
     required this.subscriptionStatus,
     this.trialEndsAt,
     this.isNewUser,
+    this.avatarUrl,
   });
 
   factory MerchantModel.fromJson(Map<String, dynamic> json) {
@@ -54,6 +56,7 @@ class MerchantModel {
           ? DateTime.parse(json['trial_ends_at'])
           : null,
       isNewUser: json['is_new_user'],
+      avatarUrl: json['avatar_url'],
     );
   }
 
@@ -63,5 +66,6 @@ class MerchantModel {
     businessName: shopName,
     subscriptionStatus: subscriptionStatus,
     trialEndsAt: trialEndsAt,
+    avatarUrl: avatarUrl,
   );
 }

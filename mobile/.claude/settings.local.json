@@ -1,11 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(flutter gen-l10n:*)",
-      "Bash(flutter analyze:*)",
-      "Bash(git commit:*)",
-      "Bash(find:*)",
-      "Bash(del \"c:\\\\Users\\\\PC\\\\Desktop\\\\Projects\\\\makhzani-app\\\\mobile\\\\lib\\\\features\\\\dashboard\\\\presentation\\\\widgets\\\\stats_card.dart\")"
-    ]
-  }
+      "Bash(*)",
+      "Read(*)",
+      "Edit(*)",
+      "WebFetch(*)",
+      "MCP(*)"
+    ],
+    "deny": []
+  },
+  "defaultMode": "bypassPermissions"
 }

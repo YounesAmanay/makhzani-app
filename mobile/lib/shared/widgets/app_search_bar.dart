@@ -4,6 +4,8 @@
 /// Used on products, suppliers, orders screens.
 library;
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 
@@ -28,27 +30,26 @@ class AppSearchBar extends StatefulWidget {
 
 class _AppSearchBarState extends State<AppSearchBar> {
   final _controller = TextEditingController();
-  String _lastSearch = '';
+  Timer? _debounce;
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _controller.dispose();
     super.dispose();
   }
 
   void _onChanged(String value) {
-    final trimmed = value.trim();
-    Future.delayed(widget.debounceDuration, () {
-      if (_controller.text.trim() == trimmed && trimmed != _lastSearch) {
-        _lastSearch = trimmed;
-        widget.onSearch(trimmed.isEmpty ? null : trimmed);
-      }
+    _debounce?.cancel();
+    _debounce = Timer(widget.debounceDuration, () {
+      final trimmed = value.trim();
+      widget.onSearch(trimmed.isEmpty ? null : trimmed);
     });
   }
 
   void _onClear() {
+    _debounce?.cancel();
     _controller.clear();
-    _lastSearch = '';
     widget.onSearch(null);
   }
 

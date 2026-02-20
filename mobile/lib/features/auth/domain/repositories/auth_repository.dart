@@ -28,5 +28,10 @@ abstract class AuthRepository {
   /// Checks if user has valid tokens
   Future<bool> isLoggedIn();
 
+  Future<Merchant> getMerchantProfile();
+
+  /// Uploads a new avatar image; returns the new avatar URL
+  Future<String> uploadMerchantAvatar(String filePath);
+
   // Note: Token refresh is handled automatically by ApiClient interceptor
 }

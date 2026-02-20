@@ -230,6 +230,57 @@ class AppLocalizationsFr extends AppLocalizations {
       'Utilisez + pour ajouter, - pour retirer';
 
   @override
+  String get products_photos => 'Photos';
+
+  @override
+  String get products_addPhoto => 'Ajouter une photo';
+
+  @override
+  String get products_deletePhoto => 'Supprimer la photo';
+
+  @override
+  String get products_maxPhotos => 'Maximum 5 photos autorisees';
+
+  @override
+  String get products_scanBarcode => 'Scanner le code-barres';
+
+  @override
+  String get products_scanSubtitle => 'Remplir les details automatiquement';
+
+  @override
+  String get products_lookingUp => 'Recherche du produit...';
+
+  @override
+  String get products_toggleTorch => 'Activer/desactiver la lampe';
+
+  @override
+  String get products_rescan => 'Re-scanner';
+
+  @override
+  String get products_notFound => 'Produit introuvable';
+
+  @override
+  String get products_notFoundMessage =>
+      'Ce code-barres n\'est pas dans notre base de donnees. Vous pouvez saisir les details manuellement.';
+
+  @override
+  String get products_enterManually => 'Saisir manuellement';
+
+  @override
+  String get products_scanAgain => 'Scanner a nouveau';
+
+  @override
+  String products_autoFilled(String source) {
+    return 'Donnees de $source';
+  }
+
+  @override
+  String get products_stockSection => 'Informations de stock';
+
+  @override
+  String get products_pricingSection => 'Tarification';
+
+  @override
   String get suppliers => 'Fournisseurs';
 
   @override
@@ -374,6 +425,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String profile_trialEnds(String date) {
     return 'Essai se termine le $date';
   }
+
+  @override
+  String get profile_logout => 'Se deconnecter';
+
+  @override
+  String get profile_logoutTitle => 'Deconnexion';
+
+  @override
+  String get profile_logoutConfirm =>
+      'Etes-vous sur de vouloir vous deconnecter ?';
 
   @override
   String get settings => 'Parametres';

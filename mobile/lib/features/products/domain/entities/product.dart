@@ -1,6 +1,18 @@
 /// Product Entity
 library;
 
+class ProductImage {
+  final String id;
+  final String imageUrl;
+  final bool isPrimary;
+
+  const ProductImage({
+    required this.id,
+    required this.imageUrl,
+    required this.isPrimary,
+  });
+}
+
 class Product {
   final String id;
   final String name;
@@ -13,6 +25,7 @@ class Product {
   final String stockStatus;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final List<ProductImage> images;
 
   const Product({
     required this.id,
@@ -26,6 +39,7 @@ class Product {
     required this.stockStatus,
     required this.createdAt,
     required this.updatedAt,
+    this.images = const [],
   });
 
   bool get isLowStock => needsReorder || currentStock <= reorderThreshold;

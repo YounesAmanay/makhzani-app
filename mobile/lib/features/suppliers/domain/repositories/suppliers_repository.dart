@@ -30,4 +30,6 @@ abstract class SuppliersRepository {
   });
 
   Future<void> deleteSupplier(String id);
+
+  Future<void> uploadSupplierAvatar(String id, String filePath);
 }

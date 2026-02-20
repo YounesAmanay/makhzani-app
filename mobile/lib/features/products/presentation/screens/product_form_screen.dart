@@ -1,8 +1,11 @@
 /// Product Form Screen
 ///
-/// Create/Edit product form with clean UX.
+/// Create/Edit product form with scan-first UX.
+/// On create: shows scan hero button → auto-fills from barcode lookup.
+/// On edit: loads existing product data directly into fields.
 library;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,9 +13,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
+import '../../../../shared/widgets/app_loading.dart';
+import '../../domain/entities/barcode_result.dart';
 import '../../domain/entities/product.dart';
 import '../providers/product_form_provider.dart';
 import '../providers/products_provider.dart';
+import 'barcode_scanner_screen.dart';
 
 class ProductFormScreen extends ConsumerStatefulWidget {
   final String? productId;
@@ -36,12 +42,19 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   final _barcodeController = TextEditingController();
   final _priceController = TextEditingController();
 
+  final _stockFocusNode = FocusNode();
+
   String _selectedUnit = 'piece';
   bool _isLoading = false;
   bool _isSubmitting = false;
   String? _errorMessage;
   Map<String, String> _fieldErrors = {};
   Product? _product;
+
+  // Scan state — only used in create mode
+  bool _hasScanned = false;
+  String? _scannedImageUrl;
+  String? _dataSource;
 
   static const List<String> _units = [
     'piece',
@@ -55,18 +68,25 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.isEditing) {
-      _loadProduct();
-    }
+    if (widget.isEditing) _loadProduct();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _stockController.dispose();
+    _thresholdController.dispose();
+    _barcodeController.dispose();
+    _priceController.dispose();
+    _stockFocusNode.dispose();
+    super.dispose();
   }
 
   Future<void> _loadProduct() async {
     setState(() => _isLoading = true);
-
     try {
       final repository = ref.read(productsRepositoryProvider);
       final product = await repository.getProductById(widget.productId!);
-
       if (mounted) {
         setState(() {
           _product = product;
@@ -80,21 +100,56 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
         });
       }
     } catch (e) {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _stockController.dispose();
-    _thresholdController.dispose();
-    _barcodeController.dispose();
-    _priceController.dispose();
-    super.dispose();
+  // ---------------------------------------------------------------------------
+  // Scanner
+  // ---------------------------------------------------------------------------
+
+  Future<void> _openScanner() async {
+    final result = await Navigator.of(context).push<BarcodeResult?>(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (_) => const BarcodeScannerScreen(),
+      ),
+    );
+    if (result == null || !mounted) return;
+    _applyBarcodeResult(result);
   }
+
+  void _applyBarcodeResult(BarcodeResult result) {
+    setState(() {
+      _hasScanned = true;
+      _scannedImageUrl = result.imageUrl;
+      _dataSource = result.sourceLabel;
+      _nameController.text = result.name;
+      _barcodeController.text = result.barcode;
+      if (result.isHighConfidence && result.unit != null) {
+        _selectedUnit = result.unit!;
+      }
+      // Clear any previous field errors
+      _fieldErrors = {};
+      _errorMessage = null;
+    });
+
+    // Announce auto-fill to user then jump focus to stock
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(context.l10n.products_autoFilled(result.sourceLabel)),
+        backgroundColor: AppColors.success,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (mounted) FocusScope.of(context).requestFocus(_stockFocusNode);
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Build
+  // ---------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +170,15 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Product Name
+                    // ── Scan hero / image (create mode only) ──────────────
+                    if (!widget.isEditing) ...[
+                      _hasScanned
+                          ? _buildImageSection()
+                          : _buildScanHeroButton(),
+                      const SizedBox(height: AppDimensions.marginLarge),
+                    ],
+
+                    // ── Product Name ───────────────────────────────────────
                     TextFormField(
                       controller: _nameController,
                       decoration: InputDecoration(
@@ -135,7 +198,31 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
                     const SizedBox(height: AppDimensions.marginMedium),
 
-                    // Current Stock and Unit
+                    // ── Barcode ────────────────────────────────────────────
+                    TextFormField(
+                      controller: _barcodeController,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.products_barcode,
+                        errorText: _fieldErrors['barcode'],
+                        suffixIcon: !widget.isEditing
+                            ? IconButton(
+                                icon: const Icon(Icons.qr_code_scanner),
+                                tooltip: context.l10n.products_scanBarcode,
+                                onPressed: _openScanner,
+                              )
+                            : null,
+                      ),
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    ),
+
+                    const SizedBox(height: AppDimensions.marginLarge),
+
+                    // ── Section: Stock ─────────────────────────────────────
+                    _buildSectionHeader(context.l10n.products_stockSection),
+                    const SizedBox(height: AppDimensions.marginMedium),
+
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -143,6 +230,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                           flex: 2,
                           child: TextFormField(
                             controller: _stockController,
+                            focusNode: _stockFocusNode,
                             decoration: InputDecoration(
                               labelText: '${context.l10n.products_currentStock} *',
                               hintText: '0',
@@ -150,9 +238,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                             ),
                             keyboardType: TextInputType.number,
                             textInputAction: TextInputAction.next,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                            ],
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             validator: (value) {
                               if (_fieldErrors['current_stock'] != null) return null;
                               if (value == null || value.trim().isEmpty) {
@@ -164,10 +250,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                         ),
                         const SizedBox(width: AppDimensions.marginMedium),
                         Expanded(
-                          flex: 1,
                           child: DropdownButtonFormField<String>(
-                            // ignore: deprecated_member_use
-                            value: _selectedUnit,
+                            initialValue: _selectedUnit,
                             decoration: InputDecoration(
                               labelText: context.l10n.products_unit,
                               errorText: _fieldErrors['unit'],
@@ -179,9 +263,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                               );
                             }).toList(),
                             onChanged: (value) {
-                              if (value != null) {
-                                setState(() => _selectedUnit = value);
-                              }
+                              if (value != null) setState(() => _selectedUnit = value);
                             },
                           ),
                         ),
@@ -190,7 +272,6 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
                     const SizedBox(height: AppDimensions.marginMedium),
 
-                    // Reorder Threshold
                     TextFormField(
                       controller: _thresholdController,
                       decoration: InputDecoration(
@@ -210,21 +291,12 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                       },
                     ),
 
+                    const SizedBox(height: AppDimensions.marginLarge),
+
+                    // ── Section: Pricing ───────────────────────────────────
+                    _buildSectionHeader(context.l10n.products_pricingSection),
                     const SizedBox(height: AppDimensions.marginMedium),
 
-                    // Barcode (optional)
-                    TextFormField(
-                      controller: _barcodeController,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.products_barcode,
-                        errorText: _fieldErrors['barcode'],
-                      ),
-                      textInputAction: TextInputAction.next,
-                    ),
-
-                    const SizedBox(height: AppDimensions.marginMedium),
-
-                    // Price (optional)
                     TextFormField(
                       controller: _priceController,
                       decoration: InputDecoration(
@@ -242,7 +314,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
                     const SizedBox(height: AppDimensions.marginXLarge),
 
-                    // Error message
+                    // ── Generic error ──────────────────────────────────────
                     if (_errorMessage != null)
                       Container(
                         margin: const EdgeInsets.only(bottom: AppDimensions.marginMedium),
@@ -268,7 +340,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                         ),
                       ),
 
-                    // Submit button
+                    // ── Submit ─────────────────────────────────────────────
                     SizedBox(
                       height: AppDimensions.buttonHeightLarge,
                       child: ElevatedButton(
@@ -289,6 +361,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                               ),
                       ),
                     ),
+
+                    const SizedBox(height: AppDimensions.marginMedium),
                   ],
                 ),
               ),
@@ -296,8 +370,159 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     );
   }
 
+  // ---------------------------------------------------------------------------
+  // Widgets
+  // ---------------------------------------------------------------------------
+
+  Widget _buildScanHeroButton() {
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: _openScanner,
+      child: Container(
+        height: 120,
+        decoration: BoxDecoration(
+          color: AppColors.primary.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+          border: Border.all(
+            color: AppColors.primary.withValues(alpha: 0.35),
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.qr_code_scanner_rounded, size: 40, color: AppColors.primary),
+            const SizedBox(height: AppDimensions.marginSmall),
+            Text(
+              context.l10n.products_scanBarcode,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              context.l10n.products_scanSubtitle,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageSection() {
+    return Stack(
+      children: [
+        // Image container
+        ClipRRect(
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+          child: SizedBox(
+            height: 180,
+            width: double.infinity,
+            child: _scannedImageUrl != null
+                ? CachedNetworkImage(
+                    imageUrl: _scannedImageUrl!,
+                    fit: BoxFit.cover,
+                    placeholder: (_, __) => const Center(child: AppLoadingIndicator()),
+                    errorWidget: (_, __, ___) => _buildImagePlaceholder(),
+                  )
+                : _buildImagePlaceholder(),
+          ),
+        ),
+
+        // Re-scan button (top-right overlay)
+        Positioned(
+          top: AppDimensions.paddingSmall,
+          right: AppDimensions.paddingSmall,
+          child: GestureDetector(
+            onTap: _openScanner,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.paddingSmall,
+                vertical: 6,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.qr_code_scanner, color: Colors.white, size: 14),
+                  const SizedBox(width: 4),
+                  Text(
+                    context.l10n.products_rescan,
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        // Source badge (bottom-left overlay)
+        if (_dataSource != null)
+          Positioned(
+            bottom: AppDimensions.paddingSmall,
+            left: AppDimensions.paddingSmall,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.paddingSmall,
+                vertical: 3,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+              ),
+              child: Text(
+                _dataSource!,
+                style: const TextStyle(color: Colors.white, fontSize: 10),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildImagePlaceholder() {
+    return Container(
+      color: AppColors.surfaceHover,
+      child: Center(
+        child: Icon(
+          Icons.image_outlined,
+          size: 48,
+          color: AppColors.iconSecondary,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Row(
+      children: [
+        Expanded(child: Divider(color: AppColors.border)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingSmall),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ),
+        Expanded(child: Divider(color: AppColors.border)),
+      ],
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Submit
+  // ---------------------------------------------------------------------------
+
   Future<void> _handleSubmit() async {
-    // Clear previous errors before validation
     setState(() {
       _fieldErrors = {};
       _errorMessage = null;
@@ -305,9 +530,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isSubmitting = true;
-    });
+    setState(() => _isSubmitting = true);
 
     final name = _nameController.text.trim();
     final currentStock = int.parse(_stockController.text.trim());
@@ -349,7 +572,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              widget.isEditing ? context.l10n.products_updated : context.l10n.products_created,
+              widget.isEditing
+                  ? context.l10n.products_updated
+                  : context.l10n.products_created,
             ),
             backgroundColor: AppColors.success,
           ),

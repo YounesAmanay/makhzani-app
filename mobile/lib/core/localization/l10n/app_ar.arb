@@ -59,6 +59,27 @@
   "products_adjustment": "التعديل",
   "products_adjustmentHint": "+10 أو -5",
   "products_adjustmentHelper": "استخدم + لإضافة مخزون، - للإزالة",
+  "products_photos": "الصور",
+  "products_addPhoto": "إضافة صورة",
+  "products_deletePhoto": "حذف الصورة",
+  "products_maxPhotos": "الحد الأقصى 5 صور",
+  "products_scanBarcode": "مسح الباركود",
+  "products_scanSubtitle": "ملء تفاصيل المنتج تلقائياً",
+  "products_lookingUp": "جاري البحث عن المنتج...",
+  "products_toggleTorch": "تشغيل/إيقاف الضوء",
+  "products_rescan": "إعادة المسح",
+  "products_notFound": "المنتج غير موجود",
+  "products_notFoundMessage": "هذا الباركود غير موجود في قاعدة بياناتنا. يمكنك ملء التفاصيل يدوياً.",
+  "products_enterManually": "إدخال يدوي",
+  "products_scanAgain": "مسح مرة أخرى",
+  "products_autoFilled": "بيانات من {source}",
+  "@products_autoFilled": {
+    "placeholders": {
+      "source": {"type": "String"}
+    }
+  },
+  "products_stockSection": "معلومات المخزون",
+  "products_pricingSection": "التسعير",
   "products_adjustStock": "تعديل المخزون",
   "products_stockAdjusted": "تم تعديل المخزون بنجاح",
   "products_created": "تم إنشاء المنتج بنجاح",
@@ -127,6 +148,9 @@
   "profile_region": "المنطقة",
   "profile_subscription": "الاشتراك",
   "profile_trialEnds": "ينتهي التجريب في {date}",
+  "profile_logout": "تسجيل الخروج",
+  "profile_logoutTitle": "تسجيل الخروج",
+  "profile_logoutConfirm": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
 
   "settings": "الإعدادات",
   "settings_language": "اللغة",

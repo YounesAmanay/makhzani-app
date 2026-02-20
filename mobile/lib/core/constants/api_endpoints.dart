@@ -7,15 +7,20 @@ class ApiEndpoints {
   // Merchant
   static const String merchantProfile = '/merchants/profile';
   static const String dashboardStats = '/merchants/dashboard-stats';
+  static const String merchantAvatar = '/merchants/avatar';
 
   // Products
   static const String products = '/products';
+  static const String barcodeLookup = '/products/lookup';
   static String productById(String id) => '/products/$id';
   static String adjustStock(String id) => '/products/$id/adjust-stock';
+  static String productImages(String id) => '/products/$id/images';
+  static String productImage(String id, String imageId) => '/products/$id/images/$imageId';
 
   // Suppliers
   static const String suppliers = '/suppliers';
   static String supplierById(String id) => '/suppliers/$id';
+  static String supplierAvatar(String id) => '/suppliers/$id/avatar';
 
   // Orders
   static const String orders = '/orders';

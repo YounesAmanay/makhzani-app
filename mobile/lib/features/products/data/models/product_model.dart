@@ -3,6 +3,32 @@ library;
 
 import '../../domain/entities/product.dart';
 
+class ProductImageModel {
+  final String id;
+  final String imageUrl;
+  final bool isPrimary;
+
+  const ProductImageModel({
+    required this.id,
+    required this.imageUrl,
+    required this.isPrimary,
+  });
+
+  factory ProductImageModel.fromJson(Map<String, dynamic> json) {
+    return ProductImageModel(
+      id: json['id'],
+      imageUrl: json['image_url'],
+      isPrimary: json['is_primary'] ?? false,
+    );
+  }
+
+  ProductImage toEntity() => ProductImage(
+    id: id,
+    imageUrl: imageUrl,
+    isPrimary: isPrimary,
+  );
+}
+
 class ProductModel {
   final String id;
   final String name;
@@ -15,6 +41,7 @@ class ProductModel {
   final String stockStatus;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final List<ProductImageModel> images;
 
   const ProductModel({
     required this.id,
@@ -28,6 +55,7 @@ class ProductModel {
     required this.stockStatus,
     required this.createdAt,
     required this.updatedAt,
+    this.images = const [],
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -45,6 +73,10 @@ class ProductModel {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
           : DateTime.parse(json['created_at']),
+      images: (json['images'] as List?)
+              ?.map((img) => ProductImageModel.fromJson(img))
+              .toList() ??
+          [],
     );
   }
 
@@ -71,5 +103,6 @@ class ProductModel {
     stockStatus: stockStatus,
     createdAt: createdAt,
     updatedAt: updatedAt,
+    images: images.map((img) => img.toEntity()).toList(),
   );
 }

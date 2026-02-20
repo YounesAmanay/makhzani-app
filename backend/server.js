@@ -35,6 +35,8 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/merchants', require('./routes/merchants'));
+// productLookup MUST be mounted before products to prevent /lookup being caught as /:id
+app.use('/api/products', require('./routes/productLookup'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/suppliers', require('./routes/suppliers'));
 app.use('/api/orders', require('./routes/orders'));

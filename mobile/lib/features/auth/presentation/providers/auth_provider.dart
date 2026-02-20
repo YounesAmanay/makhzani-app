@@ -4,6 +4,7 @@
 /// Handles login flow, OTP verification, and auth state.
 library;
 
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -54,7 +55,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
     final isLoggedIn = await _authRepository.isLoggedIn();
 
     if (isLoggedIn) {
-      state = state.copyWith(status: AuthStatus.authenticated);
+      try {
+        final merchant = await _authRepository.getMerchantProfile();
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          merchant: merchant,
+        );
+      } catch (_) {
+        // Profile fetch failed (e.g. offline) — still mark authenticated
+        state = state.copyWith(status: AuthStatus.authenticated);
+      }
     } else {
       state = state.copyWith(status: AuthStatus.unauthenticated);
     }
@@ -101,6 +111,27 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> logout() async {
     await _authRepository.logout();
     state = const AuthState(status: AuthStatus.unauthenticated);
+  }
+
+  /// Upload avatar and patch avatarUrl on the current merchant in state
+  Future<void> uploadAvatar(String filePath) async {
+    try {
+      final avatarUrl = await _authRepository.uploadMerchantAvatar(filePath);
+      final current = state.merchant ?? await _authRepository.getMerchantProfile();
+      state = state.copyWith(
+        merchant: Merchant(
+          id: current.id,
+          phoneNumber: current.phoneNumber,
+          businessName: current.businessName,
+          subscriptionStatus: current.subscriptionStatus,
+          trialEndsAt: current.trialEndsAt,
+          avatarUrl: avatarUrl,
+        ),
+      );
+    } on DioException catch (e) {
+      final message = e.response?.data?['message'] as String? ?? 'Failed to upload avatar';
+      throw Exception(message);
+    }
   }
 }
 

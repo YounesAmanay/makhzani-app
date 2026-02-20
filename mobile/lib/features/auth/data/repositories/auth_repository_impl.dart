@@ -60,4 +60,15 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<bool> isLoggedIn() async {
     return await _localDataSource.hasTokens();
   }
+
+  @override
+  Future<Merchant> getMerchantProfile() async {
+    final model = await _remoteDataSource.getMerchantProfile();
+    return model.toEntity();
+  }
+
+  @override
+  Future<String> uploadMerchantAvatar(String filePath) async {
+    return await _remoteDataSource.uploadMerchantAvatar(filePath);
+  }
 }

@@ -1,6 +1,8 @@
 /// Suppliers Remote Data Source
 library;
 
+import 'package:dio/dio.dart';
+
 import '../../../../core/network/api_client.dart';
 import '../../../../core/constants/api_endpoints.dart';
 import '../models/supplier_model.dart';
@@ -19,6 +21,8 @@ abstract class SuppliersRemoteDataSource {
   );
 
   Future<void> deleteSupplier(String id);
+
+  Future<void> uploadSupplierAvatar(String id, String filePath);
 }
 
 class SuppliersRemoteDataSourceImpl implements SuppliersRemoteDataSource {
@@ -83,5 +87,16 @@ class SuppliersRemoteDataSourceImpl implements SuppliersRemoteDataSource {
   @override
   Future<void> deleteSupplier(String id) async {
     await _apiClient.delete(ApiEndpoints.supplierById(id));
+  }
+
+  @override
+  Future<void> uploadSupplierAvatar(String id, String filePath) async {
+    final formData = FormData.fromMap({
+      'avatar': await MultipartFile.fromFile(filePath),
+    });
+    await _apiClient.post(
+      ApiEndpoints.supplierAvatar(id),
+      data: formData,
+    );
   }
 }

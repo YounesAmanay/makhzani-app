@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/localization/locale_provider.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -25,9 +26,11 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
 
-    // Get business name from auth state
-    final businessName = authState.merchant?.businessName ?? '';
+    // Get business name and avatar from auth state
+    final merchant = authState.merchant;
+    final businessName = merchant?.businessName ?? '';
     final firstLetter = businessName.isNotEmpty ? businessName[0].toUpperCase() : '?';
+    final avatarUrl = merchant?.avatarUrl;
 
     return AppBar(
       automaticallyImplyLeading: false,
@@ -73,14 +76,19 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 CircleAvatar(
                   radius: 16,
                   backgroundColor: AppColors.primaryLight,
-                  child: Text(
-                    firstLetter,
-                    style: const TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
+                  backgroundImage: avatarUrl != null
+                      ? NetworkImage(AppConstants.serverUrl + avatarUrl)
+                      : null,
+                  child: avatarUrl == null
+                      ? Text(
+                          firstLetter,
+                          style: const TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        )
+                      : null,
                 ),
                 const SizedBox(width: 4),
                 HugeIcon(
@@ -128,9 +136,11 @@ class _ProfileSheet extends ConsumerWidget {
     final themeMode = ref.watch(themeModeProvider);
     final currentLocale = ref.watch(localeProvider);
 
-    final businessName = authState.merchant?.businessName ?? '';
-    final phoneNumber = authState.merchant?.phoneNumber ?? '';
+    final merchant = authState.merchant;
+    final businessName = merchant?.businessName ?? '';
+    final phoneNumber = merchant?.phoneNumber ?? '';
     final firstLetter = businessName.isNotEmpty ? businessName[0].toUpperCase() : '?';
+    final avatarUrl = merchant?.avatarUrl;
     final isDark = themeMode == ThemeMode.dark;
     final isArabic = currentLocale.languageCode == 'ar';
 
@@ -161,14 +171,19 @@ class _ProfileSheet extends ConsumerWidget {
                   CircleAvatar(
                     radius: 28,
                     backgroundColor: AppColors.primaryLight,
-                    child: Text(
-                      firstLetter,
-                      style: const TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                      ),
-                    ),
+                    backgroundImage: avatarUrl != null
+                        ? NetworkImage(AppConstants.serverUrl + avatarUrl)
+                        : null,
+                    child: avatarUrl == null
+                        ? Text(
+                            firstLetter,
+                            style: const TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            ),
+                          )
+                        : null,
                   ),
                   const SizedBox(width: AppDimensions.marginMedium),
                   Expanded(

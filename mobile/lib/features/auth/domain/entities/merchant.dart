@@ -26,6 +26,9 @@ class Merchant {
   /// When the trial period ends (null if not on trial or already paid)
   final DateTime? trialEndsAt;
 
+  /// Relative URL path to avatar image (prepend AppConstants.serverUrl)
+  final String? avatarUrl;
+
   /// Const constructor - allows compile-time constant creation
   /// All fields are final = immutable (cannot be changed after creation)
   const Merchant({
@@ -34,6 +37,7 @@ class Merchant {
     this.businessName,
     required this.subscriptionStatus,
     this.trialEndsAt,
+    this.avatarUrl,
   });
 
   /// Helper to check if merchant is on active trial

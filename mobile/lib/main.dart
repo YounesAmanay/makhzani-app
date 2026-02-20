@@ -13,6 +13,7 @@ import 'features/auth/presentation/screens/phone_input_screen.dart';
 import 'features/auth/presentation/screens/splash_screen.dart';
 import 'features/orders/presentation/screens/order_detail_screen.dart';
 import 'features/orders/presentation/screens/order_form_screen.dart';
+import 'features/products/presentation/screens/barcode_scanner_screen.dart';
 import 'features/products/presentation/screens/product_detail_screen.dart';
 import 'features/products/presentation/screens/product_form_screen.dart';
 import 'features/settings/presentation/screens/settings_placeholder_screen.dart';
@@ -73,6 +74,7 @@ class MakhzaniApp extends ConsumerWidget {
         '/login': (context) => const PhoneInputScreen(),
         '/main': (context) => const MainShellScreen(),
         '/products/create': (context) => const ProductFormScreen(),
+        '/products/scan': (context) => const BarcodeScannerScreen(),
         '/suppliers/create': (context) => const SupplierFormScreen(),
         '/orders/create': (context) => const OrderFormScreen(),
         '/settings': (context) => const SettingsPlaceholderScreen(),

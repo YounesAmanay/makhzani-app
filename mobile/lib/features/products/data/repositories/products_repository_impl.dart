@@ -1,6 +1,7 @@
 /// Products Repository Implementation
 library;
 
+import '../../domain/entities/barcode_result.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/pagination.dart';
 import '../../domain/repositories/products_repository.dart';
@@ -91,5 +92,22 @@ class ProductsRepositoryImpl implements ProductsRepository {
     String? reason,
   }) async {
     return await _remoteDataSource.adjustStock(id, adjustment, reason);
+  }
+
+  @override
+  Future<ProductImage> uploadProductImage(String id, String filePath) async {
+    final model = await _remoteDataSource.uploadProductImage(id, filePath);
+    return model.toEntity();
+  }
+
+  @override
+  Future<void> deleteProductImage(String productId, String imageId) async {
+    await _remoteDataSource.deleteProductImage(productId, imageId);
+  }
+
+  @override
+  Future<BarcodeResult?> lookupBarcode(String barcode) async {
+    final model = await _remoteDataSource.lookupBarcode(barcode);
+    return model?.toEntity();
   }
 }

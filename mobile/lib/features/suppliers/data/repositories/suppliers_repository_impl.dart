@@ -78,4 +78,9 @@ class SuppliersRepositoryImpl implements SuppliersRepository {
   Future<void> deleteSupplier(String id) async {
     await _remoteDataSource.deleteSupplier(id);
   }
+
+  @override
+  Future<void> uploadSupplierAvatar(String id, String filePath) async {
+    await _remoteDataSource.uploadSupplierAvatar(id, filePath);
+  }
 }

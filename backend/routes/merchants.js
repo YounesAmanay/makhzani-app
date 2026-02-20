@@ -48,9 +48,8 @@ router.get('/profile', authenticateToken, async (req, res) => {
         {
           model: db.Supplier,
           as: 'suppliers',
-          through: {
-            attributes: ['payment_terms', 'merchant_notes', 'preferred_contact_method']
-          }
+          where: { is_active: true },
+          required: false
         },
         {
           model: db.Product,
@@ -83,6 +82,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
           email: merchant.email,
           address: merchant.address,
           region: merchant.region,
+          avatar_url: merchant.avatar_url,
           subscription_status: merchant.subscription_status,
           trial_ends_at: merchant.trial_ends_at,
           last_login: merchant.last_login,
@@ -182,7 +182,7 @@ router.get('/dashboard-stats', authenticateToken, async (req, res) => {
           current_stock: { [db.Sequelize.Op.lte]: db.Sequelize.col('reorder_threshold') }
         } 
       }),
-      db.MerchantSupplier.count({ where: { merchant_id: merchantId, is_active: true } }),
+      db.Supplier.count({ where: { merchant_id: merchantId, is_active: true } }),
       db.PurchaseOrder.findAll({
         where: { merchant_id: merchantId, is_active: true },
         order: [['created_at', 'DESC']],
@@ -246,25 +246,51 @@ router.get('/dashboard-stats', authenticateToken, async (req, res) => {
 // POST /avatar -- upload merchant avatar
 const { uploadAvatar } = require('../middleware/upload');
 
-router.post('/avatar', authenticateToken, uploadAvatar.single('avatar'), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: 'No image file provided' });
+router.post(
+  '/avatar',
+  authenticateToken,
+  (req, res, next) => {
+    uploadAvatar.single('avatar')(req, res, (err) => {
+      if (err) {
+        return res.status(400).json({
+          success: false,
+          message: err.message || 'File upload failed',
+          errors: [{ path: 'avatar', msg: err.message }],
+        });
+      }
+      next();
+    });
+  },
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: 'No image file provided',
+          errors: [{ path: 'avatar', msg: 'Please select an image file' }],
+        });
+      }
+
+      const merchant = await db.Merchant.findByPk(req.merchantId);
+      if (!merchant) {
+        return res.status(404).json({ success: false, message: 'Merchant not found' });
+      }
+
+      // Delete old avatar file from disk if it exists
+      if (merchant.avatar_url) {
+        const oldPath = require('path').join(__dirname, '..', merchant.avatar_url);
+        require('fs').unlink(oldPath, () => {}); // non-fatal
+      }
+
+      const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+      await merchant.update({ avatar_url: avatarUrl });
+
+      res.json({ success: true, data: { avatar_url: avatarUrl } });
+    } catch (error) {
+      console.error('Error uploading merchant avatar:', error);
+      res.status(500).json({ success: false, message: 'Failed to upload avatar' });
     }
-
-    const merchant = await db.Merchant.findByPk(req.merchantId);
-    if (!merchant) {
-      return res.status(404).json({ success: false, message: 'Merchant not found' });
-    }
-
-    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
-    await merchant.update({ avatar_url: avatarUrl });
-
-    res.json({ success: true, data: { avatar_url: avatarUrl } });
-  } catch (error) {
-    console.error('Error uploading merchant avatar:', error);
-    res.status(500).json({ success: false, message: 'Failed to upload avatar' });
   }
-});
+);
 
 module.exports = router;

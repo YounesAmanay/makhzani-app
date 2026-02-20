@@ -4,6 +4,8 @@
 /// This is the ONLY place where we talk to the auth API.
 library;
 
+import 'package:dio/dio.dart';
+
 import '../../../../core/network/api_client.dart';
 import '../../../../core/constants/api_endpoints.dart';
 import '../models/auth_tokens_model.dart';
@@ -12,6 +14,9 @@ import '../models/merchant_model.dart';
 abstract class AuthRemoteDataSource {
   Future<void> sendOtp(String phoneNumber);
   Future<(AuthTokensModel, MerchantModel)> verifyOtp(String phoneNumber, String otp);
+  Future<MerchantModel> getMerchantProfile();
+  /// Returns the new avatar URL (relative path)
+  Future<String> uploadMerchantAvatar(String filePath);
   /// Refresh is handled by ApiClient interceptor - no separate call needed
 }
 
@@ -45,4 +50,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     return (tokens, merchant);
   }
 
+  @override
+  Future<MerchantModel> getMerchantProfile() async {
+    final response = await _apiClient.get(ApiEndpoints.merchantProfile);
+    return MerchantModel.fromJson(response.data['data']['merchant']);
+  }
+
+  @override
+  Future<String> uploadMerchantAvatar(String filePath) async {
+    final formData = FormData.fromMap({
+      'avatar': await MultipartFile.fromFile(filePath),
+    });
+    final response = await _apiClient.post(
+      ApiEndpoints.merchantAvatar,
+      data: formData,
+    );
+    return response.data['data']['avatar_url'] as String;
+  }
 }

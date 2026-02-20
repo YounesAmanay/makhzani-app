@@ -84,6 +84,27 @@
   "products_adjustment": "Adjustment",
   "products_adjustmentHint": "+10 or -5",
   "products_adjustmentHelper": "Use + to add stock, - to remove",
+  "products_photos": "Photos",
+  "products_addPhoto": "Add Photo",
+  "products_deletePhoto": "Delete Photo",
+  "products_maxPhotos": "Maximum 5 photos allowed",
+  "products_scanBarcode": "Scan Barcode",
+  "products_scanSubtitle": "Auto-fill product details instantly",
+  "products_lookingUp": "Looking up product...",
+  "products_toggleTorch": "Toggle flashlight",
+  "products_rescan": "Re-scan",
+  "products_notFound": "Product not found",
+  "products_notFoundMessage": "This barcode isn't in our database. You can fill the details manually.",
+  "products_enterManually": "Enter Manually",
+  "products_scanAgain": "Scan Again",
+  "products_autoFilled": "Data from {source}",
+  "@products_autoFilled": {
+    "placeholders": {
+      "source": {"type": "String"}
+    }
+  },
+  "products_stockSection": "Stock Information",
+  "products_pricingSection": "Pricing",
 
   "suppliers": "Suppliers",
   "suppliers_add": "Add Supplier",
@@ -142,6 +163,9 @@
       "date": {"type": "String"}
     }
   },
+  "profile_logout": "Log Out",
+  "profile_logoutTitle": "Log Out",
+  "profile_logoutConfirm": "Are you sure you want to log out?",
 
   "settings": "Settings",
   "settings_language": "Language",

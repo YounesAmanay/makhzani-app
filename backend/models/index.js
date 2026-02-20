@@ -18,6 +18,7 @@ db.Product = require('./Product')(sequelize, Sequelize.DataTypes);
 db.PurchaseOrder = require('./PurchaseOrder')(sequelize, Sequelize.DataTypes);
 db.PurchaseOrderItem = require('./PurchaseOrderItem')(sequelize, Sequelize.DataTypes);
 db.ProductImage = require('./ProductImage')(sequelize, Sequelize.DataTypes);
+db.BarcodeCache = require('./BarcodeCache')(sequelize, Sequelize.DataTypes);
 
 // Create associations
 Object.keys(db).forEach(modelName => {

@@ -1,6 +1,7 @@
 /// Products Repository Interface
 library;
 
+import '../entities/barcode_result.dart';
 import '../entities/product.dart';
 import '../entities/pagination.dart';
 
@@ -40,4 +41,10 @@ abstract class ProductsRepository {
     required int adjustment,
     String? reason,
   });
+
+  Future<ProductImage> uploadProductImage(String id, String filePath);
+
+  Future<void> deleteProductImage(String productId, String imageId);
+
+  Future<BarcodeResult?> lookupBarcode(String barcode);
 }

@@ -1,8 +1,11 @@
 /// Products Remote Data Source
 library;
 
+import 'package:dio/dio.dart';
+
 import '../../../../core/network/api_client.dart';
 import '../../../../core/constants/api_endpoints.dart';
+import '../models/barcode_result_model.dart';
 import '../models/product_model.dart';
 import '../models/pagination_model.dart';
 
@@ -23,6 +26,12 @@ abstract class ProductsRemoteDataSource {
   Future<void> deleteProduct(String id);
 
   Future<int> adjustStock(String id, int adjustment, String? reason);
+
+  Future<ProductImageModel> uploadProductImage(String id, String filePath);
+
+  Future<void> deleteProductImage(String productId, String imageId);
+
+  Future<BarcodeResultModel?> lookupBarcode(String barcode);
 }
 
 class ProductsRemoteDataSourceImpl implements ProductsRemoteDataSource {
@@ -95,5 +104,33 @@ class ProductsRemoteDataSourceImpl implements ProductsRemoteDataSource {
       },
     );
     return response.data['data']['product']['new_stock'] as int;
+  }
+
+  @override
+  Future<ProductImageModel> uploadProductImage(String id, String filePath) async {
+    final formData = FormData.fromMap({
+      'image': await MultipartFile.fromFile(filePath),
+    });
+    final response = await _apiClient.post(
+      ApiEndpoints.productImages(id),
+      data: formData,
+    );
+    return ProductImageModel.fromJson(response.data['data']['image']);
+  }
+
+  @override
+  Future<void> deleteProductImage(String productId, String imageId) async {
+    await _apiClient.delete(ApiEndpoints.productImage(productId, imageId));
+  }
+
+  @override
+  Future<BarcodeResultModel?> lookupBarcode(String barcode) async {
+    final response = await _apiClient.get(
+      ApiEndpoints.barcodeLookup,
+      queryParameters: {'barcode': barcode},
+    );
+    final data = response.data['data'];
+    if (data == null) return null;
+    return BarcodeResultModel.fromJson(data as Map<String, dynamic>);
   }
 }
