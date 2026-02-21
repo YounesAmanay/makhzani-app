@@ -142,6 +142,10 @@ async function startServer() {
     // Test database connection
     await db.sequelize.authenticate();
     console.log('✅ Database connected successfully');
+
+    // Connect Redis (non-blocking — falls back to in-memory if unavailable)
+    const { getRedisClient } = require('./config/redis');
+    await getRedisClient().catch(() => {});
     
     // Sync database (only in development)
     if (process.env.NODE_ENV === 'development') {

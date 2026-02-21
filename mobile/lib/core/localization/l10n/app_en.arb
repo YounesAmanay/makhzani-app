@@ -20,6 +20,7 @@
   "auth_codeResent": "Code resent successfully",
   "auth_invalidCode": "Invalid code. Please try again.",
   "auth_failedToSendOtp": "Failed to send OTP. Please try again.",
+  "auth_resendFailed": "Failed to resend code",
 
   "validation_required": "This field is required",
   "validation_phoneLength": "Phone number must be 9 digits",

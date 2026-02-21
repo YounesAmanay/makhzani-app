@@ -540,13 +540,23 @@ router.post('/:id/images', authenticateToken, uploadProductImages.array('images'
       });
     }
 
-    const created = await Promise.all(req.files.map((file, i) =>
-      db.ProductImage.create({
-        product_id: product.id,
-        url: `/uploads/products/${file.filename}`,
-        sort_order: currentCount + i
-      })
-    ));
+    let created;
+    try {
+      created = await Promise.all(req.files.map((file, i) =>
+        db.ProductImage.create({
+          product_id: product.id,
+          url: `/uploads/products/${file.filename}`,
+          sort_order: currentCount + i
+        })
+      ));
+    } catch (dbError) {
+      // DB insert failed — clean up uploaded files
+      for (const file of req.files) {
+        const filepath = path.join(__dirname, '..', 'uploads', 'products', file.filename);
+        if (fs.existsSync(filepath)) fs.unlinkSync(filepath);
+      }
+      throw dbError;
+    }
 
     res.json({
       success: true,
@@ -564,7 +574,7 @@ router.post('/:id/images', authenticateToken, uploadProductImages.array('images'
 router.delete('/:id/images/:imageId', authenticateToken, async (req, res) => {
   try {
     const product = await db.Product.findOne({
-      where: { id: req.params.id, merchant_id: req.merchantId }
+      where: { id: req.params.id, merchant_id: req.merchantId, is_active: true }
     });
 
     if (!product) {
@@ -572,7 +582,7 @@ router.delete('/:id/images/:imageId', authenticateToken, async (req, res) => {
     }
 
     const image = await db.ProductImage.findOne({
-      where: { id: req.params.imageId, product_id: req.params.id }
+      where: { id: req.params.imageId, product_id: product.id }
     });
 
     if (!image) {

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../providers/auth_provider.dart';
@@ -39,8 +40,8 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
 
     if (otp.length != 4) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter the 4-digit code'),
+        SnackBar(
+          content: Text(context.l10n.validation_otpLength),
           backgroundColor: AppColors.error,
         ),
       );
@@ -63,8 +64,8 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
       );
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Invalid code. Please try again.'),
+        SnackBar(
+          content: Text(context.l10n.auth_invalidCode),
           backgroundColor: AppColors.error,
         ),
       );
@@ -84,7 +85,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            success ? 'Code resent successfully' : 'Failed to resend code',
+            success ? context.l10n.auth_codeResent : context.l10n.auth_resendFailed,
           ),
           backgroundColor: success ? AppColors.success : AppColors.error,
         ),
@@ -162,7 +163,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
 
               // Title
               Text(
-                'Enter verification code',
+                context.l10n.auth_verifyTitle,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -172,7 +173,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
 
               // Subtitle
               Text(
-                'We sent a 4-digit code to\n${widget.phoneNumber}',
+                context.l10n.auth_verifySubtitle(widget.phoneNumber),
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -219,7 +220,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                           color: AppColors.white,
                         ),
                       )
-                    : const Text('Verify'),
+                    : Text(context.l10n.auth_verify),
               ),
 
               const SizedBox(height: AppDimensions.marginMedium),
@@ -227,7 +228,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
               // Resend button
               TextButton(
                 onPressed: _isLoading ? null : _onResendOtp,
-                child: const Text('Resend Code'),
+                child: Text(context.l10n.auth_resendCode),
               ),
 
               const SizedBox(height: 40),

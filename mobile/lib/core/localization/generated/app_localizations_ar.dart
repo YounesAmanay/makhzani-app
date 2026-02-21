@@ -50,6 +50,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get auth_failedToSendOtp => 'فشل إرسال الرمز. حاول مرة أخرى.';
 
   @override
+  String get auth_resendFailed => 'فشل إعادة إرسال الرمز';
+
+  @override
   String get validation_required => 'هذا الحقل مطلوب';
 
   @override

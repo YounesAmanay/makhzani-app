@@ -20,6 +20,7 @@
   "auth_codeResent": "Code renvoye avec succes",
   "auth_invalidCode": "Code invalide. Veuillez reessayer.",
   "auth_failedToSendOtp": "Echec de l'envoi du code. Veuillez reessayer.",
+  "auth_resendFailed": "Echec du renvoi du code",
 
   "validation_required": "Ce champ est obligatoire",
   "validation_phoneLength": "Le numero de telephone doit contenir 9 chiffres",

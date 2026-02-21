@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../providers/auth_provider.dart';
@@ -53,8 +54,8 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
       );
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to send OTP. Please try again.'),
+        SnackBar(
+          content: Text(context.l10n.auth_failedToSendOtp),
           backgroundColor: AppColors.error,
         ),
       );
@@ -139,7 +140,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                     ),
                     const SizedBox(height: AppDimensions.marginSmall),
                     Text(
-                      'Enter your phone number to continue',
+                      context.l10n.auth_phoneInputTitle,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: AppColors.textSecondary,
                           ),
@@ -160,8 +161,8 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                     LengthLimitingTextInputFormatter(9),
                   ],
                   decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    hintText: '6XXXXXXXX',
+                    labelText: context.l10n.auth_phoneLabel,
+                    hintText: context.l10n.auth_phoneHint,
                     prefixIcon: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Row(
@@ -185,13 +186,13 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your phone number';
+                      return context.l10n.validation_required;
                     }
                     if (value.length != 9) {
-                      return 'Phone number must be 9 digits';
+                      return context.l10n.validation_phoneLength;
                     }
                     if (!RegExp(r'^[567]').hasMatch(value)) {
-                      return 'Phone number must start with 5, 6, or 7';
+                      return context.l10n.validation_phonePrefix;
                     }
                     return null;
                   },
@@ -211,7 +212,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                             color: AppColors.white,
                           ),
                         )
-                      : const Text('Send Code'),
+                      : Text(context.l10n.auth_sendCode),
                 ),
 
                 const Spacer(flex: 2),

@@ -50,6 +50,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get auth_failedToSendOtp => 'Failed to send OTP. Please try again.';
 
   @override
+  String get auth_resendFailed => 'Failed to resend code';
+
+  @override
   String get validation_required => 'This field is required';
 
   @override

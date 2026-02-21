@@ -5,8 +5,72 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const db = require('../models');
 
-// In-memory OTP storage (in production, use Redis)
-const otpStore = new Map();
+// OTP storage — uses Redis when available, falls back to in-memory Map
+const { getRedisClient, isRedisAvailable } = require('../config/redis');
+const otpStore = new Map(); // Fallback only
+
+const OTP_TTL_SECONDS = 5 * 60; // 5 minutes
+
+async function storeOtp(phoneNumber, otpData) {
+  if (isRedisAvailable()) {
+    const client = await getRedisClient();
+    await client.set(`otp:${phoneNumber}`, JSON.stringify(otpData), { EX: OTP_TTL_SECONDS });
+  } else {
+    otpStore.set(phoneNumber, otpData);
+  }
+}
+
+async function getOtp(phoneNumber) {
+  if (isRedisAvailable()) {
+    const client = await getRedisClient();
+    const data = await client.get(`otp:${phoneNumber}`);
+    return data ? JSON.parse(data) : null;
+  }
+  return otpStore.get(phoneNumber) || null;
+}
+
+async function deleteOtp(phoneNumber) {
+  if (isRedisAvailable()) {
+    const client = await getRedisClient();
+    await client.del(`otp:${phoneNumber}`);
+  } else {
+    otpStore.delete(phoneNumber);
+  }
+}
+
+// Rate limiting for auth endpoints (per phone number)
+const authRateLimits = {};
+
+function checkAuthRateLimit(phoneNumber, endpoint) {
+  const key = `${endpoint}:${phoneNumber}`;
+  const now = Date.now();
+  const windowMs = 15 * 60 * 1000; // 15-minute window
+  const maxAttempts = endpoint === 'send-otp' ? 5 : 10; // 5 OTP sends, 10 verifications per window
+
+  if (!authRateLimits[key] || now > authRateLimits[key].resetAt) {
+    authRateLimits[key] = { count: 1, resetAt: now + windowMs };
+    return null;
+  }
+
+  authRateLimits[key].count++;
+
+  if (authRateLimits[key].count > maxAttempts) {
+    const retryAfter = Math.ceil((authRateLimits[key].resetAt - now) / 1000);
+    return retryAfter;
+  }
+
+  return null;
+}
+
+// Clean up expired rate limit entries every 30 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const key of Object.keys(authRateLimits)) {
+    if (now > authRateLimits[key].resetAt) {
+      delete authRateLimits[key];
+    }
+  }
+}, 30 * 60 * 1000);
 
 // Generate random 4-digit OTP
 function generateOTP() {
@@ -63,7 +127,18 @@ const handleValidationErrors = (req, res, next) => {
 router.post('/send-otp', validatePhone, handleValidationErrors, async (req, res) => {
   try {
     const { phone_number } = req.body;
-    
+
+    // Rate limit check
+    const retryAfter = checkAuthRateLimit(phone_number, 'send-otp');
+    if (retryAfter) {
+      return res.status(429).json({
+        success: false,
+        message: 'Too many OTP requests. Please try again later.',
+        code: 'RATE_LIMITED',
+        retry_after_seconds: retryAfter
+      });
+    }
+
     console.log(`📱 OTP request for: ${phone_number}`);
 
     // Check if merchant exists
@@ -75,10 +150,10 @@ router.post('/send-otp', validatePhone, handleValidationErrors, async (req, res)
     const otp = generateOTP();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
-    // Store OTP (in production, use Redis with TTL)
-    otpStore.set(phone_number, {
+    // Store OTP (Redis with TTL, or in-memory fallback)
+    await storeOtp(phone_number, {
       otp,
-      expiresAt,
+      expiresAt: expiresAt.toISOString(),
       attempts: 0
     });
 
@@ -87,15 +162,12 @@ router.post('/send-otp', validatePhone, handleValidationErrors, async (req, res)
     // In production, send SMS here
     // await smsService.send(phone_number, `Your Makhzani verification code: ${otp}`);
 
-    // Response (never send OTP in production!)
     res.json({
       success: true,
       message: 'OTP sent successfully',
       data: {
         phone_number,
-        merchant_exists: !!merchant,
-        // Remove this in production!
-        development_otp: process.env.NODE_ENV === 'development' ? otp : undefined
+        merchant_exists: !!merchant
       }
     });
 
@@ -116,12 +188,23 @@ router.post('/send-otp', validatePhone, handleValidationErrors, async (req, res)
 router.post('/verify-otp', validateOTP, handleValidationErrors, async (req, res) => {
   try {
     const { phone_number, otp } = req.body;
-    
+
+    // Rate limit check
+    const retryAfter = checkAuthRateLimit(phone_number, 'verify-otp');
+    if (retryAfter) {
+      return res.status(429).json({
+        success: false,
+        message: 'Too many verification attempts. Please try again later.',
+        code: 'RATE_LIMITED',
+        retry_after_seconds: retryAfter
+      });
+    }
+
     console.log(`🔐 OTP verification for: ${phone_number}`);
 
     // Check stored OTP
-    const storedOTP = otpStore.get(phone_number);
-    
+    const storedOTP = await getOtp(phone_number);
+
     if (!storedOTP) {
       return res.status(400).json({
         success: false,
@@ -131,8 +214,8 @@ router.post('/verify-otp', validateOTP, handleValidationErrors, async (req, res)
     }
 
     // Check expiration
-    if (new Date() > storedOTP.expiresAt) {
-      otpStore.delete(phone_number);
+    if (new Date() > new Date(storedOTP.expiresAt)) {
+      await deleteOtp(phone_number);
       return res.status(400).json({
         success: false,
         message: 'OTP has expired. Please request a new one.',
@@ -142,7 +225,7 @@ router.post('/verify-otp', validateOTP, handleValidationErrors, async (req, res)
 
     // Check attempts (prevent brute force)
     if (storedOTP.attempts >= 3) {
-      otpStore.delete(phone_number);
+      await deleteOtp(phone_number);
       return res.status(429).json({
         success: false,
         message: 'Too many failed attempts. Please request a new OTP.',
@@ -153,7 +236,7 @@ router.post('/verify-otp', validateOTP, handleValidationErrors, async (req, res)
     // Verify OTP
     if (storedOTP.otp !== otp) {
       storedOTP.attempts++;
-      otpStore.set(phone_number, storedOTP);
+      await storeOtp(phone_number, storedOTP);
       
       return res.status(400).json({
         success: false,
@@ -164,7 +247,7 @@ router.post('/verify-otp', validateOTP, handleValidationErrors, async (req, res)
     }
 
     // OTP is valid - clean up
-    otpStore.delete(phone_number);
+    await deleteOtp(phone_number);
 
     // Find or create merchant
     let merchant = await db.Merchant.findOne({

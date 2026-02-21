@@ -283,7 +283,15 @@ router.post(
       }
 
       const avatarUrl = `/uploads/avatars/${req.file.filename}`;
-      await merchant.update({ avatar_url: avatarUrl });
+
+      try {
+        await merchant.update({ avatar_url: avatarUrl });
+      } catch (dbError) {
+        // DB update failed — clean up the newly uploaded file
+        const newPath = require('path').join(__dirname, '..', avatarUrl);
+        require('fs').unlink(newPath, () => {});
+        throw dbError;
+      }
 
       res.json({ success: true, data: { avatar_url: avatarUrl } });
     } catch (error) {

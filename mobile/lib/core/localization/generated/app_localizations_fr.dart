@@ -52,6 +52,9 @@ class AppLocalizationsFr extends AppLocalizations {
       'Echec de l\'envoi du code. Veuillez reessayer.';
 
   @override
+  String get auth_resendFailed => 'Echec du renvoi du code';
+
+  @override
   String get validation_required => 'Ce champ est obligatoire';
 
   @override

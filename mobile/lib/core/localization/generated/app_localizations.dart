@@ -178,6 +178,12 @@ abstract class AppLocalizations {
   /// **'Failed to send OTP. Please try again.'**
   String get auth_failedToSendOtp;
 
+  /// No description provided for @auth_resendFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to resend code'**
+  String get auth_resendFailed;
+
   /// No description provided for @validation_required.
   ///
   /// In en, this message translates to:

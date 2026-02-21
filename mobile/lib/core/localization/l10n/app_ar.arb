@@ -15,6 +15,7 @@
   "auth_codeResent": "تم إعادة إرسال الرمز بنجاح",
   "auth_invalidCode": "رمز غير صالح. حاول مرة أخرى.",
   "auth_failedToSendOtp": "فشل إرسال الرمز. حاول مرة أخرى.",
+  "auth_resendFailed": "فشل إعادة إرسال الرمز",
 
   "validation_required": "هذا الحقل مطلوب",
   "validation_phoneLength": "رقم الهاتف يجب أن يكون 9 أرقام",

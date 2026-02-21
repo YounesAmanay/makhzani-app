@@ -78,10 +78,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final success = await _authRepository.sendOtp(phoneNumber);
       state = state.copyWith(status: AuthStatus.unauthenticated);
       return success;
-    } catch (e) {
+    } on DioException catch (e) {
+      final message = _extractErrorMessage(e);
       state = state.copyWith(
         status: AuthStatus.error,
-        errorMessage: 'Failed to send OTP',
+        errorMessage: message,
+      );
+      return false;
+    } catch (_) {
+      state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: null, // Let UI use l10n fallback
       );
       return false;
     }
@@ -98,13 +105,33 @@ class AuthNotifier extends StateNotifier<AuthState> {
         merchant: merchant,
       );
       return true;
-    } catch (e) {
+    } on DioException catch (e) {
+      final message = _extractErrorMessage(e);
       state = state.copyWith(
         status: AuthStatus.error,
-        errorMessage: 'Invalid OTP',
+        errorMessage: message,
+      );
+      return false;
+    } catch (_) {
+      state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: null, // Let UI use l10n fallback
       );
       return false;
     }
+  }
+
+  /// Extract a user-facing error message from a DioException
+  String? _extractErrorMessage(DioException e) {
+    final data = e.response?.data;
+    if (data is Map) {
+      return data['message'] as String?;
+    }
+    if (e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.receiveTimeout) {
+      return null; // Let UI show l10n network error
+    }
+    return null;
   }
 
   /// Logout
