@@ -957,6 +957,47 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String orders_whatsappGreeting(String supplierName) {
+    return 'مرحباً $supplierName،';
+  }
+
+  @override
+  String orders_whatsappIntro(String orderNumber) {
+    return 'إليك طلبيتي ($orderNumber):';
+  }
+
+  @override
+  String orders_whatsappTotal(String total) {
+    return 'المجموع: $total درهم';
+  }
+
+  @override
+  String get orders_whatsappClosing => 'شكراً جزيلاً';
+
+  @override
+  String get orders_receiveOrder => 'استلام الطلب';
+
+  @override
+  String get orders_statusReceived => 'مستلم';
+
+  @override
+  String get orders_receiveConfirmTitle => 'استلام هذا الطلب؟';
+
+  @override
+  String get orders_receiveConfirmMessage =>
+      'سيتم إضافة الكميات المطلوبة إلى مخزونك تلقائيًا. لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get orders_receiveSuccess =>
+      'تم استلام الطلب — تم تحديث المخزون بنجاح';
+
+  @override
+  String get orders_receiveError => 'فشل استلام الطلب. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get orders_alreadyReceived => 'تم الاستلام';
+
+  @override
   String common_minutesAgo(int count) {
     return 'منذ $count دقيقة';
   }
@@ -968,4 +1009,271 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get common_seeAll => 'عرض الكل';
+
+  @override
+  String get categories_title => 'الفئات';
+
+  @override
+  String get categories_add => 'إضافة فئة';
+
+  @override
+  String get categories_empty => 'لا توجد فئات';
+
+  @override
+  String get categories_emptyDescription => 'أنشئ فئات لتنظيم منتجاتك';
+
+  @override
+  String get categories_selectHint => 'بدون فئة';
+
+  @override
+  String get categories_none => 'بدون';
+
+  @override
+  String get categories_created => 'تم إنشاء الفئة';
+
+  @override
+  String get categories_deleted => 'تم حذف الفئة';
+
+  @override
+  String get categories_nameLabel => 'اسم الفئة';
+
+  @override
+  String get categories_namePlaceholder => 'مثال: مشروبات';
+
+  @override
+  String get categories_manage => 'إدارة الفئات';
+
+  @override
+  String get categories_searchHint => 'ابحث عن فئة...';
+
+  @override
+  String get categories_loadDefaults => 'تحميل الفئات الافتراضية';
+
+  @override
+  String categories_loadDefaultsSuccess(int count) {
+    return 'تمت إضافة $count فئة افتراضية';
+  }
+
+  @override
+  String get categories_loadDefaultsAlready =>
+      'جميع الفئات الافتراضية موجودة مسبقاً';
+
+  @override
+  String get categories_loadDefaultsError => 'فشل تحميل الفئات الافتراضية';
+
+  @override
+  String get stockHistory => 'سجل المخزون';
+
+  @override
+  String get stockHistory_empty => 'لا توجد تغييرات مسجلة';
+
+  @override
+  String get stockHistory_manualAdjustment => 'تعديل يدوي';
+
+  @override
+  String get stockHistory_orderReceived => 'استلام طلبية';
+
+  @override
+  String get stockHistory_wastage => 'هدر';
+
+  @override
+  String get stockHistory_initialStock => 'مخزون أولي';
+
+  @override
+  String get stockHistory_correction => 'تصحيح';
+
+  @override
+  String get csv_title => 'الاستيراد / التصدير';
+
+  @override
+  String get csv_exportTitle => 'تصدير المنتجات';
+
+  @override
+  String get csv_exportDescription =>
+      'حمّل قائمة منتجاتك كملف CSV. سيتم نسخ الملف إلى الحافظة.';
+
+  @override
+  String get csv_export => 'تصدير CSV';
+
+  @override
+  String get csv_exportedCopied => 'تم نسخ CSV إلى الحافظة';
+
+  @override
+  String get csv_importTitle => 'استيراد المنتجات';
+
+  @override
+  String get csv_importDescription =>
+      'الصق ملف CSV لاستيراد المنتجات بالجملة. المنتجات الموجودة سيتم تخطيها.';
+
+  @override
+  String get csv_formatHint =>
+      'الأعمدة: name, barcode, current_stock, reorder_threshold, unit, price, category';
+
+  @override
+  String get csv_pasteLabel => 'الصق CSV هنا';
+
+  @override
+  String get csv_pasteHint => 'name,barcode,current_stock,...';
+
+  @override
+  String get csv_pasteFirst => 'الرجاء لصق بيانات CSV أولاً';
+
+  @override
+  String get csv_import => 'استيراد CSV';
+
+  @override
+  String csv_importResult(int created, int skipped) {
+    return 'تم إنشاء $created، تخطي $skipped';
+  }
+
+  @override
+  String get notifications_title => 'الإشعارات';
+
+  @override
+  String get notifications_empty => 'لا توجد إشعارات بعد';
+
+  @override
+  String get notifications_emptyDescription =>
+      'ستظهر هنا تنبيهات انخفاض المخزون وتحديثات الطلبات.';
+
+  @override
+  String get notifications_markAllRead => 'تعليم الكل كمقروء';
+
+  @override
+  String get notifications_clearAll => 'مسح الكل';
+
+  @override
+  String get notifications_justNow => 'الآن';
+
+  @override
+  String notifications_minutesAgo(int count) {
+    return 'منذ $count د';
+  }
+
+  @override
+  String notifications_hoursAgo(int count) {
+    return 'منذ $count س';
+  }
+
+  @override
+  String notifications_daysAgo(int count) {
+    return 'منذ $count أيام';
+  }
+
+  @override
+  String get notifications_clearConfirmTitle => 'مسح جميع الإشعارات؟';
+
+  @override
+  String get notifications_clearConfirmMessage =>
+      'سيؤدي هذا إلى حذف جميع الإشعارات نهائياً.';
+
+  @override
+  String get notifications_cleared => 'تم مسح جميع الإشعارات';
+
+  @override
+  String get nav_sales => 'المبيعات';
+
+  @override
+  String get sales_title => 'المبيعات';
+
+  @override
+  String get sales_newSale => 'بيع جديد';
+
+  @override
+  String get sales_history => 'السجل';
+
+  @override
+  String get sales_searchProducts => 'ابحث عن منتج...';
+
+  @override
+  String get sales_cartEmpty => 'السلة فارغة';
+
+  @override
+  String get sales_cartEmptyDescription =>
+      'ابحث أو امسح باركود منتج لإضافته إلى السلة.';
+
+  @override
+  String get sales_total => 'المجموع';
+
+  @override
+  String sales_items(int count) {
+    return '$count منتجات';
+  }
+
+  @override
+  String get sales_confirmSale => 'تأكيد البيع';
+
+  @override
+  String get sales_confirmTitle => 'تأكيد البيع؟';
+
+  @override
+  String sales_confirmMessage(int count) {
+    return 'سيتم تسجيل البيع وتحديث مخزون $count منتج.';
+  }
+
+  @override
+  String get sales_success => 'تم تسجيل البيع بنجاح';
+
+  @override
+  String get sales_shareReceipt => 'مشاركة الإيصال';
+
+  @override
+  String sales_receiptText(String saleNumber, String date, String total) {
+    return '🧾 إيصال بيع\nرقم البيع: $saleNumber\nالتاريخ: $date\nالمجموع: $total درهم\n\nشكراً لك!';
+  }
+
+  @override
+  String get sales_insufficientStock => 'مخزون غير كافٍ';
+
+  @override
+  String get sales_cancelTitle => 'إلغاء البيع؟';
+
+  @override
+  String get sales_cancelMessage =>
+      'سيتم استعادة المخزون لجميع المنتجات. ممكن فقط خلال 24 ساعة.';
+
+  @override
+  String get sales_cancelSuccess => 'تم إلغاء البيع واستعادة المخزون';
+
+  @override
+  String get sales_noHistory => 'لا توجد مبيعات بعد';
+
+  @override
+  String get sales_noHistoryDescription => 'ستظهر هنا مبيعاتك المؤكدة.';
+
+  @override
+  String sales_saleNumber(String number) {
+    return 'بيع #$number';
+  }
+
+  @override
+  String get sales_unitPrice => 'سعر الوحدة';
+
+  @override
+  String get sales_qty => 'الكمية';
+
+  @override
+  String get sales_notes => 'ملاحظة (اختياري)';
+
+  @override
+  String get sales_enterPrice => 'أدخل السعر';
+
+  @override
+  String get sales_enterPriceMessage =>
+      'لم يتم تحديد سعر لهذا المنتج. أدخل سعر الوحدة لإضافته إلى السلة.';
+
+  @override
+  String get sales_editPrice => 'تعديل السعر';
+
+  @override
+  String get sales_priceHint => '0.00';
+
+  @override
+  String get sales_noPriceError => 'يرجى إدخال سعر صالح';
+
+  @override
+  String get dashboard_todayRevenue => 'إيرادات اليوم';
+
+  @override
+  String get dashboard_monthRevenue => 'هذا الشهر';
 }

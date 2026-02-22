@@ -13,6 +13,7 @@ import '../../../../core/theme/app_dimensions.dart';
 import '../../../dashboard/presentation/screens/dashboard_screen.dart';
 import '../../../orders/presentation/screens/orders_screen.dart';
 import '../../../products/presentation/screens/products_screen.dart';
+import '../../../sales/presentation/screens/sales_screen.dart';
 import '../../../suppliers/presentation/screens/suppliers_screen.dart';
 import '../providers/navigation_provider.dart';
 
@@ -30,6 +31,7 @@ class MainShellScreen extends ConsumerWidget {
         children: const [
           DashboardScreen(),
           ProductsScreen(),
+          SalesScreen(),
           SuppliersScreen(),
           OrdersScreen(),
         ],
@@ -41,6 +43,7 @@ class MainShellScreen extends ConsumerWidget {
         items: [
           _NavItem(icon: HugeIcons.strokeRoundedDashboardSquare01, labelBuilder: (ctx) => ctx.l10n.nav_dashboard),
           _NavItem(icon: HugeIcons.strokeRoundedPackage, labelBuilder: (ctx) => ctx.l10n.nav_products),
+          _NavItem(icon: HugeIcons.strokeRoundedSaleTag01, labelBuilder: (ctx) => ctx.l10n.nav_sales),
           _NavItem(icon: HugeIcons.strokeRoundedUserMultiple, labelBuilder: (ctx) => ctx.l10n.nav_suppliers),
           _NavItem(icon: HugeIcons.strokeRoundedInvoice02, labelBuilder: (ctx) => ctx.l10n.nav_orders),
         ],

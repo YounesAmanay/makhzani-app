@@ -400,6 +400,32 @@
       "unit": {"type": "String"}
     }
   },
+  "orders_whatsappGreeting": "Bonjour {supplierName},",
+  "@orders_whatsappGreeting": {
+    "placeholders": {
+      "supplierName": {"type": "String"}
+    }
+  },
+  "orders_whatsappIntro": "Voici ma commande ({orderNumber}) :",
+  "@orders_whatsappIntro": {
+    "placeholders": {
+      "orderNumber": {"type": "String"}
+    }
+  },
+  "orders_whatsappTotal": "Total : {total} MAD",
+  "@orders_whatsappTotal": {
+    "placeholders": {
+      "total": {"type": "String"}
+    }
+  },
+  "orders_whatsappClosing": "Merci",
+  "orders_receiveOrder": "Réceptionner",
+  "orders_statusReceived": "Réceptionné",
+  "orders_receiveConfirmTitle": "Réceptionner cette commande ?",
+  "orders_receiveConfirmMessage": "Les quantités commandées seront automatiquement ajoutées à votre stock. Cette action est irréversible.",
+  "orders_receiveSuccess": "Commande réceptionnée — stock mis à jour avec succès",
+  "orders_receiveError": "Échec de la réception. Veuillez réessayer.",
+  "orders_alreadyReceived": "Déjà réceptionné",
   "common_minutesAgo": "il y a {count} min",
   "@common_minutesAgo": {
     "placeholders": {
@@ -416,5 +442,134 @@
       }
     }
   },
-  "common_seeAll": "Voir tout"
+  "common_seeAll": "Voir tout",
+
+  "categories_title": "Categories",
+  "categories_add": "Ajouter une categorie",
+  "categories_empty": "Aucune categorie",
+  "categories_emptyDescription": "Creez des categories pour organiser vos produits",
+  "categories_selectHint": "Sans categorie",
+  "categories_none": "Aucune",
+  "categories_created": "Categorie creee",
+  "categories_deleted": "Categorie supprimee",
+  "categories_nameLabel": "Nom de la categorie",
+  "categories_namePlaceholder": "ex: Boissons",
+  "categories_manage": "Gerer les categories",
+  "categories_searchHint": "Rechercher une catégorie...",
+  "categories_loadDefaults": "Charger les catégories par défaut",
+  "categories_loadDefaultsSuccess": "{count} catégories par défaut ajoutées",
+  "@categories_loadDefaultsSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "categories_loadDefaultsAlready": "Toutes les catégories par défaut existent déjà",
+  "categories_loadDefaultsError": "Échec du chargement des catégories",
+
+  "stockHistory": "Historique du stock",
+  "stockHistory_empty": "Aucun changement enregistre",
+  "stockHistory_manualAdjustment": "Ajustement manuel",
+  "stockHistory_orderReceived": "Commande recue",
+  "stockHistory_wastage": "Perte",
+  "stockHistory_initialStock": "Stock initial",
+  "stockHistory_correction": "Correction",
+
+  "csv_title": "Importer / Exporter",
+  "csv_exportTitle": "Exporter les produits",
+  "csv_exportDescription": "Telechargez votre liste de produits en CSV. Le CSV sera copie dans le presse-papiers.",
+  "csv_export": "Exporter CSV",
+  "csv_exportedCopied": "CSV copie dans le presse-papiers",
+  "csv_importTitle": "Importer des produits",
+  "csv_importDescription": "Collez un CSV pour importer des produits en masse. Les produits existants seront ignores.",
+  "csv_formatHint": "Colonnes: name, barcode, current_stock, reorder_threshold, unit, price, category",
+  "csv_pasteLabel": "Collez le CSV ici",
+  "csv_pasteHint": "name,barcode,current_stock,...",
+  "csv_pasteFirst": "Veuillez coller des donnees CSV d'abord",
+  "csv_import": "Importer CSV",
+  "csv_importResult": "{created} crees, {skipped} ignores",
+  "@csv_importResult": {
+    "placeholders": {
+      "created": {"type": "int"},
+      "skipped": {"type": "int"}
+    }
+  },
+
+  "notifications_title": "Notifications",
+  "notifications_empty": "Aucune notification",
+  "notifications_emptyDescription": "Les alertes de rupture de stock et les mises a jour des commandes apparaitront ici.",
+  "notifications_markAllRead": "Tout marquer comme lu",
+  "notifications_clearAll": "Tout effacer",
+  "notifications_justNow": "A l'instant",
+  "notifications_minutesAgo": "Il y a {count} min",
+  "@notifications_minutesAgo": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "notifications_hoursAgo": "Il y a {count} h",
+  "@notifications_hoursAgo": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "notifications_daysAgo": "Il y a {count} j",
+  "@notifications_daysAgo": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "notifications_clearConfirmTitle": "Effacer toutes les notifications ?",
+  "notifications_clearConfirmMessage": "Cela supprimera definitivement toutes les notifications.",
+  "notifications_cleared": "Toutes les notifications effacees",
+
+  "nav_sales": "Ventes",
+
+  "sales_title": "Ventes",
+  "sales_newSale": "Nouvelle vente",
+  "sales_history": "Historique",
+  "sales_searchProducts": "Rechercher un produit...",
+  "sales_cartEmpty": "Panier vide",
+  "sales_cartEmptyDescription": "Recherchez ou scannez un produit pour l'ajouter au panier.",
+  "sales_total": "Total",
+  "sales_items": "{count} articles",
+  "@sales_items": {
+    "placeholders": { "count": {"type": "int"} }
+  },
+  "sales_confirmSale": "Confirmer la vente",
+  "sales_confirmTitle": "Confirmer la vente ?",
+  "sales_confirmMessage": "Cela enregistrera la vente et mettra a jour le stock de {count} produit(s).",
+  "@sales_confirmMessage": {
+    "placeholders": { "count": {"type": "int"} }
+  },
+  "sales_success": "Vente enregistree avec succes",
+  "sales_shareReceipt": "Partager le recu",
+  "sales_receiptText": "🧾 Recu de vente\nVente n°: {saleNumber}\nDate: {date}\nTotal: {total} MAD\n\nMerci !",
+  "@sales_receiptText": {
+    "placeholders": {
+      "saleNumber": {"type": "String"},
+      "date": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "sales_insufficientStock": "Stock insuffisant",
+  "sales_cancelTitle": "Annuler la vente ?",
+  "sales_cancelMessage": "Cela restaurera le stock de tous les articles. Possible uniquement dans les 24 heures.",
+  "sales_cancelSuccess": "Vente annulee et stock restaure",
+  "sales_noHistory": "Aucune vente pour l'instant",
+  "sales_noHistoryDescription": "Vos ventes confirmees apparaitront ici.",
+  "sales_saleNumber": "Vente #{number}",
+  "@sales_saleNumber": {
+    "placeholders": { "number": {"type": "String"} }
+  },
+  "sales_unitPrice": "Prix unitaire",
+  "sales_qty": "Qte",
+  "sales_notes": "Note (optionnel)",
+  "sales_enterPrice": "Saisir le prix",
+  "sales_enterPriceMessage": "Ce produit n'a pas de prix défini. Entrez le prix unitaire pour l'ajouter au panier.",
+  "sales_editPrice": "Modifier le prix",
+  "sales_priceHint": "0.00",
+  "sales_noPriceError": "Veuillez entrer un prix valide",
+
+  "dashboard_todayRevenue": "Revenus aujourd'hui",
+  "dashboard_monthRevenue": "Ce mois-ci"
 }

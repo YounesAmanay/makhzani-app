@@ -961,6 +961,48 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String orders_whatsappGreeting(String supplierName) {
+    return 'Hello $supplierName,';
+  }
+
+  @override
+  String orders_whatsappIntro(String orderNumber) {
+    return 'Here is my order ($orderNumber):';
+  }
+
+  @override
+  String orders_whatsappTotal(String total) {
+    return 'Total: $total MAD';
+  }
+
+  @override
+  String get orders_whatsappClosing => 'Thank you';
+
+  @override
+  String get orders_receiveOrder => 'Receive Order';
+
+  @override
+  String get orders_statusReceived => 'Received';
+
+  @override
+  String get orders_receiveConfirmTitle => 'Receive this order?';
+
+  @override
+  String get orders_receiveConfirmMessage =>
+      'This will automatically add the ordered quantities to your stock. This action cannot be undone.';
+
+  @override
+  String get orders_receiveSuccess =>
+      'Order received — stock updated successfully';
+
+  @override
+  String get orders_receiveError =>
+      'Failed to receive order. Please try again.';
+
+  @override
+  String get orders_alreadyReceived => 'Already Received';
+
+  @override
   String common_minutesAgo(int count) {
     return '$count min ago';
   }
@@ -972,4 +1014,274 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get common_seeAll => 'See all';
+
+  @override
+  String get categories_title => 'Categories';
+
+  @override
+  String get categories_add => 'Add Category';
+
+  @override
+  String get categories_empty => 'No categories yet';
+
+  @override
+  String get categories_emptyDescription =>
+      'Create categories to organize your products';
+
+  @override
+  String get categories_selectHint => 'None (uncategorized)';
+
+  @override
+  String get categories_none => 'None';
+
+  @override
+  String get categories_created => 'Category created';
+
+  @override
+  String get categories_deleted => 'Category deleted';
+
+  @override
+  String get categories_nameLabel => 'Category Name';
+
+  @override
+  String get categories_namePlaceholder => 'e.g. Beverages';
+
+  @override
+  String get categories_manage => 'Manage Categories';
+
+  @override
+  String get categories_searchHint => 'Search categories...';
+
+  @override
+  String get categories_loadDefaults => 'Load default categories';
+
+  @override
+  String categories_loadDefaultsSuccess(int count) {
+    return '$count default categories added';
+  }
+
+  @override
+  String get categories_loadDefaultsAlready =>
+      'All default categories already exist';
+
+  @override
+  String get categories_loadDefaultsError =>
+      'Failed to load default categories';
+
+  @override
+  String get stockHistory => 'Stock History';
+
+  @override
+  String get stockHistory_empty => 'No stock changes recorded';
+
+  @override
+  String get stockHistory_manualAdjustment => 'Manual Adjustment';
+
+  @override
+  String get stockHistory_orderReceived => 'Order Received';
+
+  @override
+  String get stockHistory_wastage => 'Wastage';
+
+  @override
+  String get stockHistory_initialStock => 'Initial Stock';
+
+  @override
+  String get stockHistory_correction => 'Correction';
+
+  @override
+  String get csv_title => 'Import / Export';
+
+  @override
+  String get csv_exportTitle => 'Export Products';
+
+  @override
+  String get csv_exportDescription =>
+      'Download your product list as a CSV file. The CSV will be copied to your clipboard.';
+
+  @override
+  String get csv_export => 'Export CSV';
+
+  @override
+  String get csv_exportedCopied => 'CSV copied to clipboard';
+
+  @override
+  String get csv_importTitle => 'Import Products';
+
+  @override
+  String get csv_importDescription =>
+      'Paste a CSV to bulk-import products. Existing products will be skipped.';
+
+  @override
+  String get csv_formatHint =>
+      'Columns: name, barcode, current_stock, reorder_threshold, unit, price, category';
+
+  @override
+  String get csv_pasteLabel => 'Paste CSV here';
+
+  @override
+  String get csv_pasteHint => 'name,barcode,current_stock,...';
+
+  @override
+  String get csv_pasteFirst => 'Please paste CSV data first';
+
+  @override
+  String get csv_import => 'Import CSV';
+
+  @override
+  String csv_importResult(int created, int skipped) {
+    return '$created created, $skipped skipped';
+  }
+
+  @override
+  String get notifications_title => 'Notifications';
+
+  @override
+  String get notifications_empty => 'No notifications yet';
+
+  @override
+  String get notifications_emptyDescription =>
+      'You\'ll see low-stock alerts and order updates here.';
+
+  @override
+  String get notifications_markAllRead => 'Mark all as read';
+
+  @override
+  String get notifications_clearAll => 'Clear all';
+
+  @override
+  String get notifications_justNow => 'Just now';
+
+  @override
+  String notifications_minutesAgo(int count) {
+    return '${count}m ago';
+  }
+
+  @override
+  String notifications_hoursAgo(int count) {
+    return '${count}h ago';
+  }
+
+  @override
+  String notifications_daysAgo(int count) {
+    return '${count}d ago';
+  }
+
+  @override
+  String get notifications_clearConfirmTitle => 'Clear all notifications?';
+
+  @override
+  String get notifications_clearConfirmMessage =>
+      'This will permanently delete all notifications.';
+
+  @override
+  String get notifications_cleared => 'All notifications cleared';
+
+  @override
+  String get nav_sales => 'Sales';
+
+  @override
+  String get sales_title => 'Sales';
+
+  @override
+  String get sales_newSale => 'New Sale';
+
+  @override
+  String get sales_history => 'History';
+
+  @override
+  String get sales_searchProducts => 'Search products...';
+
+  @override
+  String get sales_cartEmpty => 'Cart is empty';
+
+  @override
+  String get sales_cartEmptyDescription =>
+      'Search or scan a product to add it to the cart.';
+
+  @override
+  String get sales_total => 'Total';
+
+  @override
+  String sales_items(int count) {
+    return '$count items';
+  }
+
+  @override
+  String get sales_confirmSale => 'Confirm Sale';
+
+  @override
+  String get sales_confirmTitle => 'Confirm sale?';
+
+  @override
+  String sales_confirmMessage(int count) {
+    return 'This will record the sale and update stock for $count product(s).';
+  }
+
+  @override
+  String get sales_success => 'Sale recorded successfully';
+
+  @override
+  String get sales_shareReceipt => 'Share Receipt';
+
+  @override
+  String sales_receiptText(String saleNumber, String date, String total) {
+    return '🧾 Sale Receipt\nSale #: $saleNumber\nDate: $date\nTotal: $total MAD\n\nThank you!';
+  }
+
+  @override
+  String get sales_insufficientStock => 'Insufficient stock';
+
+  @override
+  String get sales_cancelTitle => 'Cancel sale?';
+
+  @override
+  String get sales_cancelMessage =>
+      'This will restore stock for all items. Only possible within 24 hours.';
+
+  @override
+  String get sales_cancelSuccess => 'Sale cancelled and stock restored';
+
+  @override
+  String get sales_noHistory => 'No sales yet';
+
+  @override
+  String get sales_noHistoryDescription =>
+      'Your confirmed sales will appear here.';
+
+  @override
+  String sales_saleNumber(String number) {
+    return 'Sale #$number';
+  }
+
+  @override
+  String get sales_unitPrice => 'Unit price';
+
+  @override
+  String get sales_qty => 'Qty';
+
+  @override
+  String get sales_notes => 'Note (optional)';
+
+  @override
+  String get sales_enterPrice => 'Enter price';
+
+  @override
+  String get sales_enterPriceMessage =>
+      'This product has no price set. Enter the unit price to add it to the cart.';
+
+  @override
+  String get sales_editPrice => 'Edit price';
+
+  @override
+  String get sales_priceHint => '0.00';
+
+  @override
+  String get sales_noPriceError => 'Please enter a valid price';
+
+  @override
+  String get dashboard_todayRevenue => 'Today\'s Revenue';
+
+  @override
+  String get dashboard_monthRevenue => 'This Month';
 }

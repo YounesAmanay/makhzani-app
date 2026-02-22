@@ -1906,6 +1906,72 @@ abstract class AppLocalizations {
   /// **'Stock: {count} {unit}'**
   String orders_stockLabel(int count, String unit);
 
+  /// No description provided for @orders_whatsappGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello {supplierName},'**
+  String orders_whatsappGreeting(String supplierName);
+
+  /// No description provided for @orders_whatsappIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Here is my order ({orderNumber}):'**
+  String orders_whatsappIntro(String orderNumber);
+
+  /// No description provided for @orders_whatsappTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total: {total} MAD'**
+  String orders_whatsappTotal(String total);
+
+  /// No description provided for @orders_whatsappClosing.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you'**
+  String get orders_whatsappClosing;
+
+  /// No description provided for @orders_receiveOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive Order'**
+  String get orders_receiveOrder;
+
+  /// No description provided for @orders_statusReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get orders_statusReceived;
+
+  /// No description provided for @orders_receiveConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive this order?'**
+  String get orders_receiveConfirmTitle;
+
+  /// No description provided for @orders_receiveConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will automatically add the ordered quantities to your stock. This action cannot be undone.'**
+  String get orders_receiveConfirmMessage;
+
+  /// No description provided for @orders_receiveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Order received — stock updated successfully'**
+  String get orders_receiveSuccess;
+
+  /// No description provided for @orders_receiveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to receive order. Please try again.'**
+  String get orders_receiveError;
+
+  /// No description provided for @orders_alreadyReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Already Received'**
+  String get orders_alreadyReceived;
+
   /// No description provided for @common_minutesAgo.
   ///
   /// In en, this message translates to:
@@ -1923,6 +1989,486 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'See all'**
   String get common_seeAll;
+
+  /// No description provided for @categories_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories_title;
+
+  /// No description provided for @categories_add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Category'**
+  String get categories_add;
+
+  /// No description provided for @categories_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No categories yet'**
+  String get categories_empty;
+
+  /// No description provided for @categories_emptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Create categories to organize your products'**
+  String get categories_emptyDescription;
+
+  /// No description provided for @categories_selectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'None (uncategorized)'**
+  String get categories_selectHint;
+
+  /// No description provided for @categories_none.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get categories_none;
+
+  /// No description provided for @categories_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Category created'**
+  String get categories_created;
+
+  /// No description provided for @categories_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Category deleted'**
+  String get categories_deleted;
+
+  /// No description provided for @categories_nameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Name'**
+  String get categories_nameLabel;
+
+  /// No description provided for @categories_namePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Beverages'**
+  String get categories_namePlaceholder;
+
+  /// No description provided for @categories_manage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Categories'**
+  String get categories_manage;
+
+  /// No description provided for @categories_searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search categories...'**
+  String get categories_searchHint;
+
+  /// No description provided for @categories_loadDefaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Load default categories'**
+  String get categories_loadDefaults;
+
+  /// No description provided for @categories_loadDefaultsSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} default categories added'**
+  String categories_loadDefaultsSuccess(int count);
+
+  /// No description provided for @categories_loadDefaultsAlready.
+  ///
+  /// In en, this message translates to:
+  /// **'All default categories already exist'**
+  String get categories_loadDefaultsAlready;
+
+  /// No description provided for @categories_loadDefaultsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load default categories'**
+  String get categories_loadDefaultsError;
+
+  /// No description provided for @stockHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock History'**
+  String get stockHistory;
+
+  /// No description provided for @stockHistory_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No stock changes recorded'**
+  String get stockHistory_empty;
+
+  /// No description provided for @stockHistory_manualAdjustment.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual Adjustment'**
+  String get stockHistory_manualAdjustment;
+
+  /// No description provided for @stockHistory_orderReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Received'**
+  String get stockHistory_orderReceived;
+
+  /// No description provided for @stockHistory_wastage.
+  ///
+  /// In en, this message translates to:
+  /// **'Wastage'**
+  String get stockHistory_wastage;
+
+  /// No description provided for @stockHistory_initialStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial Stock'**
+  String get stockHistory_initialStock;
+
+  /// No description provided for @stockHistory_correction.
+  ///
+  /// In en, this message translates to:
+  /// **'Correction'**
+  String get stockHistory_correction;
+
+  /// No description provided for @csv_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Import / Export'**
+  String get csv_title;
+
+  /// No description provided for @csv_exportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Products'**
+  String get csv_exportTitle;
+
+  /// No description provided for @csv_exportDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Download your product list as a CSV file. The CSV will be copied to your clipboard.'**
+  String get csv_exportDescription;
+
+  /// No description provided for @csv_export.
+  ///
+  /// In en, this message translates to:
+  /// **'Export CSV'**
+  String get csv_export;
+
+  /// No description provided for @csv_exportedCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'CSV copied to clipboard'**
+  String get csv_exportedCopied;
+
+  /// No description provided for @csv_importTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Products'**
+  String get csv_importTitle;
+
+  /// No description provided for @csv_importDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a CSV to bulk-import products. Existing products will be skipped.'**
+  String get csv_importDescription;
+
+  /// No description provided for @csv_formatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Columns: name, barcode, current_stock, reorder_threshold, unit, price, category'**
+  String get csv_formatHint;
+
+  /// No description provided for @csv_pasteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste CSV here'**
+  String get csv_pasteLabel;
+
+  /// No description provided for @csv_pasteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'name,barcode,current_stock,...'**
+  String get csv_pasteHint;
+
+  /// No description provided for @csv_pasteFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Please paste CSV data first'**
+  String get csv_pasteFirst;
+
+  /// No description provided for @csv_import.
+  ///
+  /// In en, this message translates to:
+  /// **'Import CSV'**
+  String get csv_import;
+
+  /// No description provided for @csv_importResult.
+  ///
+  /// In en, this message translates to:
+  /// **'{created} created, {skipped} skipped'**
+  String csv_importResult(int created, int skipped);
+
+  /// No description provided for @notifications_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications_title;
+
+  /// No description provided for @notifications_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get notifications_empty;
+
+  /// No description provided for @notifications_emptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll see low-stock alerts and order updates here.'**
+  String get notifications_emptyDescription;
+
+  /// No description provided for @notifications_markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get notifications_markAllRead;
+
+  /// No description provided for @notifications_clearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get notifications_clearAll;
+
+  /// No description provided for @notifications_justNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get notifications_justNow;
+
+  /// No description provided for @notifications_minutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}m ago'**
+  String notifications_minutesAgo(int count);
+
+  /// No description provided for @notifications_hoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}h ago'**
+  String notifications_hoursAgo(int count);
+
+  /// No description provided for @notifications_daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}d ago'**
+  String notifications_daysAgo(int count);
+
+  /// No description provided for @notifications_clearConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all notifications?'**
+  String get notifications_clearConfirmTitle;
+
+  /// No description provided for @notifications_clearConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete all notifications.'**
+  String get notifications_clearConfirmMessage;
+
+  /// No description provided for @notifications_cleared.
+  ///
+  /// In en, this message translates to:
+  /// **'All notifications cleared'**
+  String get notifications_cleared;
+
+  /// No description provided for @nav_sales.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales'**
+  String get nav_sales;
+
+  /// No description provided for @sales_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales'**
+  String get sales_title;
+
+  /// No description provided for @sales_newSale.
+  ///
+  /// In en, this message translates to:
+  /// **'New Sale'**
+  String get sales_newSale;
+
+  /// No description provided for @sales_history.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get sales_history;
+
+  /// No description provided for @sales_searchProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Search products...'**
+  String get sales_searchProducts;
+
+  /// No description provided for @sales_cartEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Cart is empty'**
+  String get sales_cartEmpty;
+
+  /// No description provided for @sales_cartEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Search or scan a product to add it to the cart.'**
+  String get sales_cartEmptyDescription;
+
+  /// No description provided for @sales_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get sales_total;
+
+  /// No description provided for @sales_items.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} items'**
+  String sales_items(int count);
+
+  /// No description provided for @sales_confirmSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Sale'**
+  String get sales_confirmSale;
+
+  /// No description provided for @sales_confirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm sale?'**
+  String get sales_confirmTitle;
+
+  /// No description provided for @sales_confirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will record the sale and update stock for {count} product(s).'**
+  String sales_confirmMessage(int count);
+
+  /// No description provided for @sales_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale recorded successfully'**
+  String get sales_success;
+
+  /// No description provided for @sales_shareReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Receipt'**
+  String get sales_shareReceipt;
+
+  /// No description provided for @sales_receiptText.
+  ///
+  /// In en, this message translates to:
+  /// **'🧾 Sale Receipt\nSale #: {saleNumber}\nDate: {date}\nTotal: {total} MAD\n\nThank you!'**
+  String sales_receiptText(String saleNumber, String date, String total);
+
+  /// No description provided for @sales_insufficientStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Insufficient stock'**
+  String get sales_insufficientStock;
+
+  /// No description provided for @sales_cancelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel sale?'**
+  String get sales_cancelTitle;
+
+  /// No description provided for @sales_cancelMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will restore stock for all items. Only possible within 24 hours.'**
+  String get sales_cancelMessage;
+
+  /// No description provided for @sales_cancelSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale cancelled and stock restored'**
+  String get sales_cancelSuccess;
+
+  /// No description provided for @sales_noHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No sales yet'**
+  String get sales_noHistory;
+
+  /// No description provided for @sales_noHistoryDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your confirmed sales will appear here.'**
+  String get sales_noHistoryDescription;
+
+  /// No description provided for @sales_saleNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale #{number}'**
+  String sales_saleNumber(String number);
+
+  /// No description provided for @sales_unitPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit price'**
+  String get sales_unitPrice;
+
+  /// No description provided for @sales_qty.
+  ///
+  /// In en, this message translates to:
+  /// **'Qty'**
+  String get sales_qty;
+
+  /// No description provided for @sales_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get sales_notes;
+
+  /// No description provided for @sales_enterPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter price'**
+  String get sales_enterPrice;
+
+  /// No description provided for @sales_enterPriceMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This product has no price set. Enter the unit price to add it to the cart.'**
+  String get sales_enterPriceMessage;
+
+  /// No description provided for @sales_editPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit price'**
+  String get sales_editPrice;
+
+  /// No description provided for @sales_priceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'0.00'**
+  String get sales_priceHint;
+
+  /// No description provided for @sales_noPriceError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid price'**
+  String get sales_noPriceError;
+
+  /// No description provided for @dashboard_todayRevenue.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Revenue'**
+  String get dashboard_todayRevenue;
+
+  /// No description provided for @dashboard_monthRevenue.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get dashboard_monthRevenue;
 }
 
 class _AppLocalizationsDelegate

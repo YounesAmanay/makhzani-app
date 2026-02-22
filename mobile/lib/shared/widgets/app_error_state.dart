@@ -30,7 +30,7 @@ class AppErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppDimensions.paddingXLarge),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -70,3 +70,4 @@ class AppErrorState extends StatelessWidget {
     );
   }
 }
+

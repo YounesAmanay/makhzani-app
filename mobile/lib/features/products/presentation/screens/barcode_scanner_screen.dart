@@ -15,7 +15,12 @@ import '../../../../core/theme/app_dimensions.dart';
 import '../providers/products_provider.dart';
 
 class BarcodeScannerScreen extends ConsumerStatefulWidget {
-  const BarcodeScannerScreen({super.key});
+  /// When true, skips the external barcode lookup and immediately pops
+  /// the raw barcode string. Used by the sales cart which searches the
+  /// merchant's own inventory rather than an external product database.
+  final bool rawMode;
+
+  const BarcodeScannerScreen({super.key, this.rawMode = false});
 
   @override
   ConsumerState<BarcodeScannerScreen> createState() =>
@@ -43,6 +48,13 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen> {
     final hasVibrator = await Vibration.hasVibrator();
     if (hasVibrator) Vibration.vibrate(duration: 60);
 
+    // Raw mode: skip external lookup, return barcode string directly.
+    // Used by sales cart to search the merchant's own inventory.
+    if (widget.rawMode) {
+      if (mounted) Navigator.of(context).pop(rawBarcode);
+      return;
+    }
+
     try {
       final repository = ref.read(productsRepositoryProvider);
       final result = await repository.lookupBarcode(rawBarcode);
@@ -56,13 +68,16 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen> {
       }
     } catch (_) {
       if (!mounted) return;
-      setState(() => _isProcessing = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(context.l10n.error_network),
           backgroundColor: AppColors.error,
         ),
       );
+      // Cooldown before allowing another scan attempt — prevents the camera
+      // from re-triggering onDetect every frame and looping the error.
+      await Future.delayed(const Duration(seconds: 3));
+      if (mounted) setState(() => _isProcessing = false);
     }
   }
 

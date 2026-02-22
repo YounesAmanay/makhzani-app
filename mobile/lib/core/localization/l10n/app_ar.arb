@@ -365,6 +365,32 @@
       "unit": {"type": "String"}
     }
   },
+  "orders_whatsappGreeting": "مرحباً {supplierName}،",
+  "@orders_whatsappGreeting": {
+    "placeholders": {
+      "supplierName": {"type": "String"}
+    }
+  },
+  "orders_whatsappIntro": "إليك طلبيتي ({orderNumber}):",
+  "@orders_whatsappIntro": {
+    "placeholders": {
+      "orderNumber": {"type": "String"}
+    }
+  },
+  "orders_whatsappTotal": "المجموع: {total} درهم",
+  "@orders_whatsappTotal": {
+    "placeholders": {
+      "total": {"type": "String"}
+    }
+  },
+  "orders_whatsappClosing": "شكراً جزيلاً",
+  "orders_receiveOrder": "استلام الطلب",
+  "orders_statusReceived": "مستلم",
+  "orders_receiveConfirmTitle": "استلام هذا الطلب؟",
+  "orders_receiveConfirmMessage": "سيتم إضافة الكميات المطلوبة إلى مخزونك تلقائيًا. لا يمكن التراجع عن هذا الإجراء.",
+  "orders_receiveSuccess": "تم استلام الطلب — تم تحديث المخزون بنجاح",
+  "orders_receiveError": "فشل استلام الطلب. يرجى المحاولة مرة أخرى.",
+  "orders_alreadyReceived": "تم الاستلام",
   "common_minutesAgo": "منذ {count} دقيقة",
   "@common_minutesAgo": {
     "placeholders": {
@@ -381,5 +407,134 @@
       }
     }
   },
-  "common_seeAll": "عرض الكل"
+  "common_seeAll": "عرض الكل",
+
+  "categories_title": "الفئات",
+  "categories_add": "إضافة فئة",
+  "categories_empty": "لا توجد فئات",
+  "categories_emptyDescription": "أنشئ فئات لتنظيم منتجاتك",
+  "categories_selectHint": "بدون فئة",
+  "categories_none": "بدون",
+  "categories_created": "تم إنشاء الفئة",
+  "categories_deleted": "تم حذف الفئة",
+  "categories_nameLabel": "اسم الفئة",
+  "categories_namePlaceholder": "مثال: مشروبات",
+  "categories_manage": "إدارة الفئات",
+  "categories_searchHint": "ابحث عن فئة...",
+  "categories_loadDefaults": "تحميل الفئات الافتراضية",
+  "categories_loadDefaultsSuccess": "تمت إضافة {count} فئة افتراضية",
+  "@categories_loadDefaultsSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "categories_loadDefaultsAlready": "جميع الفئات الافتراضية موجودة مسبقاً",
+  "categories_loadDefaultsError": "فشل تحميل الفئات الافتراضية",
+
+  "stockHistory": "سجل المخزون",
+  "stockHistory_empty": "لا توجد تغييرات مسجلة",
+  "stockHistory_manualAdjustment": "تعديل يدوي",
+  "stockHistory_orderReceived": "استلام طلبية",
+  "stockHistory_wastage": "هدر",
+  "stockHistory_initialStock": "مخزون أولي",
+  "stockHistory_correction": "تصحيح",
+
+  "csv_title": "الاستيراد / التصدير",
+  "csv_exportTitle": "تصدير المنتجات",
+  "csv_exportDescription": "حمّل قائمة منتجاتك كملف CSV. سيتم نسخ الملف إلى الحافظة.",
+  "csv_export": "تصدير CSV",
+  "csv_exportedCopied": "تم نسخ CSV إلى الحافظة",
+  "csv_importTitle": "استيراد المنتجات",
+  "csv_importDescription": "الصق ملف CSV لاستيراد المنتجات بالجملة. المنتجات الموجودة سيتم تخطيها.",
+  "csv_formatHint": "الأعمدة: name, barcode, current_stock, reorder_threshold, unit, price, category",
+  "csv_pasteLabel": "الصق CSV هنا",
+  "csv_pasteHint": "name,barcode,current_stock,...",
+  "csv_pasteFirst": "الرجاء لصق بيانات CSV أولاً",
+  "csv_import": "استيراد CSV",
+  "csv_importResult": "تم إنشاء {created}، تخطي {skipped}",
+  "@csv_importResult": {
+    "placeholders": {
+      "created": {"type": "int"},
+      "skipped": {"type": "int"}
+    }
+  },
+
+  "notifications_title": "الإشعارات",
+  "notifications_empty": "لا توجد إشعارات بعد",
+  "notifications_emptyDescription": "ستظهر هنا تنبيهات انخفاض المخزون وتحديثات الطلبات.",
+  "notifications_markAllRead": "تعليم الكل كمقروء",
+  "notifications_clearAll": "مسح الكل",
+  "notifications_justNow": "الآن",
+  "notifications_minutesAgo": "منذ {count} د",
+  "@notifications_minutesAgo": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "notifications_hoursAgo": "منذ {count} س",
+  "@notifications_hoursAgo": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "notifications_daysAgo": "منذ {count} أيام",
+  "@notifications_daysAgo": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "notifications_clearConfirmTitle": "مسح جميع الإشعارات؟",
+  "notifications_clearConfirmMessage": "سيؤدي هذا إلى حذف جميع الإشعارات نهائياً.",
+  "notifications_cleared": "تم مسح جميع الإشعارات",
+
+  "nav_sales": "المبيعات",
+
+  "sales_title": "المبيعات",
+  "sales_newSale": "بيع جديد",
+  "sales_history": "السجل",
+  "sales_searchProducts": "ابحث عن منتج...",
+  "sales_cartEmpty": "السلة فارغة",
+  "sales_cartEmptyDescription": "ابحث أو امسح باركود منتج لإضافته إلى السلة.",
+  "sales_total": "المجموع",
+  "sales_items": "{count} منتجات",
+  "@sales_items": {
+    "placeholders": { "count": {"type": "int"} }
+  },
+  "sales_confirmSale": "تأكيد البيع",
+  "sales_confirmTitle": "تأكيد البيع؟",
+  "sales_confirmMessage": "سيتم تسجيل البيع وتحديث مخزون {count} منتج.",
+  "@sales_confirmMessage": {
+    "placeholders": { "count": {"type": "int"} }
+  },
+  "sales_success": "تم تسجيل البيع بنجاح",
+  "sales_shareReceipt": "مشاركة الإيصال",
+  "sales_receiptText": "🧾 إيصال بيع\nرقم البيع: {saleNumber}\nالتاريخ: {date}\nالمجموع: {total} درهم\n\nشكراً لك!",
+  "@sales_receiptText": {
+    "placeholders": {
+      "saleNumber": {"type": "String"},
+      "date": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "sales_insufficientStock": "مخزون غير كافٍ",
+  "sales_cancelTitle": "إلغاء البيع؟",
+  "sales_cancelMessage": "سيتم استعادة المخزون لجميع المنتجات. ممكن فقط خلال 24 ساعة.",
+  "sales_cancelSuccess": "تم إلغاء البيع واستعادة المخزون",
+  "sales_noHistory": "لا توجد مبيعات بعد",
+  "sales_noHistoryDescription": "ستظهر هنا مبيعاتك المؤكدة.",
+  "sales_saleNumber": "بيع #{number}",
+  "@sales_saleNumber": {
+    "placeholders": { "number": {"type": "String"} }
+  },
+  "sales_unitPrice": "سعر الوحدة",
+  "sales_qty": "الكمية",
+  "sales_notes": "ملاحظة (اختياري)",
+  "sales_enterPrice": "أدخل السعر",
+  "sales_enterPriceMessage": "لم يتم تحديد سعر لهذا المنتج. أدخل سعر الوحدة لإضافته إلى السلة.",
+  "sales_editPrice": "تعديل السعر",
+  "sales_priceHint": "0.00",
+  "sales_noPriceError": "يرجى إدخال سعر صالح",
+
+  "dashboard_todayRevenue": "إيرادات اليوم",
+  "dashboard_monthRevenue": "هذا الشهر"
 }
