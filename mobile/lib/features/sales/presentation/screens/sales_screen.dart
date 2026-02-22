@@ -48,7 +48,6 @@ class _SalesScreenState extends ConsumerState<SalesScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(context.l10n.sales_title),
@@ -241,7 +240,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen> {
       ),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        border: Border(top: BorderSide(color: AppColors.border)),
+        border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -270,7 +269,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen> {
               onPressed: isSubmitting ? null : () => _confirmSale(cartState),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
+                foregroundColor: AppColors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
                 ),

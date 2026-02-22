@@ -20,7 +20,6 @@ class SaleDetailScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(context.l10n.sales_saleNumber(sale.saleNumber)),
         actions: [

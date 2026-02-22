@@ -19,7 +19,10 @@ import '../providers/dashboard_provider.dart';
 import '../widgets/dashboard_app_bar.dart';
 import '../widgets/low_stock_list.dart';
 import '../widgets/recent_orders_list.dart';
+import '../widgets/sales_chart_widget.dart';
+import '../widgets/top_selling_list.dart';
 import '../../../../shared/widgets/stats_card.dart';
+import '../../../products/presentation/screens/product_detail_screen.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -91,6 +94,27 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
                 // Revenue cards
                 _buildRevenueRow(),
+
+                const SizedBox(height: AppDimensions.marginLarge),
+
+                // 7-day Sales Chart
+                _buildSectionHeader(context.l10n.dashboard_salesChart),
+                const SizedBox(height: AppDimensions.marginSmall),
+                SalesChartWidget(data: state.chartData),
+
+                const SizedBox(height: AppDimensions.marginLarge),
+
+                // Top Selling Products
+                _buildSectionHeader(context.l10n.dashboard_topSelling),
+                const SizedBox(height: AppDimensions.marginSmall),
+                TopSellingList(
+                  items: state.topSelling,
+                  onTap: (productId) => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => ProductDetailScreen(productId: productId),
+                    ),
+                  ),
+                ),
 
                 const SizedBox(height: AppDimensions.marginLarge),
 

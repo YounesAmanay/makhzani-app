@@ -2469,6 +2469,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This Month'**
   String get dashboard_monthRevenue;
+
+  /// No description provided for @dashboard_salesChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales — Last 7 Days'**
+  String get dashboard_salesChart;
+
+  /// No description provided for @dashboard_topSelling.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Selling This Month'**
+  String get dashboard_topSelling;
+
+  /// No description provided for @dashboard_noSalesThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'No sales recorded this month'**
+  String get dashboard_noSalesThisMonth;
+
+  /// No description provided for @dashboard_sold.
+  ///
+  /// In en, this message translates to:
+  /// **'sold'**
+  String get dashboard_sold;
 }
 
 class _AppLocalizationsDelegate

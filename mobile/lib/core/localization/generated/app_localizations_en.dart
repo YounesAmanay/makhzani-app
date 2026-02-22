@@ -1284,4 +1284,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dashboard_monthRevenue => 'This Month';
+
+  @override
+  String get dashboard_salesChart => 'Sales — Last 7 Days';
+
+  @override
+  String get dashboard_topSelling => 'Top Selling This Month';
+
+  @override
+  String get dashboard_noSalesThisMonth => 'No sales recorded this month';
+
+  @override
+  String get dashboard_sold => 'sold';
 }

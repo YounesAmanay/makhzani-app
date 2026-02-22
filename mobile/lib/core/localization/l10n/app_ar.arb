@@ -536,5 +536,9 @@
   "sales_noPriceError": "يرجى إدخال سعر صالح",
 
   "dashboard_todayRevenue": "إيرادات اليوم",
-  "dashboard_monthRevenue": "هذا الشهر"
+  "dashboard_monthRevenue": "هذا الشهر",
+  "dashboard_salesChart": "المبيعات — آخر 7 أيام",
+  "dashboard_topSelling": "الأكثر مبيعاً هذا الشهر",
+  "dashboard_noSalesThisMonth": "لا توجد مبيعات هذا الشهر",
+  "dashboard_sold": "مباع"
 }

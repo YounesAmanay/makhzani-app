@@ -9,7 +9,6 @@ import 'package:hugeicons/hugeicons.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/localization/l10n_extension.dart';
-import '../../../../core/localization/locale_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../core/theme/theme_provider.dart';
@@ -185,7 +184,7 @@ class _ProfileSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authProvider);
     final themeMode = ref.watch(themeModeProvider);
-    final currentLocale = ref.watch(localeProvider);
+
 
     final merchant = authState.merchant;
     final businessName = merchant?.businessName ?? '';
@@ -193,7 +192,7 @@ class _ProfileSheet extends ConsumerWidget {
     final firstLetter = businessName.isNotEmpty ? businessName[0].toUpperCase() : '?';
     final avatarUrl = merchant?.avatarUrl;
     final isDark = themeMode == ThemeMode.dark;
-    final isArabic = currentLocale.languageCode == 'ar';
+
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -299,31 +298,6 @@ class _ProfileSheet extends ConsumerWidget {
                 activeTrackColor: AppColors.primary.withValues(alpha: 0.5),
                 activeThumbColor: AppColors.primary,
               ),
-            ),
-
-            // Language toggle
-            ListTile(
-              leading: HugeIcon(icon: HugeIcons.strokeRoundedLanguageCircle, size: 22, color: Theme.of(context).iconTheme.color ?? AppColors.textSecondary),
-              title: Text(context.l10n.settings_language),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    isArabic ? 'AR' : 'EN',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).textTheme.bodySmall?.color,
-                        ),
-                  ),
-                  const SizedBox(width: 4),
-                  HugeIcon(icon: HugeIcons.strokeRoundedArrowRight01, size: 16, color: Theme.of(context).iconTheme.color ?? AppColors.textSecondary),
-                ],
-              ),
-              onTap: () {
-                ref.read(localeProvider.notifier).setLocale(
-                      isArabic ? const Locale('en') : const Locale('ar'),
-                    );
-                Navigator.of(context).pop();
-              },
             ),
 
             const Divider(),

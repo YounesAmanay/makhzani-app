@@ -165,45 +165,99 @@ router.put('/profile', authenticateToken, validateMerchantUpdate, handleValidati
 router.get('/dashboard-stats', authenticateToken, async (req, res) => {
   try {
     const merchantId = req.merchantId;
-    
-    // Get counts in parallel
+
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const sevenDaysAgo = new Date(now);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+    const endOfToday = new Date(now);
+    endOfToday.setHours(23, 59, 59, 999);
+
     const [
       totalProducts,
       lowStockProducts,
       totalSuppliers,
       recentOrders,
-      totalOrders
+      totalOrders,
+      lowStockProductDetails,
+      chartRows,
+      topSellingRows,
     ] = await Promise.all([
       db.Product.count({ where: { merchant_id: merchantId, is_active: true } }),
-      db.Product.count({ 
-        where: { 
-          merchant_id: merchantId, 
+      db.Product.count({
+        where: {
+          merchant_id: merchantId,
           is_active: true,
-          current_stock: { [db.Sequelize.Op.lte]: db.Sequelize.col('reorder_threshold') }
-        } 
+          current_stock: { [db.Sequelize.Op.lte]: db.Sequelize.col('reorder_threshold') },
+        },
       }),
       db.Supplier.count({ where: { merchant_id: merchantId, is_active: true } }),
       db.PurchaseOrder.findAll({
         where: { merchant_id: merchantId, is_active: true },
         order: [['created_at', 'DESC']],
         limit: 5,
-        include: [
-          { model: db.Supplier, as: 'supplier', attributes: ['name'] }
-        ]
+        include: [{ model: db.Supplier, as: 'supplier', attributes: ['name'] }],
       }),
-      db.PurchaseOrder.count({ where: { merchant_id: merchantId, is_active: true } })
+      db.PurchaseOrder.count({ where: { merchant_id: merchantId, is_active: true } }),
+      db.Product.findAll({
+        where: {
+          merchant_id: merchantId,
+          is_active: true,
+          current_stock: { [db.Sequelize.Op.lte]: db.Sequelize.col('reorder_threshold') },
+        },
+        attributes: ['id', 'name', 'current_stock', 'reorder_threshold', 'unit'],
+        limit: 10,
+      }),
+      db.sequelize.query(
+        `SELECT DATE(created_at) as date,
+                COALESCE(SUM(total_amount), 0) as amount,
+                COUNT(*) as count
+         FROM sales
+         WHERE merchant_id = :merchantId
+           AND is_cancelled = false
+           AND created_at >= :from
+           AND created_at <= :to
+         GROUP BY DATE(created_at)`,
+        {
+          replacements: { merchantId, from: sevenDaysAgo, to: endOfToday },
+          type: db.Sequelize.QueryTypes.SELECT,
+        }
+      ),
+      db.sequelize.query(
+        `SELECT si.product_id,
+                si.product_name_snapshot AS name,
+                si.product_unit_snapshot AS unit,
+                SUM(si.quantity)         AS total_sold,
+                SUM(si.total_price)      AS total_revenue
+         FROM sale_items si
+         JOIN sales s ON s.id = si.sale_id
+         WHERE s.merchant_id = :merchantId
+           AND s.is_cancelled = false
+           AND s.created_at >= :startOfMonth
+         GROUP BY si.product_id, si.product_name_snapshot, si.product_unit_snapshot
+         ORDER BY total_sold DESC
+         LIMIT 5`,
+        {
+          replacements: { merchantId, startOfMonth },
+          type: db.Sequelize.QueryTypes.SELECT,
+        }
+      ),
     ]);
 
-    // Get low stock products details
-    const lowStockProductDetails = await db.Product.findAll({
-      where: { 
-        merchant_id: merchantId, 
-        is_active: true,
-        current_stock: { [db.Sequelize.Op.lte]: db.Sequelize.col('reorder_threshold') }
-      },
-      attributes: ['id', 'name', 'current_stock', 'reorder_threshold', 'unit'],
-      limit: 10
-    });
+    // Build 7-day chart array — fill 0 for days with no sales
+    const chartData = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const row = chartRows.find(r => new Date(r.date).toISOString().split('T')[0] === dateStr);
+      chartData.push({
+        date: dateStr,
+        amount: row ? parseFloat(row.amount) : 0,
+        count: row ? parseInt(row.count) : 0,
+      });
+    }
 
     res.json({
       success: true,
@@ -212,25 +266,33 @@ router.get('/dashboard-stats', authenticateToken, async (req, res) => {
           total_products: totalProducts,
           low_stock_products: lowStockProducts,
           total_suppliers: totalSuppliers,
-          total_orders: totalOrders
+          total_orders: totalOrders,
         },
+        chart_data: chartData,
+        top_selling_products: topSellingRows.map(r => ({
+          product_id: r.product_id,
+          name: r.name,
+          unit: r.unit,
+          total_sold: parseFloat(r.total_sold),
+          total_revenue: parseFloat(r.total_revenue),
+        })),
         low_stock_items: lowStockProductDetails.map(product => ({
           id: product.id,
           name: product.name,
           current_stock: product.current_stock,
           reorder_threshold: product.reorder_threshold,
           unit: product.unit,
-          shortage: product.reorder_threshold - product.current_stock
+          shortage: product.reorder_threshold - product.current_stock,
         })),
         recent_orders: recentOrders.map(order => ({
           id: order.id,
           order_number: order.order_number,
           supplier_name: order.supplier?.name,
-          created_at: order.created_at,
+          created_at: new Date(order.get('created_at')).toISOString(),
           pdf_generated: !!order.pdf_generated_at,
-          sent: !!order.sent_at
-        }))
-      }
+          sent: !!order.sent_at,
+        })),
+      },
     });
 
   } catch (error) {
@@ -238,7 +300,7 @@ router.get('/dashboard-stats', authenticateToken, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch dashboard statistics',
-      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
     });
   }
 });

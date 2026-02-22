@@ -571,5 +571,9 @@
   "sales_noPriceError": "Veuillez entrer un prix valide",
 
   "dashboard_todayRevenue": "Revenus aujourd'hui",
-  "dashboard_monthRevenue": "Ce mois-ci"
+  "dashboard_monthRevenue": "Ce mois-ci",
+  "dashboard_salesChart": "Ventes — 7 derniers jours",
+  "dashboard_topSelling": "Meilleures ventes ce mois",
+  "dashboard_noSalesThisMonth": "Aucune vente ce mois-ci",
+  "dashboard_sold": "vendu"
 }

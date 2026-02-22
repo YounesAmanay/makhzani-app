@@ -1276,4 +1276,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dashboard_monthRevenue => 'هذا الشهر';
+
+  @override
+  String get dashboard_salesChart => 'المبيعات — آخر 7 أيام';
+
+  @override
+  String get dashboard_topSelling => 'الأكثر مبيعاً هذا الشهر';
+
+  @override
+  String get dashboard_noSalesThisMonth => 'لا توجد مبيعات هذا الشهر';
+
+  @override
+  String get dashboard_sold => 'مباع';
 }

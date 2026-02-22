@@ -11,6 +11,7 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
+import '../../../../core/localization/locale_provider.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import 'edit_profile_screen.dart';
 
@@ -302,6 +303,44 @@ class _SettingsPlaceholderScreenState
                   ],
                 ),
               ),
+
+            const SizedBox(height: AppDimensions.marginMedium),
+
+            // App settings card
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.paddingMedium,
+                  vertical: AppDimensions.paddingSmall,
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.language_outlined, size: 20, color: AppColors.textSecondary),
+                    const SizedBox(width: AppDimensions.marginMedium),
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        initialValue: ref.watch(localeProvider).languageCode,
+                        decoration: InputDecoration(
+                          labelText: context.l10n.settings_language,
+                          border: InputBorder.none,
+                          isDense: true,
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: 'en', child: Text('English')),
+                          DropdownMenuItem(value: 'ar', child: Text('العربية')),
+                          DropdownMenuItem(value: 'fr', child: Text('Français')),
+                        ],
+                        onChanged: (code) {
+                          if (code != null) {
+                            ref.read(localeProvider.notifier).setLocale(Locale(code));
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
             const SizedBox(height: AppDimensions.marginMedium),
 

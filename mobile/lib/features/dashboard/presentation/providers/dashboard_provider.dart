@@ -10,6 +10,8 @@ import '../../data/datasources/dashboard_remote_datasource.dart';
 import '../../domain/entities/dashboard_stats.dart';
 import '../../domain/entities/low_stock_item.dart';
 import '../../domain/entities/recent_order.dart';
+import '../../domain/entities/sales_chart_point.dart';
+import '../../domain/entities/top_selling_product.dart';
 
 enum DashboardStatus { initial, loading, loaded, error }
 
@@ -18,6 +20,8 @@ class DashboardState {
   final DashboardStats? stats;
   final List<LowStockItem> lowStockItems;
   final List<RecentOrder> recentOrders;
+  final List<SalesChartPoint> chartData;
+  final List<TopSellingProduct> topSelling;
   final String? errorMessage;
 
   const DashboardState({
@@ -25,6 +29,8 @@ class DashboardState {
     this.stats,
     this.lowStockItems = const [],
     this.recentOrders = const [],
+    this.chartData = const [],
+    this.topSelling = const [],
     this.errorMessage,
   });
 
@@ -33,6 +39,8 @@ class DashboardState {
     DashboardStats? stats,
     List<LowStockItem>? lowStockItems,
     List<RecentOrder>? recentOrders,
+    List<SalesChartPoint>? chartData,
+    List<TopSellingProduct>? topSelling,
     String? errorMessage,
   }) {
     return DashboardState(
@@ -40,6 +48,8 @@ class DashboardState {
       stats: stats ?? this.stats,
       lowStockItems: lowStockItems ?? this.lowStockItems,
       recentOrders: recentOrders ?? this.recentOrders,
+      chartData: chartData ?? this.chartData,
+      topSelling: topSelling ?? this.topSelling,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -61,6 +71,8 @@ class DashboardNotifier extends StateNotifier<DashboardState> {
         stats: result.stats.toEntity(),
         lowStockItems: result.lowStockItems.map((m) => m.toEntity()).toList(),
         recentOrders: result.recentOrders.map((m) => m.toEntity()).toList(),
+        chartData: result.chartData.map((m) => m.toEntity()).toList(),
+        topSelling: result.topSelling.map((m) => m.toEntity()).toList(),
       );
     } catch (e) {
       state = state.copyWith(

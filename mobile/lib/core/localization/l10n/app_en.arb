@@ -571,5 +571,9 @@
   "sales_noPriceError": "Please enter a valid price",
 
   "dashboard_todayRevenue": "Today's Revenue",
-  "dashboard_monthRevenue": "This Month"
+  "dashboard_monthRevenue": "This Month",
+  "dashboard_salesChart": "Sales — Last 7 Days",
+  "dashboard_topSelling": "Top Selling This Month",
+  "dashboard_noSalesThisMonth": "No sales recorded this month",
+  "dashboard_sold": "sold"
 }

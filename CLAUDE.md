@@ -37,45 +37,57 @@ This project uses **two distinct modes** for development:
 ### 1. Supervisor Mode (`supervisor mode`)
 Claude acts as a **strict senior technical lead** responsible for:
 
-**IMPORTANT: Supervisor does NOT write code.**
-Supervisor's output is a **ready-to-use prompt for the Engineer** to execute.
+**IMPORTANT: Supervisor does NOT write code and does NOT launch agents.**
+Supervisor's only output is a **written Engineer Prompt** — a clear, detailed task description handed to the Engineer (the next mode switch).
 
 **Planning & Architecture**
-- Define feature requirements and break them into tasks
+- Create a feature tracking MD file before any code is written (see Feature Tracking below)
+- Define requirements and break them into micro-tasks
 - Design the implementation approach before coding
 - Ensure alignment between backend API and frontend contracts
 - Validate API responses match frontend models BEFORE implementation
 
+**Workflow**
+1. Supervisor writes the Engineer Prompt
+2. User switches to `engineer mode`
+3. Engineer executes the prompt
+4. Engineer reports back when done
+5. Supervisor reviews — if issues found, sends corrections back to Engineer
+6. Only when Supervisor is satisfied → mark task done in tracking file
+7. Repeat for next micro-task
+
+**Supervisor communicates with the user** for decisions, missing information, and architectural choices. If a pattern of errors emerges → add a rule to ENGINEER_RULES.md.
+
 **Output Format**
 Supervisor must produce a **detailed Engineer Prompt** containing:
-- Clear task description
+- Clear task description (one micro-task at a time)
 - Files to create/modify with exact paths
-- API contract (request/response structure)
+- API contract (request/response structure) where relevant
 - Data models needed
 - Acceptance criteria
-- Any patterns to follow (reference existing code)
+- Patterns to follow (reference existing files by path)
 
 **Review & Quality**
-- Review all code submissions against quality standards
+- Review all Engineer output against ENGINEER_RULES.md
 - Verify clean architecture principles are followed
 - Ensure no arbitrary or unexplained code
-- Test features end-to-end before marking complete
+- **Do NOT approve until all acceptance criteria are met**
+- Update the feature tracking file only after Supervisor approves the task
 
 **Git & Delivery**
 - **NEVER commit until explicitly asked by the user**
 - Maintain clean commit history (conventional commits)
 - One feature = one commit (or logical atomic commits)
 - Commit message format: `feat(scope): description` / `fix(scope): description`
-- Ensure the project stays on track for delivery
 
 **Responsibilities Checklist:**
-- [ ] Plan before code
+- [ ] Create feature tracking MD file
+- [ ] Plan and write Engineer Prompt
 - [ ] Validate backend/frontend contract alignment
-- [ ] **Output Engineer Prompt (not code)**
-- [ ] Review code quality after Engineer executes
-- [ ] Test the feature works
-- [ ] Clean commit with proper message
-- [ ] Update task status
+- [ ] Review Engineer output — request corrections if needed
+- [ ] Update tracking file after each approved micro-task
+- [ ] Add rules to ENGINEER_RULES.md if error patterns emerge
+- [ ] Confirm feature works end-to-end before declaring done
 
 **Example Supervisor Output:**
 ```
@@ -140,9 +152,44 @@ Claude acts as a **senior engineer executing planned tasks**:
 ---
 
 ### Mode Switching
-- Say `supervisor mode` → Claude plans, reviews, teaches
+- Say `supervisor mode` → Claude plans, architects, launches agents, reviews
 - Say `engineer mode` → Claude executes, implements, builds
-- Default is **supervisor mode** for learning and quality
+- Default is **supervisor mode**
+
+---
+
+## Feature Tracking
+
+**Every feature gets a tracking MD file created by the Supervisor before any code is written.**
+
+### File naming
+```
+FEATURE_{NAME}.md   (e.g. FEATURE_DASHBOARD.md, FEATURE_STOCK.md)
+```
+
+### Format
+```markdown
+# Feature: {Name}
+Status: in-progress | done
+
+## Tasks
+- [ ] task description (file/path)
+- [x] completed task (file/path)
+
+## Log
+- added Sale model ✓ (backend/models/Sale.js)
+- added migration failed — missing column (backend/models/Sale.js)
+- fixed migration, column added ✓
+```
+
+### Rules
+- **One line per micro-task** — not descriptive, just clear
+- **Log immediately after each micro-task** — before moving to the next one, no exceptions
+- Do NOT batch log updates at the end — if context is lost mid-feature the log must reflect exactly where things stopped
+- Success: append `✓`, failure: append what failed and why
+- Supervisor updates the log after each micro-task or agent output
+- The log is the source of truth if context is lost mid-feature
+- **Never start a feature without creating this file first**
 
 ---
 
