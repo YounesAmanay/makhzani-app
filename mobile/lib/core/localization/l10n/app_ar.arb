@@ -441,15 +441,24 @@
 
   "csv_title": "الاستيراد / التصدير",
   "csv_exportTitle": "تصدير المنتجات",
-  "csv_exportDescription": "حمّل قائمة منتجاتك كملف CSV. سيتم نسخ الملف إلى الحافظة.",
-  "csv_export": "تصدير CSV",
+  "csv_exportDescription": "شارك قائمة منتجاتك كملف CSV — افتحه في Excel أو Google Sheets.",
+  "csv_export": "تصدير ومشاركة",
   "csv_exportedCopied": "تم نسخ CSV إلى الحافظة",
   "csv_importTitle": "استيراد المنتجات",
-  "csv_importDescription": "الصق ملف CSV لاستيراد المنتجات بالجملة. المنتجات الموجودة سيتم تخطيها.",
+  "csv_importDescription": "اختر ملف CSV من هاتفك لاستيراد المنتجات بالجملة. المنتجات الموجودة سيتم تخطيها.",
   "csv_formatHint": "الأعمدة: name, barcode, current_stock, reorder_threshold, unit, price, category",
   "csv_pasteLabel": "الصق CSV هنا",
   "csv_pasteHint": "name,barcode,current_stock,...",
   "csv_pasteFirst": "الرجاء لصق بيانات CSV أولاً",
+  "csv_pickFile": "اختر ملف CSV",
+  "csv_fileSelected": "المحدد: {fileName}",
+  "@csv_fileSelected": {
+    "placeholders": {
+      "fileName": {"type": "String"}
+    }
+  },
+  "csv_importButton": "استيراد المنتجات",
+  "csv_noFileSelected": "الرجاء اختيار ملف CSV أولاً",
   "csv_import": "استيراد CSV",
   "csv_importResult": "تم إنشاء {created}، تخطي {skipped}",
   "@csv_importResult": {
@@ -589,5 +598,7 @@
     }
   },
   "orders_orderManually": "طلب يدوي",
-  "orders_orderManuallySubtitle": "هذه المنتجات لا تملك سجل طلبات — اختر موردًا عند إنشاء الطلب"
+  "orders_orderManuallySubtitle": "هذه المنتجات لا تملك سجل طلبات — اختر موردًا عند إنشاء الطلب",
+
+  "orders_sharePdf": "مشاركة PDF"
 }

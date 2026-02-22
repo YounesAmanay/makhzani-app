@@ -1112,10 +1112,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get csv_exportDescription =>
-      'Telechargez votre liste de produits en CSV. Le CSV sera copie dans le presse-papiers.';
+      'Partagez votre liste de produits en CSV — ouvrez-le dans Excel ou Google Sheets.';
 
   @override
-  String get csv_export => 'Exporter CSV';
+  String get csv_export => 'Exporter et partager';
 
   @override
   String get csv_exportedCopied => 'CSV copie dans le presse-papiers';
@@ -1125,7 +1125,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get csv_importDescription =>
-      'Collez un CSV pour importer des produits en masse. Les produits existants seront ignores.';
+      'Choisissez un fichier CSV depuis votre telephone pour importer des produits en masse. Les produits existants seront ignores.';
 
   @override
   String get csv_formatHint =>
@@ -1139,6 +1139,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get csv_pasteFirst => 'Veuillez coller des donnees CSV d\'abord';
+
+  @override
+  String get csv_pickFile => 'Choisir un fichier CSV';
+
+  @override
+  String csv_fileSelected(String fileName) {
+    return 'Selectionne : $fileName';
+  }
+
+  @override
+  String get csv_importButton => 'Importer les produits';
+
+  @override
+  String get csv_noFileSelected =>
+      'Veuillez selectionner un fichier CSV d\'abord';
 
   @override
   String get csv_import => 'Importer CSV';
@@ -1391,4 +1406,7 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get orders_orderManuallySubtitle =>
       'Ces produits n\'ont pas d\'historique de commande — choisissez un fournisseur lors de la création';
+
+  @override
+  String get orders_sharePdf => 'Partager le PDF';
 }

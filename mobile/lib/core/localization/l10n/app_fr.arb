@@ -476,15 +476,24 @@
 
   "csv_title": "Importer / Exporter",
   "csv_exportTitle": "Exporter les produits",
-  "csv_exportDescription": "Telechargez votre liste de produits en CSV. Le CSV sera copie dans le presse-papiers.",
-  "csv_export": "Exporter CSV",
+  "csv_exportDescription": "Partagez votre liste de produits en CSV — ouvrez-le dans Excel ou Google Sheets.",
+  "csv_export": "Exporter et partager",
   "csv_exportedCopied": "CSV copie dans le presse-papiers",
   "csv_importTitle": "Importer des produits",
-  "csv_importDescription": "Collez un CSV pour importer des produits en masse. Les produits existants seront ignores.",
+  "csv_importDescription": "Choisissez un fichier CSV depuis votre telephone pour importer des produits en masse. Les produits existants seront ignores.",
   "csv_formatHint": "Colonnes: name, barcode, current_stock, reorder_threshold, unit, price, category",
   "csv_pasteLabel": "Collez le CSV ici",
   "csv_pasteHint": "name,barcode,current_stock,...",
   "csv_pasteFirst": "Veuillez coller des donnees CSV d'abord",
+  "csv_pickFile": "Choisir un fichier CSV",
+  "csv_fileSelected": "Selectionne : {fileName}",
+  "@csv_fileSelected": {
+    "placeholders": {
+      "fileName": {"type": "String"}
+    }
+  },
+  "csv_importButton": "Importer les produits",
+  "csv_noFileSelected": "Veuillez selectionner un fichier CSV d'abord",
   "csv_import": "Importer CSV",
   "csv_importResult": "{created} crees, {skipped} ignores",
   "@csv_importResult": {
@@ -624,5 +633,7 @@
     }
   },
   "orders_orderManually": "Commander manuellement",
-  "orders_orderManuallySubtitle": "Ces produits n'ont pas d'historique de commande — choisissez un fournisseur lors de la création"
+  "orders_orderManuallySubtitle": "Ces produits n'ont pas d'historique de commande — choisissez un fournisseur lors de la création",
+
+  "orders_sharePdf": "Partager le PDF"
 }

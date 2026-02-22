@@ -1097,10 +1097,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get csv_exportDescription =>
-      'Download your product list as a CSV file. The CSV will be copied to your clipboard.';
+      'Share your product list as a CSV file — open in Excel or Google Sheets.';
 
   @override
-  String get csv_export => 'Export CSV';
+  String get csv_export => 'Export & Share';
 
   @override
   String get csv_exportedCopied => 'CSV copied to clipboard';
@@ -1110,7 +1110,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get csv_importDescription =>
-      'Paste a CSV to bulk-import products. Existing products will be skipped.';
+      'Pick a CSV file from your phone to bulk-import products. Existing products will be skipped.';
 
   @override
   String get csv_formatHint =>
@@ -1124,6 +1124,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get csv_pasteFirst => 'Please paste CSV data first';
+
+  @override
+  String get csv_pickFile => 'Pick CSV File';
+
+  @override
+  String csv_fileSelected(String fileName) {
+    return 'Selected: $fileName';
+  }
+
+  @override
+  String get csv_importButton => 'Import Products';
+
+  @override
+  String get csv_noFileSelected => 'Please select a CSV file first';
 
   @override
   String get csv_import => 'Import CSV';
@@ -1374,4 +1388,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get orders_orderManuallySubtitle =>
       'These products have no order history — pick a supplier when creating the order';
+
+  @override
+  String get orders_sharePdf => 'Share PDF';
 }

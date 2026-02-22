@@ -1090,10 +1090,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get csv_exportDescription =>
-      'حمّل قائمة منتجاتك كملف CSV. سيتم نسخ الملف إلى الحافظة.';
+      'شارك قائمة منتجاتك كملف CSV — افتحه في Excel أو Google Sheets.';
 
   @override
-  String get csv_export => 'تصدير CSV';
+  String get csv_export => 'تصدير ومشاركة';
 
   @override
   String get csv_exportedCopied => 'تم نسخ CSV إلى الحافظة';
@@ -1103,7 +1103,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get csv_importDescription =>
-      'الصق ملف CSV لاستيراد المنتجات بالجملة. المنتجات الموجودة سيتم تخطيها.';
+      'اختر ملف CSV من هاتفك لاستيراد المنتجات بالجملة. المنتجات الموجودة سيتم تخطيها.';
 
   @override
   String get csv_formatHint =>
@@ -1117,6 +1117,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get csv_pasteFirst => 'الرجاء لصق بيانات CSV أولاً';
+
+  @override
+  String get csv_pickFile => 'اختر ملف CSV';
+
+  @override
+  String csv_fileSelected(String fileName) {
+    return 'المحدد: $fileName';
+  }
+
+  @override
+  String get csv_importButton => 'استيراد المنتجات';
+
+  @override
+  String get csv_noFileSelected => 'الرجاء اختيار ملف CSV أولاً';
 
   @override
   String get csv_import => 'استيراد CSV';
@@ -1366,4 +1380,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get orders_orderManuallySubtitle =>
       'هذه المنتجات لا تملك سجل طلبات — اختر موردًا عند إنشاء الطلب';
+
+  @override
+  String get orders_sharePdf => 'مشاركة PDF';
 }

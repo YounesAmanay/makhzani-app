@@ -7,8 +7,8 @@ library;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/constants/app_constants.dart';
@@ -85,9 +85,9 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
     ));
   }
 
-  // ── Generate PDF ──────────────────────────────────────────────────────────
+  // ── Share PDF ─────────────────────────────────────────────────────────────
 
-  Future<void> _onGeneratePdf() async {
+  Future<void> _onSharePdf(OrderDetail order) async {
     setState(() => _isGeneratingPdf = true);
 
     // Step 1: generate PDF on server, get relative URL back
@@ -108,15 +108,11 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
       return;
     }
 
-    // Step 2: download to external storage (visible in Files app, no permission needed)
+    // Step 2: download to temp storage
     try {
       final fullUrl = '${AppConstants.serverUrl}$pdfUrl';
       final fileName = pdfUrl.split('/').last;
-
-      // Prefer external app storage (Android/data/com.app/files/) — no permission required.
-      // Falls back to temp dir if external storage is unavailable.
-      final dir =
-          await getExternalStorageDirectory() ?? await getTemporaryDirectory();
+      final dir = await getTemporaryDirectory();
       final filePath = '${dir.path}/$fileName';
 
       await Dio().download(fullUrl, filePath);
@@ -124,14 +120,13 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
       if (!mounted) return;
       setState(() => _isGeneratingPdf = false);
 
-      // Step 3: open with native PDF viewer
-      final result = await OpenFile.open(filePath);
-      if (result.type != ResultType.done && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(context.l10n.orders_pdfError),
-          backgroundColor: AppColors.error,
-        ));
-      }
+      // Step 3: open OS share sheet — user picks WhatsApp, email, etc.
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(filePath, mimeType: 'application/pdf')],
+          subject: order.orderNumber,
+        ),
+      );
     } catch (_) {
       if (!mounted) return;
       setState(() => _isGeneratingPdf = false);
@@ -568,19 +563,20 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
                   ),
                   const SizedBox(height: AppDimensions.marginSmall),
 
-                  // PDF button
+                  // Share PDF button
                   SizedBox(
                     height: 48,
                     child: OutlinedButton.icon(
-                      onPressed: isAnyLoading ? null : _onGeneratePdf,
+                      onPressed:
+                          isAnyLoading ? null : () => _onSharePdf(order),
                       icon: _isGeneratingPdf
                           ? const SizedBox(
                               width: 16,
                               height: 16,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Icon(Icons.picture_as_pdf_outlined),
-                      label: Text(context.l10n.orders_generateAndOpen),
+                          : const Icon(Icons.share_outlined),
+                      label: Text(context.l10n.orders_sharePdf),
                     ),
                   ),
                 ],

@@ -2143,13 +2143,13 @@ abstract class AppLocalizations {
   /// No description provided for @csv_exportDescription.
   ///
   /// In en, this message translates to:
-  /// **'Download your product list as a CSV file. The CSV will be copied to your clipboard.'**
+  /// **'Share your product list as a CSV file — open in Excel or Google Sheets.'**
   String get csv_exportDescription;
 
   /// No description provided for @csv_export.
   ///
   /// In en, this message translates to:
-  /// **'Export CSV'**
+  /// **'Export & Share'**
   String get csv_export;
 
   /// No description provided for @csv_exportedCopied.
@@ -2167,7 +2167,7 @@ abstract class AppLocalizations {
   /// No description provided for @csv_importDescription.
   ///
   /// In en, this message translates to:
-  /// **'Paste a CSV to bulk-import products. Existing products will be skipped.'**
+  /// **'Pick a CSV file from your phone to bulk-import products. Existing products will be skipped.'**
   String get csv_importDescription;
 
   /// No description provided for @csv_formatHint.
@@ -2193,6 +2193,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please paste CSV data first'**
   String get csv_pasteFirst;
+
+  /// No description provided for @csv_pickFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick CSV File'**
+  String get csv_pickFile;
+
+  /// No description provided for @csv_fileSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected: {fileName}'**
+  String csv_fileSelected(String fileName);
+
+  /// No description provided for @csv_importButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Products'**
+  String get csv_importButton;
+
+  /// No description provided for @csv_noFileSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a CSV file first'**
+  String get csv_noFileSelected;
 
   /// No description provided for @csv_import.
   ///
@@ -2631,6 +2655,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'These products have no order history — pick a supplier when creating the order'**
   String get orders_orderManuallySubtitle;
+
+  /// No description provided for @orders_sharePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Share PDF'**
+  String get orders_sharePdf;
 }
 
 class _AppLocalizationsDelegate

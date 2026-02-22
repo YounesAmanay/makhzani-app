@@ -476,15 +476,24 @@
 
   "csv_title": "Import / Export",
   "csv_exportTitle": "Export Products",
-  "csv_exportDescription": "Download your product list as a CSV file. The CSV will be copied to your clipboard.",
-  "csv_export": "Export CSV",
+  "csv_exportDescription": "Share your product list as a CSV file — open in Excel or Google Sheets.",
+  "csv_export": "Export & Share",
   "csv_exportedCopied": "CSV copied to clipboard",
   "csv_importTitle": "Import Products",
-  "csv_importDescription": "Paste a CSV to bulk-import products. Existing products will be skipped.",
+  "csv_importDescription": "Pick a CSV file from your phone to bulk-import products. Existing products will be skipped.",
   "csv_formatHint": "Columns: name, barcode, current_stock, reorder_threshold, unit, price, category",
   "csv_pasteLabel": "Paste CSV here",
   "csv_pasteHint": "name,barcode,current_stock,...",
   "csv_pasteFirst": "Please paste CSV data first",
+  "csv_pickFile": "Pick CSV File",
+  "csv_fileSelected": "Selected: {fileName}",
+  "@csv_fileSelected": {
+    "placeholders": {
+      "fileName": {"type": "String"}
+    }
+  },
+  "csv_importButton": "Import Products",
+  "csv_noFileSelected": "Please select a CSV file first",
   "csv_import": "Import CSV",
   "csv_importResult": "{created} created, {skipped} skipped",
   "@csv_importResult": {
@@ -624,5 +633,7 @@
     }
   },
   "orders_orderManually": "Order manually",
-  "orders_orderManuallySubtitle": "These products have no order history — pick a supplier when creating the order"
+  "orders_orderManuallySubtitle": "These products have no order history — pick a supplier when creating the order",
+
+  "orders_sharePdf": "Share PDF"
 }
