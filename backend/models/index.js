@@ -14,11 +14,15 @@ const db = {};
 // Import all models
 db.Merchant = require('./Merchant')(sequelize, Sequelize.DataTypes);
 db.Supplier = require('./Supplier')(sequelize, Sequelize.DataTypes);
+db.Category = require('./Category')(sequelize, Sequelize.DataTypes);
 db.Product = require('./Product')(sequelize, Sequelize.DataTypes);
 db.PurchaseOrder = require('./PurchaseOrder')(sequelize, Sequelize.DataTypes);
 db.PurchaseOrderItem = require('./PurchaseOrderItem')(sequelize, Sequelize.DataTypes);
 db.ProductImage = require('./ProductImage')(sequelize, Sequelize.DataTypes);
 db.BarcodeCache = require('./BarcodeCache')(sequelize, Sequelize.DataTypes);
+db.StockTransaction = require('./StockTransaction')(sequelize, Sequelize.DataTypes);
+db.Sale = require('./Sale')(sequelize, Sequelize.DataTypes);
+db.SaleItem = require('./SaleItem')(sequelize, Sequelize.DataTypes);
 
 // Create associations
 Object.keys(db).forEach(modelName => {

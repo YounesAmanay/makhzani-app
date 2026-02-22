@@ -40,6 +40,8 @@ app.use('/api/products', require('./routes/productLookup'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/suppliers', require('./routes/suppliers'));
 app.use('/api/orders', require('./routes/orders'));
+app.use('/api/categories', require('./routes/categories'));
+app.use('/api/sales', require('./routes/sales'));
 
 // Protected test endpoint
 const { authenticateToken } = require('./middleware/auth');
