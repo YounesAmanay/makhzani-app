@@ -13,6 +13,7 @@ import '../../../../core/theme/app_dimensions.dart';
 import '../../../../shared/widgets/app_error_state.dart';
 import '../../../../shared/widgets/app_loading.dart';
 import '../../../products/presentation/providers/products_provider.dart';
+import '../../../sales/presentation/providers/sales_provider.dart';
 import '../../../shell/presentation/providers/navigation_provider.dart';
 import '../providers/dashboard_provider.dart';
 import '../widgets/dashboard_app_bar.dart';
@@ -31,9 +32,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    // Load dashboard data on screen open
     Future.microtask(() {
       ref.read(dashboardProvider.notifier).loadDashboard();
+      ref.read(saleSummaryProvider.notifier).load();
     });
   }
 
@@ -85,6 +86,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               children: [
                 // Stats Grid
                 _buildStatsGrid(state),
+
+                const SizedBox(height: AppDimensions.marginLarge),
+
+                // Revenue cards
+                _buildRevenueRow(),
 
                 const SizedBox(height: AppDimensions.marginLarge),
 
@@ -172,6 +178,37 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
             ),
           ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRevenueRow() {
+    final summaryState = ref.watch(saleSummaryProvider);
+    final summary = summaryState.summary;
+    final today = summary?.today.amount ?? 0.0;
+    final month = summary?.thisMonth.amount ?? 0.0;
+
+    return Row(
+      children: [
+        Expanded(
+          child: StatsCard(
+            title: context.l10n.dashboard_todayRevenue,
+            value: '${today.toStringAsFixed(0)} ${context.l10n.currency_mad}',
+            icon: HugeIcons.strokeRoundedSaleTag01,
+            iconColor: AppColors.success,
+            onTap: () => ref.read(bottomNavIndexProvider.notifier).state = 2,
+          ),
+        ),
+        const SizedBox(width: AppDimensions.marginSmall),
+        Expanded(
+          child: StatsCard(
+            title: context.l10n.dashboard_monthRevenue,
+            value: '${month.toStringAsFixed(0)} ${context.l10n.currency_mad}',
+            icon: HugeIcons.strokeRoundedChart,
+            iconColor: AppColors.info,
+            onTap: () => ref.read(bottomNavIndexProvider.notifier).state = 2,
+          ),
         ),
       ],
     );

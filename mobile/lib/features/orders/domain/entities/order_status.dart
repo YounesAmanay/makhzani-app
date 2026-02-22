@@ -7,11 +7,13 @@ class OrderStatus {
   final bool pdfGenerated;
   final bool sent;
   final String? sentVia;
+  final bool received;
 
   const OrderStatus({
     required this.pdfGenerated,
     required this.sent,
     this.sentVia,
+    this.received = false,
   });
 
   // Computed properties
@@ -26,8 +28,9 @@ class OrderStatus {
           runtimeType == other.runtimeType &&
           pdfGenerated == other.pdfGenerated &&
           sent == other.sent &&
-          sentVia == other.sentVia;
+          sentVia == other.sentVia &&
+          received == other.received;
 
   @override
-  int get hashCode => Object.hash(pdfGenerated, sent, sentVia);
+  int get hashCode => Object.hash(pdfGenerated, sent, sentVia, received);
 }

@@ -24,8 +24,10 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../shared/widgets/app_confirm_dialog.dart';
 import '../../../../shared/widgets/app_loading.dart';
+import '../../../../shared/widgets/category_picker_sheet.dart';
 import '../../domain/entities/barcode_result.dart';
 import '../../domain/entities/product.dart';
+import '../providers/categories_provider.dart';
 import '../providers/product_form_provider.dart';
 import '../providers/products_provider.dart';
 import 'barcode_scanner_screen.dart';
@@ -55,6 +57,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   final _stockFocusNode = FocusNode();
 
   String _selectedUnit = 'piece';
+  String? _selectedCategoryId;
   bool _isLoading = false;
   bool _isSubmitting = false;
   String? _errorMessage;
@@ -83,6 +86,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   @override
   void initState() {
     super.initState();
+    Future.microtask(() {
+      ref.read(categoriesProvider.notifier).loadCategories();
+    });
     if (widget.isEditing) _loadProduct();
   }
 
@@ -111,6 +117,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
           _barcodeController.text = product.barcode ?? '';
           _priceController.text = product.price?.toString() ?? '';
           _selectedUnit = product.unit;
+          _selectedCategoryId = product.categoryId;
           _isLoading = false;
         });
       }
@@ -227,6 +234,11 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     ),
+
+                    const SizedBox(height: AppDimensions.marginMedium),
+
+                    // ── Category ───────────────────────────────────────────
+                    _buildCategoryPicker(),
 
                     const SizedBox(height: AppDimensions.marginLarge),
 
@@ -751,6 +763,106 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     }
   }
 
+  Widget _buildCategoryPicker() {
+    final categories = ref.watch(categoriesProvider).categories;
+
+    // Resolve display label for selected category
+    String selectedLabel = context.l10n.categories_selectHint;
+    String? dotColor;
+    if (_selectedCategoryId != null) {
+      final cat = categories.where((c) => c.id == _selectedCategoryId).firstOrNull;
+      if (cat != null) {
+        selectedLabel = localizedCategoryName(context, cat);
+        dotColor = cat.color;
+      }
+    }
+
+    Color? parsedDot;
+    if (dotColor != null) {
+      try {
+        parsedDot = Color(int.parse(dotColor.replaceFirst('#', '0xFF')));
+      } catch (_) {}
+    }
+
+    return InkWell(
+      onTap: _openCategoryPicker,
+      borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: context.l10n.products_category,
+          suffixIcon: const Icon(Icons.arrow_drop_down),
+        ),
+        child: Row(
+          children: [
+            if (parsedDot != null) ...[
+              Container(
+                width: 12,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: parsedDot,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: AppDimensions.marginSmall),
+            ],
+            Expanded(
+              child: Text(
+                selectedLabel,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: _selectedCategoryId == null
+                      ? AppColors.textSecondary
+                      : null,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openCategoryPicker() async {
+    final result = await CategoryPickerSheet.show(
+      context: context,
+      categories: ref.read(categoriesProvider).categories,
+      selectedId: _selectedCategoryId,
+      onSeedDefaults: _onSeedDefaultCategories,
+    );
+
+    if (!mounted) return;
+
+    if (result == null) return; // back-dismissed, keep current selection
+    if (result == CategoryPickerSheet.kNone) {
+      setState(() => _selectedCategoryId = null); // "None" explicitly chosen
+    } else {
+      setState(() => _selectedCategoryId = result); // category chosen
+    }
+  }
+
+  Future<void> _onSeedDefaultCategories() async {
+    final result = await ref.read(categoriesProvider.notifier).seedDefaults();
+
+    if (!mounted) return;
+
+    if (result == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(context.l10n.categories_loadDefaultsError),
+        backgroundColor: AppColors.error,
+      ));
+      return;
+    }
+
+    final msg = result.created > 0
+        ? context.l10n.categories_loadDefaultsSuccess(result.created)
+        : context.l10n.categories_loadDefaultsAlready;
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg),
+      backgroundColor: AppColors.success,
+    ));
+  }
+
   Widget _buildSectionHeader(String title) {
     return Row(
       children: [
@@ -805,6 +917,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 ? (barcode.isEmpty ? null : barcode)
                 : null,
             price: price != _product?.price ? price : null,
+            categoryId: _selectedCategoryId != _product?.categoryId
+                ? _selectedCategoryId
+                : null,
           );
     } else {
       success = await ref.read(productFormProvider.notifier).createProduct(
@@ -814,6 +929,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             unit: _selectedUnit,
             barcode: barcode.isEmpty ? null : barcode,
             price: price,
+            categoryId: _selectedCategoryId,
           );
     }
 

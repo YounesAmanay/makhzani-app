@@ -6,7 +6,11 @@
       "Bash(npm run test-models:*)",
       "Bash(git add:*)",
       "Bash(flutter gen-l10n:*)",
-      "Bash(flutter analyze:*)"
+      "Bash(flutter analyze:*)",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(node -c:*)",
+      "Bash(cd \"C:\\\\Users\\\\PC\\\\Desktop\\\\Projects\\\\makhzani-app\\\\backend\" && node -e \"require\\('firebase-admin'\\); console.log\\('firebase-admin OK'\\)\" 2>&1)"
     ],
     "deny": [],
     "ask": []

@@ -26,4 +26,7 @@ abstract class OrdersRepository {
   Future<String> generatePdf(String id);
 
   Future<void> markSent(String id, String sentVia);
+
+  /// Marks the order as received and auto-increments product stock.
+  Future<void> receiveOrder(String id);
 }

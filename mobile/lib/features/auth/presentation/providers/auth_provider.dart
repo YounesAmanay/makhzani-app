@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../../core/network/api_client.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../data/datasources/auth_local_datasource.dart';
 import '../../data/datasources/auth_remote_datasource.dart';
 import '../../data/repositories/auth_repository_impl.dart';
@@ -45,8 +46,9 @@ class AuthState {
 /// Auth Notifier - manages authentication logic
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _authRepository;
+  final ApiClient _apiClient;
 
-  AuthNotifier(this._authRepository) : super(const AuthState());
+  AuthNotifier(this._authRepository, this._apiClient) : super(const AuthState());
 
   /// Check if user is already logged in (on app start)
   Future<void> checkAuthStatus() async {
@@ -65,6 +67,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         // Profile fetch failed (e.g. offline) — still mark authenticated
         state = state.copyWith(status: AuthStatus.authenticated);
       }
+      // Register FCM token non-blocking (failure is non-fatal)
+      NotificationService.registerToken(_apiClient)
+          .catchError((_) {});
     } else {
       state = state.copyWith(status: AuthStatus.unauthenticated);
     }
@@ -104,6 +109,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         status: AuthStatus.authenticated,
         merchant: merchant,
       );
+      // Register FCM token non-blocking (failure is non-fatal)
+      NotificationService.registerToken(_apiClient)
+          .catchError((_) {});
       return true;
     } on DioException catch (e) {
       final message = _extractErrorMessage(e);
@@ -264,5 +272,8 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 
 // Auth state notifier
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier(ref.read(authRepositoryProvider));
+  return AuthNotifier(
+    ref.read(authRepositoryProvider),
+    ref.read(apiClientProvider),
+  );
 });

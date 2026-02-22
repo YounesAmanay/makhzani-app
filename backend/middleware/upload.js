@@ -52,4 +52,31 @@ const uploadProductImages = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB per image
 });
 
-module.exports = { uploadAvatar, uploadProductImages };
+// CSV file storage (temp directory, will be read and deleted)
+const csvStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(__dirname, '../uploads/temp');
+    fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${uuidv4()}.csv`);
+  }
+});
+
+const csvFilter = (req, file, cb) => {
+  const ext = path.extname(file.originalname).toLowerCase();
+  if (ext === '.csv') {
+    cb(null, true);
+  } else {
+    cb(new Error('Only CSV files are allowed (.csv)'), false);
+  }
+};
+
+const uploadCsv = multer({
+  storage: csvStorage,
+  fileFilter: csvFilter,
+  limits: { fileSize: 2 * 1024 * 1024 } // 2MB
+});
+
+module.exports = { uploadAvatar, uploadProductImages, uploadCsv };

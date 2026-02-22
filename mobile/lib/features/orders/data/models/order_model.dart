@@ -16,6 +16,7 @@ class OrderModel {
   final bool pdfGenerated;
   final bool sent;
   final String? sentVia;
+  final bool received;
   final String? pdfUrl;
   final DateTime createdAt;
   final DateTime? pdfGeneratedAt;
@@ -32,6 +33,7 @@ class OrderModel {
     required this.pdfGenerated,
     required this.sent,
     this.sentVia,
+    this.received = false,
     this.pdfUrl,
     required this.createdAt,
     this.pdfGeneratedAt,
@@ -62,6 +64,7 @@ class OrderModel {
       pdfGenerated: status?['pdf_generated'] as bool? ?? false,
       sent: status?['sent'] as bool? ?? false,
       sentVia: status?['sent_via'] as String?,
+      received: status?['received'] as bool? ?? false,
       pdfUrl: json['pdf_url'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),
       pdfGeneratedAt: json['pdf_generated_at'] != null
@@ -86,6 +89,7 @@ class OrderModel {
         pdfGenerated: pdfGenerated,
         sent: sent,
         sentVia: sentVia,
+        received: received,
       ),
       pdfUrl: pdfUrl,
       createdAt: createdAt,

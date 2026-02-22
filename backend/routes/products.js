@@ -4,6 +4,8 @@ const router = express.Router();
 const { body, query, validationResult } = require('express-validator');
 const { authenticateToken, checkSubscription } = require('../middleware/auth');
 const db = require('../models');
+const { logStockTransaction } = require('../utils/stockLogger');
+const { notifyLowStock } = require('../utils/notificationService');
 
 // Validation middleware
 const validateProduct = [
@@ -30,7 +32,11 @@ const validateProduct = [
   body('price')
     .optional()
     .isDecimal({ decimal_digits: '0,2' })
-    .withMessage('Price must be a valid decimal with max 2 decimal places')
+    .withMessage('Price must be a valid decimal with max 2 decimal places'),
+  body('category_id')
+    .optional({ values: 'null' })
+    .isUUID()
+    .withMessage('Invalid category ID')
 ];
 
 const validateProductUpdate = [
@@ -57,7 +63,11 @@ const validateProductUpdate = [
   body('price')
     .optional()
     .isDecimal({ decimal_digits: '0,2' })
-    .withMessage('Price must be a valid decimal')
+    .withMessage('Price must be a valid decimal'),
+  body('category_id')
+    .optional({ values: 'null' })
+    .isUUID()
+    .withMessage('Invalid category ID')
 ];
 
 const validateQuery = [
@@ -76,7 +86,11 @@ const validateQuery = [
   query('low_stock')
     .optional()
     .isBoolean()
-    .withMessage('Low stock filter must be boolean')
+    .withMessage('Low stock filter must be boolean'),
+  query('category_id')
+    .optional()
+    .isUUID()
+    .withMessage('Invalid category ID')
 ];
 
 const handleValidationErrors = (req, res, next) => {
@@ -97,7 +111,7 @@ const handleValidationErrors = (req, res, next) => {
  */
 router.get('/', authenticateToken, validateQuery, handleValidationErrors, async (req, res) => {
   try {
-    const { page = 1, limit = 20, search, low_stock } = req.query;
+    const { page = 1, limit = 20, search, low_stock, category_id } = req.query;
     const offset = (page - 1) * limit;
 
     // Build where conditions
@@ -121,15 +135,26 @@ router.get('/', authenticateToken, validateQuery, handleValidationErrors, async 
       };
     }
 
+    // Add category filter
+    if (category_id) {
+      whereConditions.category_id = category_id;
+    }
+
     const { count, rows: products } = await db.Product.findAndCountAll({
       where: whereConditions,
       order: [['name', 'ASC']],
       limit: parseInt(limit),
       offset: parseInt(offset),
       attributes: [
-        'id', 'name', 'current_stock', 'reorder_threshold', 
-        'unit', 'barcode', 'price', 'created_at', 'updated_at'
-      ]
+        'id', 'name', 'current_stock', 'reorder_threshold',
+        'unit', 'barcode', 'price', 'category_id', 'created_at', 'updated_at'
+      ],
+      include: [{
+        model: db.Category,
+        as: 'category',
+        attributes: ['id', 'name', 'color', 'icon'],
+        required: false,
+      }]
     });
 
     // Calculate pagination info
@@ -172,7 +197,7 @@ router.get('/', authenticateToken, validateQuery, handleValidationErrors, async 
  */
 router.post('/', authenticateToken, checkSubscription, validateProduct, handleValidationErrors, async (req, res) => {
   try {
-    const { name, current_stock = 0, reorder_threshold = 5, unit = 'piece', barcode, price } = req.body;
+    const { name, current_stock = 0, reorder_threshold = 5, unit = 'piece', barcode, price, category_id } = req.body;
 
     // Check for duplicate product name for this merchant
     const existingProduct = await db.Product.findOne({
@@ -217,7 +242,8 @@ router.post('/', authenticateToken, checkSubscription, validateProduct, handleVa
       reorder_threshold,
       unit,
       barcode: barcode?.trim() || null,
-      price: price || null
+      price: price || null,
+      category_id: category_id || null,
     });
 
     console.log(`📦 New product created: ${product.name} (${product.id})`);
@@ -234,6 +260,7 @@ router.post('/', authenticateToken, checkSubscription, validateProduct, handleVa
           unit: product.unit,
           barcode: product.barcode,
           price: product.price,
+          category_id: product.category_id,
           needs_reorder: product.current_stock <= product.reorder_threshold,
           created_at: product.created_at
         }
@@ -251,6 +278,176 @@ router.post('/', authenticateToken, checkSubscription, validateProduct, handleVa
 });
 
 /**
+ * GET /api/products/export-csv
+ * Export all active products as a CSV file
+ * MUST be defined before /:id to avoid route conflict
+ */
+router.get('/export-csv', authenticateToken, async (req, res) => {
+  try {
+    const products = await db.Product.findAll({
+      where: { merchant_id: req.merchantId, is_active: true },
+      order: [['name', 'ASC']],
+      include: [{
+        model: db.Category,
+        as: 'category',
+        attributes: ['name'],
+        required: false,
+      }],
+    });
+
+    const headers = ['name', 'barcode', 'current_stock', 'reorder_threshold', 'unit', 'price', 'category'];
+
+    const escapeCell = (val) => {
+      const str = val == null ? '' : String(val);
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    const rows = products.map(p => [
+      escapeCell(p.name),
+      escapeCell(p.barcode),
+      escapeCell(p.current_stock),
+      escapeCell(p.reorder_threshold),
+      escapeCell(p.unit),
+      escapeCell(p.price),
+      escapeCell(p.category?.name),
+    ].join(','));
+
+    const csv = [headers.join(','), ...rows].join('\n');
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="products.csv"');
+    res.send(csv);
+  } catch (error) {
+    console.error('Error exporting CSV:', error);
+    res.status(500).json({ success: false, message: 'Failed to export products' });
+  }
+});
+
+/**
+ * GET /api/products/csv-template
+ * Download blank CSV template for import
+ */
+router.get('/csv-template', authenticateToken, (req, res) => {
+  const headers = 'name,barcode,current_stock,reorder_threshold,unit,price,category';
+  const exampleRow = 'Example Product,1234567890,100,10,piece,9.99,Beverages';
+  const csv = [headers, exampleRow].join('\n');
+
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', 'attachment; filename="products_template.csv"');
+  res.send(csv);
+});
+
+/**
+ * POST /api/products/import-csv
+ * Import products from a CSV file (body: { csv_data: string })
+ */
+router.post('/import-csv', authenticateToken, checkSubscription, async (req, res) => {
+  try {
+    const { csv_data } = req.body;
+    if (!csv_data || typeof csv_data !== 'string') {
+      return res.status(400).json({ success: false, message: 'csv_data field is required' });
+    }
+
+    const lines = csv_data.trim().split('\n').filter(l => l.trim());
+    if (lines.length < 2) {
+      return res.status(400).json({ success: false, message: 'CSV must have a header row and at least one data row' });
+    }
+
+    const parseRow = (line) => {
+      const result = [];
+      let inQuotes = false;
+      let cell = '';
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+          if (inQuotes && line[i + 1] === '"') { cell += '"'; i++; }
+          else { inQuotes = !inQuotes; }
+        } else if (ch === ',' && !inQuotes) {
+          result.push(cell.trim());
+          cell = '';
+        } else {
+          cell += ch;
+        }
+      }
+      result.push(cell.trim());
+      return result;
+    };
+
+    const headerRow = parseRow(lines[0].toLowerCase());
+    const col = (name) => headerRow.indexOf(name);
+
+    const validUnits = ['piece', 'kg', 'liter', 'box', 'carton', 'bottle'];
+    const results = { created: 0, skipped: 0, errors: [] };
+
+    for (let i = 1; i < lines.length; i++) {
+      const cells = parseRow(lines[i]);
+      const name = cells[col('name')]?.trim();
+      if (!name || name.length < 2) {
+        results.errors.push({ row: i + 1, error: 'Name is required (min 2 characters)' });
+        results.skipped++;
+        continue;
+      }
+
+      const unit = cells[col('unit')]?.trim() || 'piece';
+      if (!validUnits.includes(unit)) {
+        results.errors.push({ row: i + 1, error: `Invalid unit "${unit}". Valid: ${validUnits.join(', ')}` });
+        results.skipped++;
+        continue;
+      }
+
+      const currentStock = parseInt(cells[col('current_stock')]) || 0;
+      const reorderThreshold = parseInt(cells[col('reorder_threshold')]) || 5;
+      const barcode = cells[col('barcode')]?.trim() || null;
+      const priceRaw = cells[col('price')]?.trim();
+      const price = priceRaw ? parseFloat(priceRaw) : null;
+      const categoryName = cells[col('category')]?.trim() || null;
+
+      const existing = await db.Product.findOne({
+        where: { merchant_id: req.merchantId, name, is_active: true }
+      });
+      if (existing) {
+        results.errors.push({ row: i + 1, error: `Product "${name}" already exists` });
+        results.skipped++;
+        continue;
+      }
+
+      let categoryId = null;
+      if (categoryName) {
+        const cat = await db.Category.findOne({
+          where: { merchant_id: req.merchantId, name: categoryName, is_active: true }
+        });
+        if (cat) categoryId = cat.id;
+      }
+
+      await db.Product.create({
+        merchant_id: req.merchantId,
+        name,
+        current_stock: currentStock,
+        reorder_threshold: reorderThreshold,
+        unit,
+        barcode: barcode && barcode.length >= 8 ? barcode : null,
+        price: price && !isNaN(price) ? price : null,
+        category_id: categoryId,
+      });
+
+      results.created++;
+    }
+
+    res.json({
+      success: true,
+      message: `Import complete: ${results.created} products created, ${results.skipped} skipped`,
+      data: results,
+    });
+  } catch (error) {
+    console.error('Error importing CSV:', error);
+    res.status(500).json({ success: false, message: 'Failed to import products' });
+  }
+});
+
+/**
  * GET /api/products/:id
  * Get specific product details
  */
@@ -262,12 +459,20 @@ router.get('/:id', authenticateToken, async (req, res) => {
         merchant_id: req.merchantId,
         is_active: true
       },
-      include: [{
-        model: db.ProductImage,
-        as: 'images',
-        attributes: ['id', 'url', 'sort_order'],
-        order: [['sort_order', 'ASC']]
-      }]
+      include: [
+        {
+          model: db.ProductImage,
+          as: 'images',
+          attributes: ['id', 'url', 'sort_order'],
+          order: [['sort_order', 'ASC']]
+        },
+        {
+          model: db.Category,
+          as: 'category',
+          attributes: ['id', 'name', 'color', 'icon'],
+          required: false,
+        }
+      ]
     });
 
     if (!product) {
@@ -319,7 +524,7 @@ router.put('/:id', authenticateToken, checkSubscription, validateProductUpdate, 
       });
     }
 
-    const { name, current_stock, reorder_threshold, unit, barcode, price } = req.body;
+    const { name, current_stock, reorder_threshold, unit, barcode, price, category_id } = req.body;
 
     // Check for duplicate name if name is being updated
     if (name && name !== product.name) {
@@ -481,7 +686,31 @@ router.post('/:id/adjust-stock', authenticateToken, checkSubscription, async (re
     const oldStock = product.current_stock;
     await product.update({ current_stock: newStock });
 
+    // Log the stock transaction for audit history
+    await logStockTransaction({
+      productId: product.id,
+      merchantId: req.merchantId,
+      type: 'manual_adjustment',
+      oldQty: oldStock,
+      newQty: newStock,
+      reason: reason || null,
+    }).catch(err => console.error('Failed to log stock transaction:', err));
+
     console.log(`📊 Stock adjusted: ${product.name} ${oldStock} → ${newStock} (${adjustment > 0 ? '+' : ''}${adjustment})`);
+
+    // Fire low-stock notification if stock crossed below threshold (non-blocking)
+    if (newStock <= product.reorder_threshold && oldStock > product.reorder_threshold) {
+      const merchant = await db.Merchant.findByPk(req.merchantId, { attributes: ['fcm_token'] });
+      if (merchant?.fcm_token) {
+        notifyLowStock({
+          fcmToken: merchant.fcm_token,
+          productName: product.name,
+          currentStock: newStock,
+          unit: product.unit || 'unité',
+          productId: product.id,
+        }).catch(err => console.error('Failed to send low-stock notification:', err));
+      }
+    }
 
     res.json({
       success: true,
@@ -506,6 +735,54 @@ router.post('/:id/adjust-stock', authenticateToken, checkSubscription, async (re
       message: 'Failed to adjust stock',
       error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
+  }
+});
+
+/**
+ * GET /api/products/:id/stock-history
+ * Paginated stock transaction history for a product
+ */
+router.get('/:id/stock-history', authenticateToken, async (req, res) => {
+  try {
+    const product = await db.Product.findOne({
+      where: { id: req.params.id, merchant_id: req.merchantId, is_active: true }
+    });
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = Math.min(parseInt(req.query.limit) || 20, 100);
+    const offset = (page - 1) * limit;
+    const where = { product_id: product.id };
+    if (req.query.type) where.type = req.query.type;
+
+    const { count, rows } = await db.StockTransaction.findAndCountAll({
+      where,
+      order: [['created_at', 'DESC']],
+      limit,
+      offset,
+    });
+
+    const totalPages = Math.ceil(count / limit);
+
+    res.json({
+      success: true,
+      data: {
+        transactions: rows.map(t => t.toJSON()),
+        pagination: {
+          current_page: page,
+          total_pages: totalPages,
+          total_items: count,
+          per_page: limit,
+          has_next_page: page < totalPages,
+          has_prev_page: page > 1,
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching stock history:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch stock history' });
   }
 });
 

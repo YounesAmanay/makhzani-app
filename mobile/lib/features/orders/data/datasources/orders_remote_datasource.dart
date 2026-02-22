@@ -24,6 +24,9 @@ abstract class OrdersRemoteDataSource {
   Future<String> generatePdf(String id);
 
   Future<void> markSent(String id, String sentVia);
+
+  /// Marks the order as received and auto-updates stock for all items.
+  Future<void> receiveOrder(String id);
 }
 
 class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
@@ -95,5 +98,10 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
       ApiEndpoints.markSent(id),
       data: {'sent_via': sentVia},
     );
+  }
+
+  @override
+  Future<void> receiveOrder(String id) async {
+    await _apiClient.post(ApiEndpoints.receiveOrder(id));
   }
 }

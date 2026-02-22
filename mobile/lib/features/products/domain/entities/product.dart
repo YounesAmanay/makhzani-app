@@ -1,6 +1,8 @@
 /// Product Entity
 library;
 
+import 'category.dart';
+
 class ProductImage {
   final String id;
   final String imageUrl;
@@ -26,6 +28,8 @@ class Product {
   final DateTime createdAt;
   final DateTime updatedAt;
   final List<ProductImage> images;
+  final String? categoryId;
+  final Category? category;
 
   const Product({
     required this.id,
@@ -40,6 +44,8 @@ class Product {
     required this.createdAt,
     required this.updatedAt,
     this.images = const [],
+    this.categoryId,
+    this.category,
   });
 
   bool get isLowStock => needsReorder || currentStock <= reorderThreshold;

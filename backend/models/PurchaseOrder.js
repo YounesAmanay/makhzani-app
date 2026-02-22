@@ -64,6 +64,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM('whatsapp', 'email', 'phone', 'other'),
       allowNull: true
     },
+    received_at: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
     is_active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true

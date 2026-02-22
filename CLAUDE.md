@@ -4,6 +4,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
+## Engineer Rules & Scoring
+
+**All engineers must read `ENGINEER_RULES.md` before writing any code.**
+It contains rules born from real violations, each with a point penalty.
+Every feature is scored out of 100. Score below 70 = feature rejected, rewrite required.
+
+File: `ENGINEER_RULES.md` (same directory as this file)
+
+---
+
+## Absolute Rules (Non-Negotiable)
+
+### No Temporary Fixes
+**NEVER patch a symptom on one side of the stack to work around a bug on the other side.**
+Always find the root cause and fix it at the source.
+
+Examples of forbidden temporary fixes:
+- Frontend model reading both `created_at` and `createdAt` because the backend is inconsistent → Fix the backend to always return `created_at`
+- Catching an exception silently instead of fixing what throws it
+- Adding a null fallback for a field that should never be null
+- Using `dynamic` or `as` casts to bypass type mismatches instead of fixing the contract
+
+**Rule:** If backend and frontend disagree → fix the backend. The frontend model is the contract; the backend must match it exactly.
+
+---
+
 ## Operating Modes
 
 This project uses **two distinct modes** for development:
@@ -183,6 +209,39 @@ Common mismatches to check:
 - `token` vs `accessToken`
 - Nullable vs required fields
 - Nested object structure (`data.merchant` vs `data`)
+
+---
+
+## Database Migration Rules
+
+**CRITICAL:** Sequelize `sync()` in development mode only **creates missing tables**. It does NOT add missing columns to existing tables.
+
+### When adding a new column to an existing model:
+After updating the model file, you MUST manually apply the migration:
+
+```javascript
+// Run once to add the column to the live DB
+const qi = db.sequelize.getQueryInterface();
+await qi.addColumn('table_name', 'column_name', {
+  type: db.Sequelize.DataTypes.UUID,  // or appropriate type
+  allowNull: true,
+  // ...other options
+});
+```
+
+**Or** use `sync({ alter: true })` temporarily (dangerous in production — dev only):
+```bash
+node -e "require('dotenv').config(); const db = require('./models'); db.sequelize.sync({ alter: true }).then(() => { console.log('Done'); process.exit(0); });"
+```
+
+### Rule: After any model change that adds/removes/modifies a column:
+1. Run the `addColumn` / `removeColumn` / `changeColumn` migration script, OR
+2. Drop and recreate the table in dev (only if no important data), OR
+3. Run `sequelize.sync({ alter: true })` once in dev
+
+**Failure to do this = 500 errors on affected endpoints.**
+
+Example: Adding `category_id` to `Product` model caused 500s on `GET /products` because the column existed in the model but not in the MySQL table.
 
 ---
 

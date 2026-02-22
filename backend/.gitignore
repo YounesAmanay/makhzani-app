@@ -74,3 +74,6 @@ build/
 uploads/products/
 uploads/pdfs/
 uploads/avatars/
+
+# Firebase private key — never commit
+config/firebase-service-account.json

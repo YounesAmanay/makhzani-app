@@ -15,6 +15,7 @@ import '../../../../core/theme/app_dimensions.dart';
 import '../../../../core/theme/theme_provider.dart';
 import '../../../../shared/widgets/app_confirm_dialog.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../notifications/presentation/providers/notifications_provider.dart';
 
 class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const DashboardAppBar({super.key});
@@ -65,6 +66,8 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
         ],
       ),
       actions: [
+        // Notification bell with unread badge
+        _NotificationBell(),
         // Profile avatar - opens bottom sheet
         GestureDetector(
           onTap: () => _showProfileSheet(context, ref),
@@ -116,6 +119,54 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
       builder: (sheetContext) => _ProfileSheet(
         ref: ref,
         parentContext: context,
+      ),
+    );
+  }
+}
+
+class _NotificationBell extends ConsumerWidget {
+  const _NotificationBell();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final unreadCount = ref.watch(unreadNotificationsCountProvider);
+
+    return IconButton(
+      tooltip: context.l10n.notifications_title,
+      onPressed: () => Navigator.of(context).pushNamed('/notifications'),
+      icon: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          HugeIcon(
+            icon: unreadCount > 0
+                ? HugeIcons.strokeRoundedNotification01
+                : HugeIcons.strokeRoundedNotification02,
+            size: AppDimensions.iconMedium,
+            color: Theme.of(context).iconTheme.color ?? AppColors.textSecondary,
+          ),
+          if (unreadCount > 0)
+            Positioned(
+              top: -4,
+              right: -4,
+              child: Container(
+                padding: const EdgeInsets.all(2),
+                decoration: const BoxDecoration(
+                  color: AppColors.error,
+                  shape: BoxShape.circle,
+                ),
+                constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                child: Text(
+                  unreadCount > 99 ? '99+' : '$unreadCount',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

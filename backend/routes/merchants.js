@@ -301,4 +301,28 @@ router.post(
   }
 );
 
+/**
+ * POST /api/merchants/fcm-token
+ * Register or update the merchant's FCM device token for push notifications.
+ */
+router.post('/fcm-token', authenticateToken, async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token || typeof token !== 'string' || token.trim().length === 0) {
+      return res.status(400).json({ success: false, message: 'FCM token is required' });
+    }
+
+    await db.Merchant.update(
+      { fcm_token: token.trim() },
+      { where: { id: req.merchantId } }
+    );
+
+    res.json({ success: true, message: 'FCM token registered' });
+  } catch (error) {
+    console.error('Error registering FCM token:', error);
+    res.status(500).json({ success: false, message: 'Failed to register FCM token' });
+  }
+});
+
 module.exports = router;

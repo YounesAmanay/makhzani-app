@@ -22,6 +22,7 @@ abstract class ProductsRepository {
     required String unit,
     String? barcode,
     double? price,
+    String? categoryId,
   });
 
   Future<Product> updateProduct({
@@ -32,6 +33,7 @@ abstract class ProductsRepository {
     String? unit,
     String? barcode,
     double? price,
+    String? categoryId,
   });
 
   Future<void> deleteProduct(String id);

@@ -14,8 +14,10 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
 import '../../../../shared/widgets/app_confirm_dialog.dart';
 import '../../domain/entities/product.dart';
+import '../../domain/entities/stock_transaction.dart';
 import '../providers/product_form_provider.dart';
 import '../providers/products_provider.dart';
+import '../providers/stock_history_provider.dart';
 import '../widgets/stock_adjustment_sheet.dart';
 
 class ProductDetailScreen extends ConsumerStatefulWidget {
@@ -41,6 +43,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   void initState() {
     super.initState();
     _loadProduct();
+    Future.microtask(() {
+      ref.read(stockHistoryProvider(widget.productId).notifier).loadHistory();
+    });
   }
 
   Future<void> _loadProduct() async {
@@ -230,15 +235,176 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   _buildDetailRow(
                     context.l10n.products_unit,
                     product.unit,
-                    isLast: true,
+                    isLast: product.category == null,
                   ),
+                  if (product.category != null)
+                    _buildDetailRow(
+                      context.l10n.products_category,
+                      product.category!.name,
+                      isLast: true,
+                    ),
                 ],
               ),
+            ),
+          ),
+
+          const SizedBox(height: AppDimensions.marginMedium),
+
+          // Stock History Card
+          _buildStockHistoryCard(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStockHistoryCard() {
+    final theme = Theme.of(context);
+    final historyState = ref.watch(stockHistoryProvider(widget.productId));
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppDimensions.paddingMedium),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              context.l10n.stockHistory,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: AppDimensions.marginMedium),
+            if (historyState.status == StockHistoryStatus.loading)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: AppDimensions.paddingMedium,
+                  ),
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            else if (historyState.status == StockHistoryStatus.error)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppDimensions.paddingSmall,
+                ),
+                child: Text(
+                  context.l10n.error_generic,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppColors.error,
+                  ),
+                ),
+              )
+            else if (historyState.transactions.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppDimensions.paddingMedium,
+                ),
+                child: Center(
+                  child: Text(
+                    context.l10n.stockHistory_empty,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+              )
+            else
+              Column(
+                children: historyState.transactions
+                    .take(5)
+                    .map(_buildTransactionTile)
+                    .toList(),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTransactionTile(StockTransaction tx) {
+    final theme = Theme.of(context);
+    final isIncrease = tx.isIncrease;
+    final color = isIncrease ? AppColors.success : AppColors.error;
+    final icon = isIncrease ? Icons.arrow_upward : Icons.arrow_downward;
+    final changeText =
+        isIncrease ? '+${tx.changeAmount}' : '${tx.changeAmount}';
+
+    final date = tx.createdAt.toLocal();
+    final dateLabel =
+        '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppDimensions.paddingXSmall),
+      child: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: isIncrease
+                  ? AppColors.successBackground
+                  : AppColors.errorBackground,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: AppDimensions.iconSmall),
+          ),
+          const SizedBox(width: AppDimensions.marginSmall),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _typeLabel(tx.type),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                if (tx.reason != null && tx.reason!.isNotEmpty)
+                  Text(
+                    tx.reason!,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                Text(
+                  dateLabel,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: AppColors.textTertiary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Text(
+            changeText,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],
       ),
     );
+  }
+
+  String _typeLabel(String type) {
+    switch (type) {
+      case 'manual_adjustment':
+        return context.l10n.stockHistory_manualAdjustment;
+      case 'order_received':
+        return context.l10n.stockHistory_orderReceived;
+      case 'wastage':
+        return context.l10n.stockHistory_wastage;
+      case 'initial_stock':
+        return context.l10n.stockHistory_initialStock;
+      case 'correction':
+        return context.l10n.stockHistory_correction;
+      default:
+        return type;
+    }
   }
 
   Widget _buildImagesCard(Product product) {
@@ -494,6 +660,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         );
         _loadProduct();
         ref.read(productsProvider.notifier).refresh();
+        ref.read(stockHistoryProvider(widget.productId).notifier).loadHistory();
       },
     );
   }

@@ -65,4 +65,9 @@ class OrdersRepositoryImpl implements OrdersRepository {
   Future<void> markSent(String id, String sentVia) async {
     await _remoteDataSource.markSent(id, sentVia);
   }
+
+  @override
+  Future<void> receiveOrder(String id) async {
+    await _remoteDataSource.receiveOrder(id);
+  }
 }

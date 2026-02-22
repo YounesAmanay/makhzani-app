@@ -5,6 +5,8 @@ const { body, query, validationResult } = require('express-validator');
 const { authenticateToken, checkSubscription } = require('../middleware/auth');
 const db = require('../models');
 const { generateOrderPDF } = require('../utils/pdfGenerator');
+const { logStockTransaction } = require('../utils/stockLogger');
+const { notifyLowStock } = require('../utils/notificationService');
 const fs = require('fs');
 const path = require('path');
 
@@ -171,12 +173,14 @@ router.get('/', authenticateToken, validateQuery, handleValidationErrors, async 
           status: {
             pdf_generated: !!order.pdf_generated_at,
             sent: !!order.sent_at,
-            sent_via: order.sent_via
+            sent_via: order.sent_via,
+            received: !!order.received_at
           },
           pdf_url: order.pdf_url,
           created_at: order.created_at,
           pdf_generated_at: order.pdf_generated_at,
-          sent_at: order.sent_at
+          sent_at: order.sent_at,
+          received_at: order.received_at
         })),
         pagination: {
           current_page: parseInt(page),
@@ -410,13 +414,15 @@ router.get('/:id', authenticateToken, async (req, res) => {
           status: {
             pdf_generated: !!order.pdf_generated_at,
             sent: !!order.sent_at,
-            sent_via: order.sent_via
+            sent_via: order.sent_via,
+            received: !!order.received_at
           },
           timestamps: {
             created_at: order.created_at,
             updated_at: order.updated_at,
             pdf_generated_at: order.pdf_generated_at,
-            sent_at: order.sent_at
+            sent_at: order.sent_at,
+            received_at: order.received_at
           }
         }
       }
@@ -617,6 +623,112 @@ router.get('/:id/download-pdf', authenticateToken, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to download PDF',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
+  }
+});
+
+/**
+ * POST /api/orders/:id/receive
+ * Mark order as received and auto-update stock for all items.
+ * Idempotent: re-receiving an already-received order is rejected.
+ */
+router.post('/:id/receive', authenticateToken, checkSubscription, async (req, res) => {
+  const transaction = await db.sequelize.transaction();
+
+  try {
+    const { id } = req.params;
+
+    const order = await db.PurchaseOrder.findOne({
+      where: { id, merchant_id: req.merchantId, is_active: true },
+      include: [
+        {
+          model: db.PurchaseOrderItem,
+          as: 'items',
+          include: [{ model: db.Product, as: 'product' }]
+        }
+      ],
+      transaction
+    });
+
+    if (!order) {
+      await transaction.rollback();
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    if (order.received_at) {
+      await transaction.rollback();
+      return res.status(409).json({
+        success: false,
+        message: 'Order has already been received'
+      });
+    }
+
+    // Update stock for each item and log the transaction
+    for (const item of order.items) {
+      const product = item.product;
+      if (!product) continue;
+
+      const oldStock = parseFloat(product.current_stock) || 0;
+      const received = parseFloat(item.quantity) || 0;
+      const newStock = oldStock + received;
+
+      await product.update({ current_stock: newStock }, { transaction });
+
+      await logStockTransaction({
+        productId: product.id,
+        merchantId: req.merchantId,
+        type: 'order_received',
+        oldQty: oldStock,
+        newQty: newStock,
+        reason: `Received from order ${order.order_number}`,
+        referenceId: order.id,
+        referenceType: 'purchase_order',
+        transaction,
+      });
+    }
+
+    // Mark order as received
+    await order.update({ received_at: new Date() }, { transaction });
+
+    await transaction.commit();
+
+    // After commit: check for any items that are still below threshold and notify (non-blocking)
+    const merchant = await db.Merchant.findByPk(req.merchantId, { attributes: ['fcm_token'] });
+    if (merchant?.fcm_token) {
+      for (const item of order.items) {
+        const product = item.product;
+        if (!product) continue;
+        const newStock = (parseFloat(product.current_stock) || 0) + (parseFloat(item.quantity) || 0);
+        if (newStock <= product.reorder_threshold) {
+          notifyLowStock({
+            fcmToken: merchant.fcm_token,
+            productName: product.name,
+            currentStock: newStock,
+            unit: product.unit || 'unité',
+            productId: product.id,
+          }).catch(err => console.error('Failed to send low-stock notification:', err));
+        }
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Order received and stock updated successfully',
+      data: {
+        order_id: order.id,
+        order_number: order.order_number,
+        received_at: order.received_at,
+        items_updated: order.items.length
+      }
+    });
+
+  } catch (error) {
+    await transaction.rollback();
+    console.error('Error receiving order:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to receive order',
       error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }

@@ -16,6 +16,7 @@ class OrderDetailState {
   final String? errorMessage;
   final bool isGeneratingPdf;
   final bool isMarkingSent;
+  final bool isReceiving;
 
   OrderDetailState({
     required this.status,
@@ -23,6 +24,7 @@ class OrderDetailState {
     this.errorMessage,
     this.isGeneratingPdf = false,
     this.isMarkingSent = false,
+    this.isReceiving = false,
   });
 
   OrderDetailState copyWith({
@@ -31,6 +33,7 @@ class OrderDetailState {
     String? errorMessage,
     bool? isGeneratingPdf,
     bool? isMarkingSent,
+    bool? isReceiving,
   }) {
     return OrderDetailState(
       status: status ?? this.status,
@@ -38,6 +41,7 @@ class OrderDetailState {
       errorMessage: errorMessage,
       isGeneratingPdf: isGeneratingPdf ?? this.isGeneratingPdf,
       isMarkingSent: isMarkingSent ?? this.isMarkingSent,
+      isReceiving: isReceiving ?? this.isReceiving,
     );
   }
 }
@@ -111,6 +115,32 @@ class OrderDetailNotifier extends StateNotifier<OrderDetailState> {
     } catch (e) {
       state = state.copyWith(
         isMarkingSent: false,
+        errorMessage: e.toString(),
+      );
+      return false;
+    }
+  }
+
+  /// Receives the order, auto-updating stock for all items.
+  /// Returns true on success. The order must not already be received.
+  Future<bool> receiveOrder() async {
+    if (state.order == null) return false;
+
+    state = state.copyWith(isReceiving: true);
+
+    try {
+      await _repository.receiveOrder(state.order!.id);
+      final updatedOrder = await _repository.getOrder(state.order!.id);
+      state = OrderDetailState(
+        status: OrderDetailStatus.loaded,
+        order: updatedOrder,
+      );
+      _ref.read(ordersProvider.notifier).refresh();
+      _ref.read(dashboardProvider.notifier).refresh();
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isReceiving: false,
         errorMessage: e.toString(),
       );
       return false;

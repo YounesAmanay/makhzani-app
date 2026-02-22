@@ -2,6 +2,7 @@
 library;
 
 import '../../domain/entities/product.dart';
+import 'category_model.dart';
 
 class ProductImageModel {
   final String id;
@@ -43,6 +44,8 @@ class ProductModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final List<ProductImageModel> images;
+  final String? categoryId;
+  final CategoryModel? category;
 
   const ProductModel({
     required this.id,
@@ -57,6 +60,8 @@ class ProductModel {
     required this.createdAt,
     required this.updatedAt,
     this.images = const [],
+    this.categoryId,
+    this.category,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -78,6 +83,10 @@ class ProductModel {
               ?.map((img) => ProductImageModel.fromJson(img))
               .toList() ??
           [],
+      categoryId: json['category_id'] as String?,
+      category: json['category'] != null
+          ? CategoryModel.fromJson(json['category'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -89,6 +98,7 @@ class ProductModel {
       'unit': unit,
       if (barcode != null) 'barcode': barcode,
       if (price != null) 'price': price,
+      if (categoryId != null) 'category_id': categoryId,
     };
   }
 
@@ -105,5 +115,7 @@ class ProductModel {
     createdAt: createdAt,
     updatedAt: updatedAt,
     images: images.map((img) => img.toEntity()).toList(),
+    categoryId: categoryId,
+    category: category?.toEntity(),
   );
 }

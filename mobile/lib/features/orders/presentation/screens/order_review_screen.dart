@@ -32,6 +32,7 @@ class OrderReviewScreen extends ConsumerStatefulWidget {
 class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
   bool _isSendingWhatsApp = false;
   bool _isGeneratingPdf = false;
+  bool _isReceiving = false;
 
   // ── WhatsApp ──────────────────────────────────────────────────────────────
 
@@ -39,19 +40,20 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
     final phone =
         order.supplier.phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
 
+    final l10n = context.l10n;
     final buffer = StringBuffer();
-    buffer.writeln('Bonjour ${order.supplier.name},');
+    buffer.writeln(l10n.orders_whatsappGreeting(order.supplier.name));
     buffer.writeln();
-    buffer.writeln('Voici ma commande:');
+    buffer.writeln(l10n.orders_whatsappIntro(order.orderNumber));
     for (final item in order.items) {
       final qtyStr = item.quantity
           .toStringAsFixed(item.quantity % 1 == 0 ? 0 : 1);
       buffer.writeln('- ${item.productName} x$qtyStr ${item.productUnit}');
     }
     buffer.writeln();
-    buffer.writeln('Total: ${order.totalValue.toStringAsFixed(2)} MAD');
+    buffer.writeln(l10n.orders_whatsappTotal(order.totalValue.toStringAsFixed(2)));
     buffer.writeln();
-    buffer.write('Merci');
+    buffer.write(l10n.orders_whatsappClosing);
 
     final encoded = Uri.encodeComponent(buffer.toString());
     final uri = Uri.parse('https://wa.me/$phone?text=$encoded');
@@ -140,15 +142,46 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
     }
   }
 
+  // ── Receive Order ─────────────────────────────────────────────────────────
+
+  Future<void> _onReceiveOrder(OrderDetail order) async {
+    final confirmed = await AppConfirmDialog.show(
+      context: context,
+      title: context.l10n.orders_receiveConfirmTitle,
+      message: context.l10n.orders_receiveConfirmMessage,
+      confirmLabel: context.l10n.orders_receiveOrder,
+    );
+    if (!confirmed || !mounted) return;
+
+    setState(() => _isReceiving = true);
+
+    final success = await ref
+        .read(orderDetailProvider(widget.orderId).notifier)
+        .receiveOrder();
+
+    if (!mounted) return;
+    setState(() => _isReceiving = false);
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        success
+            ? context.l10n.orders_receiveSuccess
+            : context.l10n.orders_receiveError,
+      ),
+      backgroundColor: success ? AppColors.success : AppColors.error,
+    ));
+  }
+
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   Widget _appCard({required Widget child}) {
+    final theme = Theme.of(context);
     return Material(
-      color: Colors.white,
+      color: theme.colorScheme.surface,
       borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
         ),
         child: child,
@@ -198,7 +231,7 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
   }
 
   Widget _buildContent(OrderDetail order) {
-    final isAnyLoading = _isSendingWhatsApp || _isGeneratingPdf;
+    final isAnyLoading = _isSendingWhatsApp || _isGeneratingPdf || _isReceiving;
 
     return Column(
       children: [
@@ -465,6 +498,8 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
   // ── Action bar ────────────────────────────────────────────────────────────
 
   Widget _buildActionBar(OrderDetail order, bool isAnyLoading) {
+    final isReceived = order.status.received;
+
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Column(
@@ -484,6 +519,29 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // Receive Order button — primary action when not yet received
+                  if (!isReceived)
+                    SizedBox(
+                      height: 48,
+                      child: ElevatedButton.icon(
+                        onPressed: isAnyLoading
+                            ? null
+                            : () => _onReceiveOrder(order),
+                        icon: _isReceiving
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2, color: Colors.white),
+                              )
+                            : const Icon(Icons.inventory_2_outlined),
+                        label: Text(context.l10n.orders_receiveOrder),
+                      ),
+                    ),
+                  if (!isReceived)
+                    const SizedBox(height: AppDimensions.marginSmall),
+
+                  // WhatsApp button
                   SizedBox(
                     height: 48,
                     child: ElevatedButton.icon(
@@ -509,6 +567,8 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
                     ),
                   ),
                   const SizedBox(height: AppDimensions.marginSmall),
+
+                  // PDF button
                   SizedBox(
                     height: 48,
                     child: OutlinedButton.icon(
@@ -543,6 +603,9 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
   }
 
   (String, Color) _statusData(OrderStatus status) {
+    if (status.received) {
+      return (context.l10n.orders_statusReceived, AppColors.primary);
+    }
     if (status.isSent) {
       return (context.l10n.orders_statusSent, AppColors.success);
     }

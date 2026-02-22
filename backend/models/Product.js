@@ -64,6 +64,14 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
+      category_id: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+          model: "categories",
+          key: "id",
+        },
+      },
       is_active: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
@@ -85,6 +93,11 @@ module.exports = (sequelize, DataTypes) => {
     Product.belongsTo(models.Merchant, {
       foreignKey: "merchant_id",
       as: "merchant",
+    });
+
+    Product.belongsTo(models.Category, {
+      foreignKey: "category_id",
+      as: "category",
     });
 
     Product.hasMany(models.PurchaseOrderItem, {

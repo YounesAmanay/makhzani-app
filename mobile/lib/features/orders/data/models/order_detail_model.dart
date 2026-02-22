@@ -17,10 +17,12 @@ class OrderDetailModel {
   final bool pdfGenerated;
   final bool sent;
   final String? sentVia;
+  final bool received;
   final String? pdfUrl;
   final DateTime createdAt;
   final DateTime? pdfGeneratedAt;
   final DateTime? sentAt;
+  final DateTime? receivedAt;
   final List<OrderItemModel> items;
 
   OrderDetailModel({
@@ -34,10 +36,12 @@ class OrderDetailModel {
     required this.pdfGenerated,
     required this.sent,
     this.sentVia,
+    this.received = false,
     this.pdfUrl,
     required this.createdAt,
     this.pdfGeneratedAt,
     this.sentAt,
+    this.receivedAt,
     required this.items,
   });
 
@@ -64,6 +68,7 @@ class OrderDetailModel {
       pdfGenerated: status?['pdf_generated'] as bool? ?? false,
       sent: status?['sent'] as bool? ?? false,
       sentVia: status?['sent_via'] as String?,
+      received: status?['received'] as bool? ?? false,
       pdfUrl: json['pdf_url'] as String?,
       createdAt: DateTime.parse(
         (timestamps?['created_at'] as String?) ??
@@ -76,6 +81,10 @@ class OrderDetailModel {
       sentAt: _parseDate(
         timestamps?['sent_at'] as String? ??
             json['sent_at'] as String?,
+      ),
+      receivedAt: _parseDate(
+        timestamps?['received_at'] as String? ??
+            json['received_at'] as String?,
       ),
       items: itemsJson
           .map((json) => OrderItemModel.fromJson(json as Map<String, dynamic>))
@@ -101,6 +110,7 @@ class OrderDetailModel {
         pdfGenerated: pdfGenerated,
         sent: sent,
         sentVia: sentVia,
+        received: received,
       ),
       pdfUrl: pdfUrl,
       createdAt: createdAt,

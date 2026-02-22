@@ -89,6 +89,28 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n.products),
+        actions: [
+          PopupMenuButton<String>(
+            tooltip: context.l10n.common_moreOptions,
+            onSelected: (value) {
+              if (value == 'csv') {
+                Navigator.of(context).pushNamed('/products/csv');
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'csv',
+                child: Row(
+                  children: [
+                    const Icon(Icons.import_export_outlined, size: 20),
+                    const SizedBox(width: 12),
+                    Text(context.l10n.csv_title),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Column(
         children: [

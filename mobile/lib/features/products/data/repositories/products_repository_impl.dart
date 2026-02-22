@@ -46,6 +46,7 @@ class ProductsRepositoryImpl implements ProductsRepository {
     required String unit,
     String? barcode,
     double? price,
+    String? categoryId,
   }) async {
     final model = await _remoteDataSource.createProduct({
       'name': name,
@@ -54,6 +55,7 @@ class ProductsRepositoryImpl implements ProductsRepository {
       'unit': unit,
       if (barcode != null) 'barcode': barcode,
       if (price != null) 'price': price,
+      if (categoryId != null) 'category_id': categoryId,
     });
     return model.toEntity();
   }
@@ -67,6 +69,7 @@ class ProductsRepositoryImpl implements ProductsRepository {
     String? unit,
     String? barcode,
     double? price,
+    String? categoryId,
   }) async {
     final data = <String, dynamic>{};
     if (name != null) data['name'] = name;
@@ -75,6 +78,7 @@ class ProductsRepositoryImpl implements ProductsRepository {
     if (unit != null) data['unit'] = unit;
     if (barcode != null) data['barcode'] = barcode;
     if (price != null) data['price'] = price;
+    if (categoryId != null) data['category_id'] = categoryId;
 
     final model = await _remoteDataSource.updateProduct(id, data);
     return model.toEntity();
