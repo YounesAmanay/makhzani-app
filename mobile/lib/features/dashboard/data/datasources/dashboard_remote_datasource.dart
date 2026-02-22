@@ -40,7 +40,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
 
     final data = response.data['data'];
 
-    final stats = DashboardStatsModel.fromJson(data['overview']);
+    final stats = DashboardStatsModel.fromJson(data);
 
     final lowStockItems = (data['low_stock_items'] as List)
         .map((item) => LowStockItemModel.fromJson(item))

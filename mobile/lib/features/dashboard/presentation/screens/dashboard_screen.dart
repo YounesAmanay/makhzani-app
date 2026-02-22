@@ -95,6 +95,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 // Revenue cards
                 _buildRevenueRow(),
 
+                // Profit + stock value cards (only shown when cost prices are configured)
+                if ((state.stats?.profitTotal ?? 0) > 0 || (state.stats?.stockValue ?? 0) > 0) ...[
+                  const SizedBox(height: AppDimensions.marginMedium),
+                  _buildProfitRow(state),
+                ],
+
                 const SizedBox(height: AppDimensions.marginLarge),
 
                 // 7-day Sales Chart
@@ -232,6 +238,33 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             icon: HugeIcons.strokeRoundedChart,
             iconColor: AppColors.info,
             onTap: () => ref.read(bottomNavIndexProvider.notifier).state = 2,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProfitRow(DashboardState state) {
+    final stats = state.stats;
+    if (stats == null) return const SizedBox.shrink();
+
+    return Row(
+      children: [
+        Expanded(
+          child: StatsCard(
+            title: context.l10n.dashboard_profitMonth,
+            value: '${stats.profitThisMonth.toStringAsFixed(0)} ${context.l10n.currency_mad}',
+            icon: HugeIcons.strokeRoundedChart,
+            iconColor: AppColors.success,
+          ),
+        ),
+        const SizedBox(width: AppDimensions.marginSmall),
+        Expanded(
+          child: StatsCard(
+            title: context.l10n.dashboard_stockValue,
+            value: '${stats.stockValue.toStringAsFixed(0)} ${context.l10n.currency_mad}',
+            icon: HugeIcons.strokeRoundedPackage,
+            iconColor: AppColors.info,
           ),
         ),
       ],

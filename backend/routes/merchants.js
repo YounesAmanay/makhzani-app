@@ -183,6 +183,9 @@ router.get('/dashboard-stats', authenticateToken, async (req, res) => {
       lowStockProductDetails,
       chartRows,
       topSellingRows,
+      profitMonthRows,
+      profitTotalRows,
+      stockValueRows,
     ] = await Promise.all([
       db.Product.count({ where: { merchant_id: merchantId, is_active: true } }),
       db.Product.count({
@@ -243,6 +246,35 @@ router.get('/dashboard-stats', authenticateToken, async (req, res) => {
           type: db.Sequelize.QueryTypes.SELECT,
         }
       ),
+      db.sequelize.query(
+        `SELECT COALESCE(SUM((si.unit_price - p.cost_price) * si.quantity), 0) AS profit
+         FROM sale_items si
+         JOIN sales s ON s.id = si.sale_id
+         JOIN products p ON p.id = si.product_id
+         WHERE s.merchant_id = :merchantId
+           AND s.is_cancelled = false
+           AND s.created_at >= :startOfMonth
+           AND p.cost_price IS NOT NULL`,
+        { replacements: { merchantId, startOfMonth }, type: db.Sequelize.QueryTypes.SELECT }
+      ),
+      db.sequelize.query(
+        `SELECT COALESCE(SUM((si.unit_price - p.cost_price) * si.quantity), 0) AS profit
+         FROM sale_items si
+         JOIN sales s ON s.id = si.sale_id
+         JOIN products p ON p.id = si.product_id
+         WHERE s.merchant_id = :merchantId
+           AND s.is_cancelled = false
+           AND p.cost_price IS NOT NULL`,
+        { replacements: { merchantId }, type: db.Sequelize.QueryTypes.SELECT }
+      ),
+      db.sequelize.query(
+        `SELECT COALESCE(SUM(p.current_stock * p.cost_price), 0) AS stock_value
+         FROM products p
+         WHERE p.merchant_id = :merchantId
+           AND p.is_active = true
+           AND p.cost_price IS NOT NULL`,
+        { replacements: { merchantId }, type: db.Sequelize.QueryTypes.SELECT }
+      ),
     ]);
 
     // Build 7-day chart array — fill 0 for days with no sales
@@ -268,6 +300,11 @@ router.get('/dashboard-stats', authenticateToken, async (req, res) => {
           total_suppliers: totalSuppliers,
           total_orders: totalOrders,
         },
+        profit: {
+          this_month: parseFloat(profitMonthRows[0]?.profit ?? 0),
+          total: parseFloat(profitTotalRows[0]?.profit ?? 0),
+        },
+        stock_value: parseFloat(stockValueRows[0]?.stock_value ?? 0),
         chart_data: chartData,
         top_selling_products: topSellingRows.map(r => ({
           product_id: r.product_id,
