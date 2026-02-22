@@ -553,5 +553,41 @@
   "stock_reason_other": "أخرى",
 
   "products_barcodeExists": "موجود في مخزونك",
-  "products_viewProduct": "عرض المنتج"
+  "products_viewProduct": "عرض المنتج",
+
+  "orders_reorderSuggestions": "اقتراحات إعادة الطلب",
+  "orders_reorderSuggestionsSubtitle": "{count} منتج يحتاج إعادة تخزين",
+  "@orders_reorderSuggestionsSubtitle": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "orders_createOrder": "إنشاء طلب",
+  "orders_noSupplierHistory": "لا يوجد مورد سابق",
+  "orders_shortage": "-{count} {unit}",
+  "@orders_shortage": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "unit": {"type": "String"}
+    }
+  },
+  "orders_allStocked": "جميع المنتجات مخزنة بشكل جيد",
+
+  "orders_reorderProductCount1": "منتج واحد يحتاج إعادة طلب",
+  "orders_reorderProductCount": "{count} منتجات تحتاج إعادة طلب",
+  "@orders_reorderProductCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "orders_stockInfo": "المخزون: {stock} {unit} · يحتاج {shortage} أكثر",
+  "@orders_stockInfo": {
+    "placeholders": {
+      "stock": {"type": "int"},
+      "unit": {"type": "String"},
+      "shortage": {"type": "int"}
+    }
+  },
+  "orders_orderManually": "طلب يدوي",
+  "orders_orderManuallySubtitle": "هذه المنتجات لا تملك سجل طلبات — اختر موردًا عند إنشاء الطلب"
 }

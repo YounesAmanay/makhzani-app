@@ -4,6 +4,7 @@ library;
 import '../../domain/entities/order.dart';
 import '../../domain/entities/order_detail.dart';
 import '../../domain/entities/pagination.dart';
+import '../../domain/entities/reorder_suggestion.dart';
 import '../../domain/repositories/orders_repository.dart';
 import '../datasources/orders_remote_datasource.dart';
 
@@ -69,5 +70,11 @@ class OrdersRepositoryImpl implements OrdersRepository {
   @override
   Future<void> receiveOrder(String id) async {
     await _remoteDataSource.receiveOrder(id);
+  }
+
+  @override
+  Future<ReorderSuggestionsResult> getReorderSuggestions() async {
+    final model = await _remoteDataSource.getReorderSuggestions();
+    return model.toEntity();
   }
 }

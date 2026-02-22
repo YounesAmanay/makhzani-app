@@ -588,5 +588,41 @@
   "stock_reason_other": "Other",
 
   "products_barcodeExists": "Already in your inventory",
-  "products_viewProduct": "View Product"
+  "products_viewProduct": "View Product",
+
+  "orders_reorderSuggestions": "Reorder Suggestions",
+  "orders_reorderSuggestionsSubtitle": "{count} products need restocking",
+  "@orders_reorderSuggestionsSubtitle": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "orders_createOrder": "Create Order",
+  "orders_noSupplierHistory": "No supplier history",
+  "orders_shortage": "-{count} {unit}",
+  "@orders_shortage": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "unit": {"type": "String"}
+    }
+  },
+  "orders_allStocked": "All products are well stocked",
+
+  "orders_reorderProductCount1": "1 product to reorder",
+  "orders_reorderProductCount": "{count} products to reorder",
+  "@orders_reorderProductCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "orders_stockInfo": "Stock: {stock} {unit} · Need {shortage} more",
+  "@orders_stockInfo": {
+    "placeholders": {
+      "stock": {"type": "int"},
+      "unit": {"type": "String"},
+      "shortage": {"type": "int"}
+    }
+  },
+  "orders_orderManually": "Order manually",
+  "orders_orderManuallySubtitle": "These products have no order history — pick a supplier when creating the order"
 }

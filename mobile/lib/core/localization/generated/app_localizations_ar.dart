@@ -1324,4 +1324,46 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get products_viewProduct => 'عرض المنتج';
+
+  @override
+  String get orders_reorderSuggestions => 'اقتراحات إعادة الطلب';
+
+  @override
+  String orders_reorderSuggestionsSubtitle(int count) {
+    return '$count منتج يحتاج إعادة تخزين';
+  }
+
+  @override
+  String get orders_createOrder => 'إنشاء طلب';
+
+  @override
+  String get orders_noSupplierHistory => 'لا يوجد مورد سابق';
+
+  @override
+  String orders_shortage(int count, String unit) {
+    return '-$count $unit';
+  }
+
+  @override
+  String get orders_allStocked => 'جميع المنتجات مخزنة بشكل جيد';
+
+  @override
+  String get orders_reorderProductCount1 => 'منتج واحد يحتاج إعادة طلب';
+
+  @override
+  String orders_reorderProductCount(int count) {
+    return '$count منتجات تحتاج إعادة طلب';
+  }
+
+  @override
+  String orders_stockInfo(int stock, String unit, int shortage) {
+    return 'المخزون: $stock $unit · يحتاج $shortage أكثر';
+  }
+
+  @override
+  String get orders_orderManually => 'طلب يدوي';
+
+  @override
+  String get orders_orderManuallySubtitle =>
+      'هذه المنتجات لا تملك سجل طلبات — اختر موردًا عند إنشاء الطلب';
 }

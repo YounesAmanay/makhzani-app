@@ -13,11 +13,13 @@ import '../../domain/entities/low_stock_item.dart';
 class LowStockList extends StatelessWidget {
   final List<LowStockItem> items;
   final VoidCallback? onSeeAll;
+  final VoidCallback? onOrderSuggestions;
 
   const LowStockList({
     super.key,
     required this.items,
     this.onSeeAll,
+    this.onOrderSuggestions,
   });
 
   @override
@@ -51,6 +53,7 @@ class LowStockList extends StatelessWidget {
     }
 
     final visibleItems = items.take(5).toList();
+    final hasFooter = onOrderSuggestions != null;
 
     return Container(
       decoration: BoxDecoration(
@@ -62,35 +65,35 @@ class LowStockList extends StatelessWidget {
         children: [
           ...visibleItems.indexed.map((e) => _LowStockItemTile(
                 item: e.$2,
-                isLast: e.$1 == visibleItems.length - 1 && items.length <= 5,
+                isLast: e.$1 == visibleItems.length - 1 && !hasFooter,
               )),
-          if (items.length > 5)
-            InkWell(
-              onTap: onSeeAll,
-              child: Container(
-                padding: const EdgeInsets.all(AppDimensions.paddingMedium),
-                decoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(color: theme.colorScheme.outlineVariant),
+
+          // "Order suggestions →" footer
+          if (hasFooter)
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(AppDimensions.radiusMedium),
+              ),
+              child: InkWell(
+                onTap: onOrderSuggestions,
+                child: Container(
+                  padding: const EdgeInsets.all(AppDimensions.paddingMedium),
+                  decoration: const BoxDecoration(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        context.l10n.orders_reorderSuggestions,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: AppColors.success,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(Icons.arrow_forward,
+                          size: 16, color: AppColors.success),
+                    ],
                   ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      context.l10n.dashboard_seeAllItems(items.length),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w500,
-                          ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      Icons.arrow_forward,
-                      size: 16,
-                      color: AppColors.primary,
-                    ),
-                  ],
                 ),
               ),
             ),

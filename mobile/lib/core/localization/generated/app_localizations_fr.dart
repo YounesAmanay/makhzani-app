@@ -1349,4 +1349,46 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get products_viewProduct => 'Voir le produit';
+
+  @override
+  String get orders_reorderSuggestions => 'Suggestions de réapprovisionnement';
+
+  @override
+  String orders_reorderSuggestionsSubtitle(int count) {
+    return '$count produits à réapprovisionner';
+  }
+
+  @override
+  String get orders_createOrder => 'Créer une commande';
+
+  @override
+  String get orders_noSupplierHistory => 'Aucun fournisseur précédent';
+
+  @override
+  String orders_shortage(int count, String unit) {
+    return '-$count $unit';
+  }
+
+  @override
+  String get orders_allStocked => 'Tous les produits sont bien stockés';
+
+  @override
+  String get orders_reorderProductCount1 => '1 produit à commander';
+
+  @override
+  String orders_reorderProductCount(int count) {
+    return '$count produits à commander';
+  }
+
+  @override
+  String orders_stockInfo(int stock, String unit, int shortage) {
+    return 'Stock : $stock $unit · Besoin de $shortage de plus';
+  }
+
+  @override
+  String get orders_orderManually => 'Commander manuellement';
+
+  @override
+  String get orders_orderManuallySubtitle =>
+      'Ces produits n\'ont pas d\'historique de commande — choisissez un fournisseur lors de la création';
 }

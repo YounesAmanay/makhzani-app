@@ -198,6 +198,10 @@ class OrderDraftNotifier extends StateNotifier<OrderDraftState> {
 
   void removeItem(String productId) => removeProduct(productId);
 
+  void setItems(List<OrderDraftItem> items) {
+    state = state.copyWith(items: items);
+  }
+
   void setNotes(String? notes) {
     final trimmed = notes?.trim();
     state = state.copyWith(notes: (trimmed == null || trimmed.isEmpty) ? null : trimmed);

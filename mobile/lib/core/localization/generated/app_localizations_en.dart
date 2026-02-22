@@ -1332,4 +1332,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get products_viewProduct => 'View Product';
+
+  @override
+  String get orders_reorderSuggestions => 'Reorder Suggestions';
+
+  @override
+  String orders_reorderSuggestionsSubtitle(int count) {
+    return '$count products need restocking';
+  }
+
+  @override
+  String get orders_createOrder => 'Create Order';
+
+  @override
+  String get orders_noSupplierHistory => 'No supplier history';
+
+  @override
+  String orders_shortage(int count, String unit) {
+    return '-$count $unit';
+  }
+
+  @override
+  String get orders_allStocked => 'All products are well stocked';
+
+  @override
+  String get orders_reorderProductCount1 => '1 product to reorder';
+
+  @override
+  String orders_reorderProductCount(int count) {
+    return '$count products to reorder';
+  }
+
+  @override
+  String orders_stockInfo(int stock, String unit, int shortage) {
+    return 'Stock: $stock $unit · Need $shortage more';
+  }
+
+  @override
+  String get orders_orderManually => 'Order manually';
+
+  @override
+  String get orders_orderManuallySubtitle =>
+      'These products have no order history — pick a supplier when creating the order';
 }

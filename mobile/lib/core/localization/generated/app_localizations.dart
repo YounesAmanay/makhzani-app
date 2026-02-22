@@ -2565,6 +2565,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View Product'**
   String get products_viewProduct;
+
+  /// No description provided for @orders_reorderSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorder Suggestions'**
+  String get orders_reorderSuggestions;
+
+  /// No description provided for @orders_reorderSuggestionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} products need restocking'**
+  String orders_reorderSuggestionsSubtitle(int count);
+
+  /// No description provided for @orders_createOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Order'**
+  String get orders_createOrder;
+
+  /// No description provided for @orders_noSupplierHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No supplier history'**
+  String get orders_noSupplierHistory;
+
+  /// No description provided for @orders_shortage.
+  ///
+  /// In en, this message translates to:
+  /// **'-{count} {unit}'**
+  String orders_shortage(int count, String unit);
+
+  /// No description provided for @orders_allStocked.
+  ///
+  /// In en, this message translates to:
+  /// **'All products are well stocked'**
+  String get orders_allStocked;
+
+  /// No description provided for @orders_reorderProductCount1.
+  ///
+  /// In en, this message translates to:
+  /// **'1 product to reorder'**
+  String get orders_reorderProductCount1;
+
+  /// No description provided for @orders_reorderProductCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} products to reorder'**
+  String orders_reorderProductCount(int count);
+
+  /// No description provided for @orders_stockInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock: {stock} {unit} · Need {shortage} more'**
+  String orders_stockInfo(int stock, String unit, int shortage);
+
+  /// No description provided for @orders_orderManually.
+  ///
+  /// In en, this message translates to:
+  /// **'Order manually'**
+  String get orders_orderManually;
+
+  /// No description provided for @orders_orderManuallySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'These products have no order history — pick a supplier when creating the order'**
+  String get orders_orderManuallySubtitle;
 }
 
 class _AppLocalizationsDelegate

@@ -4,6 +4,7 @@ library;
 import '../entities/order.dart';
 import '../entities/order_detail.dart';
 import '../entities/pagination.dart';
+import '../entities/reorder_suggestion.dart';
 
 abstract class OrdersRepository {
   Future<({List<Order> orders, OrderPagination pagination})> getOrders({
@@ -29,4 +30,6 @@ abstract class OrdersRepository {
 
   /// Marks the order as received and auto-increments product stock.
   Future<void> receiveOrder(String id);
+
+  Future<ReorderSuggestionsResult> getReorderSuggestions();
 }

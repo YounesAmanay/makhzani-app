@@ -22,6 +22,7 @@ import '../widgets/recent_orders_list.dart';
 import '../widgets/sales_chart_widget.dart';
 import '../widgets/top_selling_list.dart';
 import '../../../../shared/widgets/stats_card.dart';
+import '../../../orders/presentation/screens/reorder_suggestions_screen.dart';
 import '../../../products/presentation/screens/product_detail_screen.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
@@ -133,6 +134,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 LowStockList(
                   items: state.lowStockItems,
                   onSeeAll: () => _navigateToProducts(lowStockFilter: true),
+                  onOrderSuggestions: state.lowStockItems.isNotEmpty
+                      ? () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const ReorderSuggestionsScreen(),
+                            ),
+                          )
+                      : null,
                 ),
 
                 const SizedBox(height: AppDimensions.marginLarge),

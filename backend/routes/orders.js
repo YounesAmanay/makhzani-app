@@ -346,6 +346,106 @@ router.post('/', authenticateToken, checkSubscription, validateOrder, handleVali
 });
 
 /**
+ * GET /api/orders/suggestions
+ * Returns low-stock products grouped by the supplier they were last ordered from.
+ */
+router.get('/suggestions', authenticateToken, checkSubscription, async (req, res) => {
+  try {
+    // 1. Get all low-stock active products for this merchant
+    const lowStockProducts = await db.Product.findAll({
+      where: {
+        merchant_id: req.merchantId,
+        is_active: true,
+        current_stock: { [db.Sequelize.Op.lte]: db.Sequelize.col('reorder_threshold') },
+      },
+      attributes: ['id', 'name', 'current_stock', 'reorder_threshold', 'unit'],
+    });
+
+    if (lowStockProducts.length === 0) {
+      return res.json({ success: true, data: { suggestions: [], unassigned: [] } });
+    }
+
+    const productIds = lowStockProducts.map(p => p.id);
+
+    // 2. For each low-stock product, find the most recent order that included it
+    const lastOrderRows = await db.sequelize.query(`
+      SELECT
+        poi.product_id,
+        po.supplier_id,
+        poi.unit_price AS last_order_price,
+        po.created_at AS last_order_date
+      FROM purchase_order_items poi
+      INNER JOIN purchase_orders po ON poi.purchase_order_id = po.id
+      INNER JOIN (
+        SELECT poi2.product_id, MAX(po2.created_at) AS max_date
+        FROM purchase_order_items poi2
+        INNER JOIN purchase_orders po2 ON poi2.purchase_order_id = po2.id
+        WHERE po2.merchant_id = :merchantId
+          AND poi2.product_id IN (:productIds)
+        GROUP BY poi2.product_id
+      ) latest ON poi.product_id = latest.product_id AND po.created_at = latest.max_date
+      WHERE po.merchant_id = :merchantId
+    `, {
+      replacements: { merchantId: req.merchantId, productIds },
+      type: db.Sequelize.QueryTypes.SELECT,
+    });
+
+    // 3. Build map: productId → { supplierId, lastOrderPrice }
+    const productSupplierMap = {};
+    for (const row of lastOrderRows) {
+      productSupplierMap[row.product_id] = {
+        supplierId: row.supplier_id,
+        lastOrderPrice: parseFloat(row.last_order_price) || null,
+      };
+    }
+
+    // 4. Fetch supplier details for all referenced suppliers
+    const supplierIds = [...new Set(Object.values(productSupplierMap).map(v => v.supplierId))];
+    const suppliers = supplierIds.length > 0
+      ? await db.Supplier.findAll({
+          where: { id: supplierIds },
+          attributes: ['id', 'name', 'business_name', 'phone_number'],
+        })
+      : [];
+    const supplierMap = Object.fromEntries(suppliers.map(s => [s.id, s.toJSON()]));
+
+    // 5. Group products by supplier
+    const grouped = {};
+    const unassigned = [];
+
+    for (const product of lowStockProducts) {
+      const entry = productSupplierMap[product.id];
+      const productData = {
+        id: product.id,
+        name: product.name,
+        current_stock: product.current_stock,
+        reorder_threshold: product.reorder_threshold,
+        unit: product.unit,
+        shortage: product.reorder_threshold - product.current_stock,
+        last_order_price: entry?.lastOrderPrice ?? null,
+      };
+
+      if (entry?.supplierId && supplierMap[entry.supplierId]) {
+        if (!grouped[entry.supplierId]) grouped[entry.supplierId] = [];
+        grouped[entry.supplierId].push(productData);
+      } else {
+        unassigned.push(productData);
+      }
+    }
+
+    const suggestions = Object.entries(grouped).map(([supplierId, products]) => ({
+      supplier: supplierMap[supplierId],
+      products,
+    }));
+
+    return res.json({ success: true, data: { suggestions, unassigned } });
+  } catch (err) {
+    console.error('[Suggestions]', err);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+/**
  * GET /api/orders/:id
  * Get specific order details
  */

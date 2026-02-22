@@ -6,6 +6,7 @@ import '../../../../core/network/api_client.dart';
 import '../models/order_detail_model.dart';
 import '../models/order_model.dart';
 import '../models/pagination_model.dart';
+import '../models/reorder_suggestion_model.dart';
 
 abstract class OrdersRemoteDataSource {
   Future<({List<OrderModel> orders, OrderPaginationModel pagination})> getOrders({
@@ -27,6 +28,8 @@ abstract class OrdersRemoteDataSource {
 
   /// Marks the order as received and auto-updates stock for all items.
   Future<void> receiveOrder(String id);
+
+  Future<ReorderSuggestionsResultModel> getReorderSuggestions();
 }
 
 class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
@@ -103,5 +106,12 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
   @override
   Future<void> receiveOrder(String id) async {
     await _apiClient.post(ApiEndpoints.receiveOrder(id));
+  }
+
+  @override
+  Future<ReorderSuggestionsResultModel> getReorderSuggestions() async {
+    final response = await _apiClient.get(ApiEndpoints.orderSuggestions);
+    final data = response.data['data'] as Map<String, dynamic>;
+    return ReorderSuggestionsResultModel.fromJson(data);
   }
 }

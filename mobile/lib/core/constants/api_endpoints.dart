@@ -45,4 +45,5 @@ class ApiEndpoints {
   static String downloadPdf(String id) => '/orders/$id/download-pdf';
   static String markSent(String id) => '/orders/$id/mark-sent';
   static String receiveOrder(String id) => '/orders/$id/receive';
+  static const String orderSuggestions = '/orders/suggestions';
 }

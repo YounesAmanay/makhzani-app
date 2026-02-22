@@ -588,5 +588,41 @@
   "stock_reason_other": "Autre",
 
   "products_barcodeExists": "Déjà dans votre inventaire",
-  "products_viewProduct": "Voir le produit"
+  "products_viewProduct": "Voir le produit",
+
+  "orders_reorderSuggestions": "Suggestions de réapprovisionnement",
+  "orders_reorderSuggestionsSubtitle": "{count} produits à réapprovisionner",
+  "@orders_reorderSuggestionsSubtitle": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "orders_createOrder": "Créer une commande",
+  "orders_noSupplierHistory": "Aucun fournisseur précédent",
+  "orders_shortage": "-{count} {unit}",
+  "@orders_shortage": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "unit": {"type": "String"}
+    }
+  },
+  "orders_allStocked": "Tous les produits sont bien stockés",
+
+  "orders_reorderProductCount1": "1 produit à commander",
+  "orders_reorderProductCount": "{count} produits à commander",
+  "@orders_reorderProductCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "orders_stockInfo": "Stock : {stock} {unit} · Besoin de {shortage} de plus",
+  "@orders_stockInfo": {
+    "placeholders": {
+      "stock": {"type": "int"},
+      "unit": {"type": "String"},
+      "shortage": {"type": "int"}
+    }
+  },
+  "orders_orderManually": "Commander manuellement",
+  "orders_orderManuallySubtitle": "Ces produits n'ont pas d'historique de commande — choisissez un fournisseur lors de la création"
 }
