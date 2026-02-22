@@ -17,7 +17,6 @@ class NotificationsScreen extends ConsumerWidget {
     final state = ref.watch(notificationsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(context.l10n.notifications_title),
         actions: [
