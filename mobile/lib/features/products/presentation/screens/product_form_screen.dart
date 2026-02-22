@@ -53,7 +53,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   final _thresholdController = TextEditingController();
   final _barcodeController = TextEditingController();
   final _priceController = TextEditingController();
+  final _costPriceController = TextEditingController();
 
+  final _nameFocusNode = FocusNode();
   final _stockFocusNode = FocusNode();
 
   String _selectedUnit = 'piece';
@@ -99,6 +101,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     _thresholdController.dispose();
     _barcodeController.dispose();
     _priceController.dispose();
+    _costPriceController.dispose();
+    _nameFocusNode.dispose();
     _stockFocusNode.dispose();
     super.dispose();
   }
@@ -116,6 +120,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
           _thresholdController.text = product.reorderThreshold.toString();
           _barcodeController.text = product.barcode ?? '';
           _priceController.text = product.price?.toString() ?? '';
+          _costPriceController.text = product.costPrice?.toString() ?? '';
           _selectedUnit = product.unit;
           _selectedCategoryId = product.categoryId;
           _isLoading = false;
@@ -142,11 +147,16 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   }
 
   void _applyBarcodeResult(BarcodeResult result) {
+    final isManualFill = result.name.isEmpty;
+
     setState(() {
-      _hasScanned = true;
-      _scannedImageUrl = result.imageUrl;
-      _dataSource = result.sourceLabel;
-      _nameController.text = result.name;
+      // Manual fill: barcode pre-filled but scan hero stays visible for re-scan
+      if (!isManualFill) {
+        _hasScanned = true;
+        _scannedImageUrl = result.imageUrl;
+        _dataSource = result.sourceLabel;
+        _nameController.text = result.name;
+      }
       _barcodeController.text = result.barcode;
       if (result.isHighConfidence && result.unit != null) {
         _selectedUnit = result.unit!;
@@ -156,17 +166,24 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
       _errorMessage = null;
     });
 
-    // Announce auto-fill to user then jump focus to stock
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(context.l10n.products_autoFilled(result.sourceLabel)),
-        backgroundColor: AppColors.success,
-        duration: const Duration(seconds: 2),
-      ),
-    );
-    Future.delayed(const Duration(milliseconds: 200), () {
-      if (mounted) FocusScope.of(context).requestFocus(_stockFocusNode);
-    });
+    if (isManualFill) {
+      // Barcode pre-filled — focus name so user fills the rest
+      Future.delayed(const Duration(milliseconds: 200), () {
+        if (mounted) FocusScope.of(context).requestFocus(_nameFocusNode);
+      });
+    } else {
+      // Auto-filled from external source — show snackbar then focus stock
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.products_autoFilled(result.sourceLabel)),
+          backgroundColor: AppColors.success,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      Future.delayed(const Duration(milliseconds: 200), () {
+        if (mounted) FocusScope.of(context).requestFocus(_stockFocusNode);
+      });
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -199,6 +216,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                     // ── Product Name ───────────────────────────────────────
                     TextFormField(
                       controller: _nameController,
+                      focusNode: _nameFocusNode,
                       decoration: InputDecoration(
                         labelText: '${context.l10n.products_name} *',
                         errorText: _fieldErrors['name'],
@@ -329,6 +347,23 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                         errorText: _fieldErrors['price'],
                       ),
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      textInputAction: TextInputAction.next,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+                      ],
+                    ),
+
+                    const SizedBox(height: AppDimensions.marginMedium),
+
+                    TextFormField(
+                      controller: _costPriceController,
+                      decoration: InputDecoration(
+                        labelText: context.l10n.products_costPrice,
+                        hintText: '0.00',
+                        suffixText: context.l10n.currency_mad,
+                        errorText: _fieldErrors['cost_price'],
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       textInputAction: TextInputAction.done,
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
@@ -416,9 +451,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
       return Container(
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: theme.colorScheme.outlineVariant),
         ),
         padding: const EdgeInsets.all(AppDimensions.paddingMedium),
         child: Column(
@@ -488,7 +523,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                                 color: AppColors.error,
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.close, size: 14, color: Colors.white),
+                              child: const Icon(Icons.close, size: 14, color: AppColors.white),
                             ),
                           ),
                         ),
@@ -603,10 +638,10 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
               width: 26,
               height: 26,
               decoration: const BoxDecoration(
-                color: Colors.black54,
+                color: AppColors.overlay,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 14),
+              child: const Icon(Icons.qr_code_scanner, color: AppColors.white, size: 14),
             ),
           ),
         ),
@@ -618,12 +653,12 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
               decoration: BoxDecoration(
-                color: Colors.black54,
+                color: AppColors.overlay,
                 borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
               ),
               child: Text(
                 _dataSource!,
-                style: const TextStyle(color: Colors.white, fontSize: 9),
+                style: const TextStyle(color: AppColors.white, fontSize: 9),
               ),
             ),
           ),
@@ -656,7 +691,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 color: AppColors.error,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.close, size: 14, color: Colors.white),
+              child: const Icon(Icons.close, size: 14, color: AppColors.white),
             ),
           ),
         ),
@@ -671,9 +706,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
         width: 120,
         height: 120,
         decoration: BoxDecoration(
-          color: AppColors.surfaceHover,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -695,7 +730,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
   Widget _buildImagePlaceholder() {
     return Container(
-      color: AppColors.surfaceHover,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Center(
         child: Icon(Icons.image_outlined, size: 36, color: AppColors.iconSecondary),
       ),
@@ -866,7 +901,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   Widget _buildSectionHeader(String title) {
     return Row(
       children: [
-        Expanded(child: Divider(color: AppColors.border)),
+        Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppDimensions.paddingSmall),
           child: Text(
@@ -877,7 +912,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 ),
           ),
         ),
-        Expanded(child: Divider(color: AppColors.border)),
+        Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
       ],
     );
   }
@@ -902,6 +937,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     final barcode = _barcodeController.text.trim();
     final priceText = _priceController.text.trim();
     final price = priceText.isEmpty ? null : double.tryParse(priceText);
+    final costPriceText = _costPriceController.text.trim();
+    final costPrice = costPriceText.isEmpty ? null : double.tryParse(costPriceText);
 
     bool success;
 
@@ -917,6 +954,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 ? (barcode.isEmpty ? null : barcode)
                 : null,
             price: price != _product?.price ? price : null,
+            costPrice: costPrice != _product?.costPrice ? costPrice : null,
             categoryId: _selectedCategoryId != _product?.categoryId
                 ? _selectedCategoryId
                 : null,
@@ -929,6 +967,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             unit: _selectedUnit,
             barcode: barcode.isEmpty ? null : barcode,
             price: price,
+            costPrice: costPrice,
             categoryId: _selectedCategoryId,
           );
     }

@@ -33,6 +33,13 @@ module.exports = (sequelize, DataTypes) => {
           min: 0,
         },
       },
+      cost_price: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: true,
+        validate: {
+          min: 0,
+        },
+      },
       barcode: {
         type: DataTypes.STRING(50),
         allowNull: true,

@@ -39,6 +39,7 @@ class ProductModel {
   final String unit;
   final String? barcode;
   final double? price;
+  final double? costPrice;
   final bool needsReorder;
   final String stockStatus;
   final DateTime createdAt;
@@ -55,6 +56,7 @@ class ProductModel {
     required this.unit,
     this.barcode,
     this.price,
+    this.costPrice,
     required this.needsReorder,
     required this.stockStatus,
     required this.createdAt,
@@ -73,6 +75,7 @@ class ProductModel {
       unit: json['unit'] ?? 'piece',
       barcode: json['barcode'],
       price: json['price'] != null ? double.tryParse(json['price'].toString()) : null,
+      costPrice: json['cost_price'] != null ? double.tryParse(json['cost_price'].toString()) : null,
       needsReorder: json['needs_reorder'] ?? false,
       stockStatus: json['stock_status'] ?? 'ok',
       createdAt: DateTime.parse(json['created_at']),
@@ -98,6 +101,7 @@ class ProductModel {
       'unit': unit,
       if (barcode != null) 'barcode': barcode,
       if (price != null) 'price': price,
+      if (costPrice != null) 'cost_price': costPrice,
       if (categoryId != null) 'category_id': categoryId,
     };
   }
@@ -110,6 +114,7 @@ class ProductModel {
     unit: unit,
     barcode: barcode,
     price: price,
+    costPrice: costPrice,
     needsReorder: needsReorder,
     stockStatus: stockStatus,
     createdAt: createdAt,

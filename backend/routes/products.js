@@ -33,6 +33,10 @@ const validateProduct = [
     .optional()
     .isDecimal({ decimal_digits: '0,2' })
     .withMessage('Price must be a valid decimal with max 2 decimal places'),
+  body('cost_price')
+    .optional({ nullable: true })
+    .isFloat({ min: 0 })
+    .withMessage('Cost price must be a positive number'),
   body('category_id')
     .optional({ values: 'null' })
     .isUUID()
@@ -64,6 +68,10 @@ const validateProductUpdate = [
     .optional()
     .isDecimal({ decimal_digits: '0,2' })
     .withMessage('Price must be a valid decimal'),
+  body('cost_price')
+    .optional({ nullable: true })
+    .isFloat({ min: 0 })
+    .withMessage('Cost price must be a positive number'),
   body('category_id')
     .optional({ values: 'null' })
     .isUUID()
@@ -147,7 +155,7 @@ router.get('/', authenticateToken, validateQuery, handleValidationErrors, async 
       offset: parseInt(offset),
       attributes: [
         'id', 'name', 'current_stock', 'reorder_threshold',
-        'unit', 'barcode', 'price', 'category_id', 'created_at', 'updated_at'
+        'unit', 'barcode', 'price', 'cost_price', 'category_id', 'created_at', 'updated_at'
       ],
       include: [{
         model: db.Category,
@@ -197,7 +205,7 @@ router.get('/', authenticateToken, validateQuery, handleValidationErrors, async 
  */
 router.post('/', authenticateToken, checkSubscription, validateProduct, handleValidationErrors, async (req, res) => {
   try {
-    const { name, current_stock = 0, reorder_threshold = 5, unit = 'piece', barcode, price, category_id } = req.body;
+    const { name, current_stock = 0, reorder_threshold = 5, unit = 'piece', barcode, price, cost_price, category_id } = req.body;
 
     // Check for duplicate product name for this merchant
     const existingProduct = await db.Product.findOne({
@@ -243,6 +251,7 @@ router.post('/', authenticateToken, checkSubscription, validateProduct, handleVa
       unit,
       barcode: barcode?.trim() || null,
       price: price || null,
+      cost_price: cost_price != null ? cost_price : null,
       category_id: category_id || null,
     });
 
@@ -260,6 +269,7 @@ router.post('/', authenticateToken, checkSubscription, validateProduct, handleVa
           unit: product.unit,
           barcode: product.barcode,
           price: product.price,
+          cost_price: product.cost_price,
           category_id: product.category_id,
           needs_reorder: product.current_stock <= product.reorder_threshold,
           created_at: product.created_at
@@ -524,7 +534,7 @@ router.put('/:id', authenticateToken, checkSubscription, validateProductUpdate, 
       });
     }
 
-    const { name, current_stock, reorder_threshold, unit, barcode, price, category_id } = req.body;
+    const { name, current_stock, reorder_threshold, unit, barcode, price, cost_price, category_id } = req.body;
 
     // Check for duplicate name if name is being updated
     if (name && name !== product.name) {
@@ -574,6 +584,7 @@ router.put('/:id', authenticateToken, checkSubscription, validateProductUpdate, 
     if (unit !== undefined) updateData.unit = unit;
     if (barcode !== undefined) updateData.barcode = barcode?.trim() || null;
     if (price !== undefined) updateData.price = price || null;
+    if (cost_price !== undefined) updateData.cost_price = cost_price != null ? cost_price : null;
 
     await product.update(updateData);
 

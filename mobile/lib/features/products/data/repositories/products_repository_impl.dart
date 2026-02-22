@@ -46,6 +46,7 @@ class ProductsRepositoryImpl implements ProductsRepository {
     required String unit,
     String? barcode,
     double? price,
+    double? costPrice,
     String? categoryId,
   }) async {
     final model = await _remoteDataSource.createProduct({
@@ -55,6 +56,7 @@ class ProductsRepositoryImpl implements ProductsRepository {
       'unit': unit,
       if (barcode != null) 'barcode': barcode,
       if (price != null) 'price': price,
+      if (costPrice != null) 'cost_price': costPrice,
       if (categoryId != null) 'category_id': categoryId,
     });
     return model.toEntity();
@@ -69,6 +71,7 @@ class ProductsRepositoryImpl implements ProductsRepository {
     String? unit,
     String? barcode,
     double? price,
+    double? costPrice,
     String? categoryId,
   }) async {
     final data = <String, dynamic>{};
@@ -78,6 +81,7 @@ class ProductsRepositoryImpl implements ProductsRepository {
     if (unit != null) data['unit'] = unit;
     if (barcode != null) data['barcode'] = barcode;
     if (price != null) data['price'] = price;
+    if (costPrice != null) data['cost_price'] = costPrice;
     if (categoryId != null) data['category_id'] = categoryId;
 
     final model = await _remoteDataSource.updateProduct(id, data);
@@ -112,6 +116,12 @@ class ProductsRepositoryImpl implements ProductsRepository {
   @override
   Future<BarcodeResult?> lookupBarcode(String barcode) async {
     final model = await _remoteDataSource.lookupBarcode(barcode);
+    return model?.toEntity();
+  }
+
+  @override
+  Future<Product?> findProductByBarcode(String barcode) async {
+    final model = await _remoteDataSource.findProductByBarcode(barcode);
     return model?.toEntity();
   }
 }

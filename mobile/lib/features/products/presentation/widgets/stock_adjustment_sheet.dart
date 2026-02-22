@@ -52,7 +52,7 @@ class StockAdjustmentSheet extends ConsumerStatefulWidget {
 
 class _StockAdjustmentSheetState extends ConsumerState<StockAdjustmentSheet> {
   late final TextEditingController _stockController;
-  final _reasonController = TextEditingController();
+  String? _selectedReason;
   bool _isSubmitting = false;
   String? _errorMessage;
 
@@ -79,7 +79,6 @@ class _StockAdjustmentSheetState extends ConsumerState<StockAdjustmentSheet> {
   @override
   void dispose() {
     _stockController.dispose();
-    _reasonController.dispose();
     super.dispose();
   }
 
@@ -107,9 +106,7 @@ class _StockAdjustmentSheetState extends ConsumerState<StockAdjustmentSheet> {
     final success = await ref.read(productFormProvider.notifier).adjustStock(
           id: widget.product.id,
           adjustment: _adjustment,
-          reason: _reasonController.text.trim().isEmpty
-              ? null
-              : _reasonController.text.trim(),
+          reason: _selectedReason,
         );
 
     if (!mounted) return;
@@ -261,17 +258,31 @@ class _StockAdjustmentSheetState extends ConsumerState<StockAdjustmentSheet> {
 
                 const SizedBox(height: AppDimensions.marginLarge),
 
-                // Reason field
-                TextField(
-                  controller: _reasonController,
-                  maxLines: 2,
-                  textInputAction: TextInputAction.done,
+                // Reason dropdown
+                DropdownButtonFormField<String>(
+                  initialValue: _selectedReason,
                   decoration: InputDecoration(
                     labelText: context.l10n.products_reason,
                   ),
-                  onSubmitted: (_) {
-                    if (_isValid) _handleSubmit();
-                  },
+                  items: [
+                    DropdownMenuItem(
+                      value: 'damaged',
+                      child: Text(context.l10n.stock_reason_damaged),
+                    ),
+                    DropdownMenuItem(
+                      value: 'lost',
+                      child: Text(context.l10n.stock_reason_lost),
+                    ),
+                    DropdownMenuItem(
+                      value: 'count_correction',
+                      child: Text(context.l10n.stock_reason_countCorrection),
+                    ),
+                    DropdownMenuItem(
+                      value: 'other',
+                      child: Text(context.l10n.stock_reason_other),
+                    ),
+                  ],
+                  onChanged: (value) => setState(() => _selectedReason = value),
                 ),
 
                 // Error message

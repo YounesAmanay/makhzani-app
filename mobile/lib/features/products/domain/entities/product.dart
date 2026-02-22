@@ -23,6 +23,7 @@ class Product {
   final String unit;
   final String? barcode;
   final double? price;
+  final double? costPrice;
   final bool needsReorder;
   final String stockStatus;
   final DateTime createdAt;
@@ -39,6 +40,7 @@ class Product {
     required this.unit,
     this.barcode,
     this.price,
+    this.costPrice,
     required this.needsReorder,
     required this.stockStatus,
     required this.createdAt,
@@ -50,4 +52,7 @@ class Product {
 
   bool get isLowStock => needsReorder || currentStock <= reorderThreshold;
   bool get isOutOfStock => currentStock == 0;
+  double? get margin => (price != null && costPrice != null && price! > 0)
+      ? ((price! - costPrice!) / price! * 100)
+      : null;
 }

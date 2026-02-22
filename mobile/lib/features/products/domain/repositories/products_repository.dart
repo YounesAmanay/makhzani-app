@@ -22,6 +22,7 @@ abstract class ProductsRepository {
     required String unit,
     String? barcode,
     double? price,
+    double? costPrice,
     String? categoryId,
   });
 
@@ -33,6 +34,7 @@ abstract class ProductsRepository {
     String? unit,
     String? barcode,
     double? price,
+    double? costPrice,
     String? categoryId,
   });
 
@@ -49,4 +51,6 @@ abstract class ProductsRepository {
   Future<void> deleteProductImage(String productId, String imageId);
 
   Future<BarcodeResult?> lookupBarcode(String barcode);
+
+  Future<Product?> findProductByBarcode(String barcode);
 }

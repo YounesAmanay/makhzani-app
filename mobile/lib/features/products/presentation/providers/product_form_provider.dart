@@ -59,6 +59,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     required String unit,
     String? barcode,
     double? price,
+    double? costPrice,
     String? categoryId,
   }) async {
     state = state.copyWith(
@@ -75,6 +76,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         unit: unit,
         barcode: barcode,
         price: price,
+        costPrice: costPrice,
         categoryId: categoryId,
       );
 
@@ -129,6 +131,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     String? unit,
     String? barcode,
     double? price,
+    double? costPrice,
     String? categoryId,
   }) async {
     state = state.copyWith(
@@ -146,6 +149,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         unit: unit,
         barcode: barcode,
         price: price,
+        costPrice: costPrice,
         categoryId: categoryId,
       );
 

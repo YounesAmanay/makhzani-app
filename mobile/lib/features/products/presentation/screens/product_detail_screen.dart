@@ -232,6 +232,16 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       context.l10n.products_price,
                       '${product.price!.toStringAsFixed(2)} ${context.l10n.currency_mad}',
                     ),
+                  if (product.costPrice != null)
+                    _buildDetailRow(
+                      context.l10n.products_costPrice,
+                      '${product.costPrice!.toStringAsFixed(2)} ${context.l10n.currency_mad}',
+                    ),
+                  if (product.margin != null)
+                    _buildDetailRow(
+                      context.l10n.products_margin,
+                      '${product.margin!.toStringAsFixed(1)}%',
+                    ),
                   _buildDetailRow(
                     context.l10n.products_unit,
                     product.unit,
@@ -490,7 +500,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               child: const Icon(
                                 Icons.close,
                                 size: 14,
-                                color: Colors.white,
+                                color: AppColors.white,
                               ),
                             ),
                           ),
