@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../features/products/domain/entities/product.dart';
+import '../../../dashboard/presentation/providers/dashboard_provider.dart';
+import '../../../products/presentation/providers/products_provider.dart';
 import '../../domain/entities/sale.dart';
 import '../../domain/repositories/sales_repository.dart';
 import 'sales_provider.dart';
@@ -148,6 +150,9 @@ class CartNotifier extends StateNotifier<CartState> {
       _ref.read(salesProvider.notifier).prependSale(sale);
       // Refresh summary
       _ref.read(saleSummaryProvider.notifier).load();
+      // Refresh stock counts and dashboard stats (RULE-009)
+      _ref.read(productsProvider.notifier).refresh();
+      _ref.read(dashboardProvider.notifier).loadDashboard();
 
       state = CartState(status: CartStatus.success, lastSale: sale);
       return sale;

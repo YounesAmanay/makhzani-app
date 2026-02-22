@@ -46,11 +46,24 @@ class _SalesScreenState extends ConsumerState<SalesScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final cartItems = ref.watch(cartProvider.select((s) => s.items));
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(context.l10n.sales_title),
+        actions: [
+          if (_tabIndex == 0 && cartItems.isNotEmpty)
+            IconButton(
+              icon: HugeIcon(
+                icon: HugeIcons.strokeRoundedDelete02,
+                size: AppDimensions.iconMedium,
+                color: AppColors.error,
+              ),
+              tooltip: context.l10n.sales_clearCart,
+              onPressed: () => _clearCart(),
+            ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(48),
           child: Padding(
@@ -295,6 +308,18 @@ class _SalesScreenState extends ConsumerState<SalesScreen> {
       _showPriceSheet(product);
     } else {
       ref.read(cartProvider.notifier).addProduct(product);
+    }
+  }
+
+  Future<void> _clearCart() async {
+    final confirmed = await AppConfirmDialog.show(
+      context: context,
+      title: context.l10n.sales_clearCart,
+      message: context.l10n.sales_clearCartConfirm,
+      isDestructive: true,
+    );
+    if (confirmed == true) {
+      ref.read(cartProvider.notifier).clearCart();
     }
   }
 

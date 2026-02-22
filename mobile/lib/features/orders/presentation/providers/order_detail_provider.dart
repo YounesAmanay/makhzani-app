@@ -4,6 +4,7 @@ library;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../dashboard/presentation/providers/dashboard_provider.dart';
+import '../../../products/presentation/providers/products_provider.dart';
 import '../../domain/entities/order_detail.dart';
 import '../../domain/repositories/orders_repository.dart';
 import 'orders_provider.dart';
@@ -136,6 +137,7 @@ class OrderDetailNotifier extends StateNotifier<OrderDetailState> {
         order: updatedOrder,
       );
       _ref.read(ordersProvider.notifier).refresh();
+      _ref.read(productsProvider.notifier).refresh(); // stock changed (RULE-009)
       _ref.read(dashboardProvider.notifier).refresh();
       return true;
     } catch (e) {
