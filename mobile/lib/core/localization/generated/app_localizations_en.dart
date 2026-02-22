@@ -1280,6 +1280,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sales_noPriceError => 'Please enter a valid price';
 
   @override
+  String get sales_clearCart => 'Clear Cart';
+
+  @override
+  String get sales_clearCartConfirm => 'Remove all items from the cart?';
+
+  @override
   String get dashboard_todayRevenue => 'Today\'s Revenue';
 
   @override
@@ -1296,4 +1302,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dashboard_sold => 'sold';
+
+  @override
+  String get products_margin => 'Margin';
+
+  @override
+  String get dashboard_profitMonth => 'Profit This Month';
+
+  @override
+  String get dashboard_profitTotal => 'Total Profit';
+
+  @override
+  String get dashboard_stockValue => 'Stock Value';
+
+  @override
+  String get stock_reason_damaged => 'Damaged';
+
+  @override
+  String get stock_reason_lost => 'Lost';
+
+  @override
+  String get stock_reason_countCorrection => 'Count Correction';
+
+  @override
+  String get stock_reason_other => 'Other';
+
+  @override
+  String get products_barcodeExists => 'Already in your inventory';
+
+  @override
+  String get products_viewProduct => 'View Product';
 }

@@ -13,6 +13,7 @@ class ApiEndpoints {
   // Products
   static const String products = '/products';
   static const String barcodeLookup = '/products/lookup';
+  static const String productByBarcode = '/products/by-barcode';
   static String productById(String id) => '/products/$id';
   static String adjustStock(String id) => '/products/$id/adjust-stock';
   static String productImages(String id) => '/products/$id/images';

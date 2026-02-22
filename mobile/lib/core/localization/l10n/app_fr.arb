@@ -569,11 +569,24 @@
   "sales_editPrice": "Modifier le prix",
   "sales_priceHint": "0.00",
   "sales_noPriceError": "Veuillez entrer un prix valide",
+  "sales_clearCart": "Vider le panier",
+  "sales_clearCartConfirm": "Supprimer tous les articles du panier ?",
 
   "dashboard_todayRevenue": "Revenus aujourd'hui",
   "dashboard_monthRevenue": "Ce mois-ci",
   "dashboard_salesChart": "Ventes — 7 derniers jours",
   "dashboard_topSelling": "Meilleures ventes ce mois",
   "dashboard_noSalesThisMonth": "Aucune vente ce mois-ci",
-  "dashboard_sold": "vendu"
+  "dashboard_sold": "vendu",
+  "products_margin": "Marge",
+  "dashboard_profitMonth": "Bénéfice ce mois",
+  "dashboard_profitTotal": "Bénéfice total",
+  "dashboard_stockValue": "Valeur du stock",
+  "stock_reason_damaged": "Endommagé",
+  "stock_reason_lost": "Perdu",
+  "stock_reason_countCorrection": "Correction d'inventaire",
+  "stock_reason_other": "Autre",
+
+  "products_barcodeExists": "Déjà dans votre inventaire",
+  "products_viewProduct": "Voir le produit"
 }

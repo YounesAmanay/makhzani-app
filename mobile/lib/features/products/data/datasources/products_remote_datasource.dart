@@ -32,6 +32,8 @@ abstract class ProductsRemoteDataSource {
   Future<void> deleteProductImage(String productId, String imageId);
 
   Future<BarcodeResultModel?> lookupBarcode(String barcode);
+
+  Future<ProductModel?> findProductByBarcode(String barcode);
 }
 
 class ProductsRemoteDataSourceImpl implements ProductsRemoteDataSource {
@@ -134,5 +136,16 @@ class ProductsRemoteDataSourceImpl implements ProductsRemoteDataSource {
     final data = response.data['data'];
     if (data == null) return null;
     return BarcodeResultModel.fromJson(data as Map<String, dynamic>);
+  }
+
+  @override
+  Future<ProductModel?> findProductByBarcode(String barcode) async {
+    final response = await _apiClient.get(
+      ApiEndpoints.productByBarcode,
+      queryParameters: {'barcode': barcode},
+    );
+    final data = response.data['data'];
+    if (data == null) return null;
+    return ProductModel.fromJson(data as Map<String, dynamic>);
   }
 }

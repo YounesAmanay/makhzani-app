@@ -1272,6 +1272,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sales_noPriceError => 'يرجى إدخال سعر صالح';
 
   @override
+  String get sales_clearCart => 'مسح السلة';
+
+  @override
+  String get sales_clearCartConfirm => 'إزالة جميع المنتجات من السلة؟';
+
+  @override
   String get dashboard_todayRevenue => 'إيرادات اليوم';
 
   @override
@@ -1288,4 +1294,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dashboard_sold => 'مباع';
+
+  @override
+  String get products_margin => 'الهامش';
+
+  @override
+  String get dashboard_profitMonth => 'ربح هذا الشهر';
+
+  @override
+  String get dashboard_profitTotal => 'إجمالي الربح';
+
+  @override
+  String get dashboard_stockValue => 'قيمة المخزون';
+
+  @override
+  String get stock_reason_damaged => 'تالف';
+
+  @override
+  String get stock_reason_lost => 'مفقود';
+
+  @override
+  String get stock_reason_countCorrection => 'تصحيح الجرد';
+
+  @override
+  String get stock_reason_other => 'أخرى';
+
+  @override
+  String get products_barcodeExists => 'موجود في مخزونك';
+
+  @override
+  String get products_viewProduct => 'عرض المنتج';
 }

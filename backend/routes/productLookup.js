@@ -11,6 +11,7 @@ const router = express.Router();
 
 const { authenticateToken } = require('../middleware/auth');
 const { lookupBarcode } = require('../services/barcodeLookupService');
+const db = require('../models');
 
 // ---------------------------------------------------------------------------
 // Per-merchant rate limiter: 60 lookups / hour (in-memory)
@@ -52,6 +53,37 @@ function validateBarcode(barcode) {
   if (!BARCODE_REGEX.test(barcode)) return 'Barcode must be 8-14 digits';
   return null;
 }
+
+// ---------------------------------------------------------------------------
+// GET /by-barcode?barcode={code}  — exact match against merchant's own inventory
+// ---------------------------------------------------------------------------
+
+router.get('/by-barcode', authenticateToken, async (req, res) => {
+  const { barcode } = req.query;
+
+  if (!barcode) {
+    return res.status(400).json({ success: false, message: 'barcode is required' });
+  }
+
+  try {
+    const product = await db.Product.findOne({
+      where: {
+        merchant_id: req.merchantId,
+        barcode: barcode.trim(),
+        is_active: true,
+      },
+      attributes: [
+        'id', 'name', 'current_stock', 'reorder_threshold',
+        'unit', 'barcode', 'price', 'cost_price', 'category_id',
+      ],
+    });
+
+    return res.json({ success: true, data: product ? product.toJSON() : null });
+  } catch (err) {
+    console.error('[ByBarcode]', err);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
 
 // ---------------------------------------------------------------------------
 // GET /lookup?barcode={code}

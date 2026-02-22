@@ -569,11 +569,24 @@
   "sales_editPrice": "Edit price",
   "sales_priceHint": "0.00",
   "sales_noPriceError": "Please enter a valid price",
+  "sales_clearCart": "Clear Cart",
+  "sales_clearCartConfirm": "Remove all items from the cart?",
 
   "dashboard_todayRevenue": "Today's Revenue",
   "dashboard_monthRevenue": "This Month",
   "dashboard_salesChart": "Sales — Last 7 Days",
   "dashboard_topSelling": "Top Selling This Month",
   "dashboard_noSalesThisMonth": "No sales recorded this month",
-  "dashboard_sold": "sold"
+  "dashboard_sold": "sold",
+  "products_margin": "Margin",
+  "dashboard_profitMonth": "Profit This Month",
+  "dashboard_profitTotal": "Total Profit",
+  "dashboard_stockValue": "Stock Value",
+  "stock_reason_damaged": "Damaged",
+  "stock_reason_lost": "Lost",
+  "stock_reason_countCorrection": "Count Correction",
+  "stock_reason_other": "Other",
+
+  "products_barcodeExists": "Already in your inventory",
+  "products_viewProduct": "View Product"
 }

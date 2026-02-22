@@ -12,6 +12,8 @@ import 'package:vibration/vibration.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
+import '../../domain/entities/barcode_result.dart';
+import '../../domain/entities/product.dart';
 import '../providers/products_provider.dart';
 
 class BarcodeScannerScreen extends ConsumerStatefulWidget {
@@ -57,6 +59,21 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen> {
 
     try {
       final repository = ref.read(productsRepositoryProvider);
+
+      // Step 1: local pre-check — if this fails for any reason, fall through to external lookup
+      try {
+        final ownProduct = await repository.findProductByBarcode(rawBarcode);
+        if (!mounted) return;
+        if (ownProduct != null) {
+          _showAlreadyExistsSheet(ownProduct);
+          return;
+        }
+      } catch (_) {
+        // Local check failed (network, server error) — proceed to external lookup
+        if (!mounted) return;
+      }
+
+      // Step 2: external lookup
       final result = await repository.lookupBarcode(rawBarcode);
 
       if (!mounted) return;
@@ -67,6 +84,7 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen> {
         _showNotFoundSheet(rawBarcode);
       }
     } catch (_) {
+      // Only reaches here if the external lookup itself fails
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -127,14 +145,23 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen> {
 
                 const SizedBox(height: AppDimensions.marginXLarge),
 
-                // Enter manually — returns null, caller shows manual form
+                // Enter manually — pops a low-confidence BarcodeResult so the
+                // form screen preserves the scanned barcode in the barcode field.
                 SizedBox(
                   width: double.infinity,
                   height: AppDimensions.buttonHeightLarge,
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.of(ctx).pop(); // close sheet
-                      Navigator.of(context).pop(null); // close scanner
+                      Navigator.of(context).pop(
+                        BarcodeResult(
+                          barcode: barcode,
+                          name: '',
+                          images: [],
+                          source: 'manual',
+                          confidence: 'low',
+                        ),
+                      );
                     },
                     child: Text(context.l10n.products_enterManually),
                   ),
@@ -160,6 +187,95 @@ class _BarcodeScannerScreenState extends ConsumerState<BarcodeScannerScreen> {
       },
     ).then((_) {
       // If user dismissed sheet by swiping, reset processing so scan works again
+      if (mounted && _isProcessing) {
+        setState(() => _isProcessing = false);
+      }
+    });
+  }
+
+  void _showAlreadyExistsSheet(Product product) {
+    showModalBottomSheet<void>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppDimensions.radiusLarge),
+        ),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(AppDimensions.paddingLarge),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Handle bar
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.border,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: AppDimensions.marginLarge),
+
+                Icon(Icons.inventory_2_outlined, size: 48, color: AppColors.primary),
+                const SizedBox(height: AppDimensions.marginMedium),
+
+                Text(
+                  context.l10n.products_barcodeExists,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: AppDimensions.marginSmall),
+                Text(
+                  product.name,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: AppDimensions.marginXLarge),
+
+                // View product — navigate to product detail
+                SizedBox(
+                  width: double.infinity,
+                  height: AppDimensions.buttonHeightLarge,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (mounted) setState(() => _isProcessing = false); // reset before leaving
+                      Navigator.of(ctx).pop(); // close sheet
+                      Navigator.of(context).pop(null); // close scanner
+                      Navigator.of(context).pushNamed(
+                        '/products/detail',
+                        arguments: product.id,
+                      );
+                    },
+                    child: Text(context.l10n.products_viewProduct),
+                  ),
+                ),
+                const SizedBox(height: AppDimensions.marginSmall),
+
+                // Scan again
+                SizedBox(
+                  width: double.infinity,
+                  height: AppDimensions.buttonHeightLarge,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      if (mounted) setState(() => _isProcessing = false);
+                    },
+                    child: Text(context.l10n.products_scanAgain),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ).then((_) {
       if (mounted && _isProcessing) {
         setState(() => _isProcessing = false);
       }

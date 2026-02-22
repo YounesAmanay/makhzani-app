@@ -2458,6 +2458,18 @@ abstract class AppLocalizations {
   /// **'Please enter a valid price'**
   String get sales_noPriceError;
 
+  /// No description provided for @sales_clearCart.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Cart'**
+  String get sales_clearCart;
+
+  /// No description provided for @sales_clearCartConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove all items from the cart?'**
+  String get sales_clearCartConfirm;
+
   /// No description provided for @dashboard_todayRevenue.
   ///
   /// In en, this message translates to:
@@ -2493,6 +2505,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'sold'**
   String get dashboard_sold;
+
+  /// No description provided for @products_margin.
+  ///
+  /// In en, this message translates to:
+  /// **'Margin'**
+  String get products_margin;
+
+  /// No description provided for @dashboard_profitMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Profit This Month'**
+  String get dashboard_profitMonth;
+
+  /// No description provided for @dashboard_profitTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Profit'**
+  String get dashboard_profitTotal;
+
+  /// No description provided for @dashboard_stockValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock Value'**
+  String get dashboard_stockValue;
+
+  /// No description provided for @stock_reason_damaged.
+  ///
+  /// In en, this message translates to:
+  /// **'Damaged'**
+  String get stock_reason_damaged;
+
+  /// No description provided for @stock_reason_lost.
+  ///
+  /// In en, this message translates to:
+  /// **'Lost'**
+  String get stock_reason_lost;
+
+  /// No description provided for @stock_reason_countCorrection.
+  ///
+  /// In en, this message translates to:
+  /// **'Count Correction'**
+  String get stock_reason_countCorrection;
+
+  /// No description provided for @stock_reason_other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get stock_reason_other;
+
+  /// No description provided for @products_barcodeExists.
+  ///
+  /// In en, this message translates to:
+  /// **'Already in your inventory'**
+  String get products_barcodeExists;
+
+  /// No description provided for @products_viewProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'View Product'**
+  String get products_viewProduct;
 }
 
 class _AppLocalizationsDelegate

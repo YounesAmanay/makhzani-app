@@ -534,11 +534,24 @@
   "sales_editPrice": "تعديل السعر",
   "sales_priceHint": "0.00",
   "sales_noPriceError": "يرجى إدخال سعر صالح",
+  "sales_clearCart": "مسح السلة",
+  "sales_clearCartConfirm": "إزالة جميع المنتجات من السلة؟",
 
   "dashboard_todayRevenue": "إيرادات اليوم",
   "dashboard_monthRevenue": "هذا الشهر",
   "dashboard_salesChart": "المبيعات — آخر 7 أيام",
   "dashboard_topSelling": "الأكثر مبيعاً هذا الشهر",
   "dashboard_noSalesThisMonth": "لا توجد مبيعات هذا الشهر",
-  "dashboard_sold": "مباع"
+  "dashboard_sold": "مباع",
+  "products_margin": "الهامش",
+  "dashboard_profitMonth": "ربح هذا الشهر",
+  "dashboard_profitTotal": "إجمالي الربح",
+  "dashboard_stockValue": "قيمة المخزون",
+  "stock_reason_damaged": "تالف",
+  "stock_reason_lost": "مفقود",
+  "stock_reason_countCorrection": "تصحيح الجرد",
+  "stock_reason_other": "أخرى",
+
+  "products_barcodeExists": "موجود في مخزونك",
+  "products_viewProduct": "عرض المنتج"
 }
