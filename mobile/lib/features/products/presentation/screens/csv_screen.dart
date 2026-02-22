@@ -1,12 +1,10 @@
 /// CSV Import / Export Screen
 ///
-/// Allows merchants to:
-/// - Export their products as a CSV file (shown for copy / share)
-/// - Import products from a CSV string
+/// Export: generates CSV on server → OS share sheet (WhatsApp, Drive, email…)
+/// Import: file picker → reads CSV file → sends to backend
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/localization/l10n_extension.dart';
@@ -15,75 +13,11 @@ import '../../../../core/theme/app_dimensions.dart';
 import '../providers/csv_provider.dart';
 import '../providers/products_provider.dart';
 
-class CsvScreen extends ConsumerStatefulWidget {
+class CsvScreen extends ConsumerWidget {
   const CsvScreen({super.key});
 
   @override
-  ConsumerState<CsvScreen> createState() => _CsvScreenState();
-}
-
-class _CsvScreenState extends ConsumerState<CsvScreen> {
-  final _importController = TextEditingController();
-
-  @override
-  void dispose() {
-    _importController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _export() async {
-    final csv = await ref.read(csvProvider.notifier).exportCsv();
-    if (csv == null || !mounted) return;
-    await Clipboard.setData(ClipboardData(text: csv));
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(context.l10n.csv_exportedCopied),
-        backgroundColor: AppColors.success,
-      ),
-    );
-  }
-
-  Future<void> _import() async {
-    final csvData = _importController.text.trim();
-    if (csvData.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.csv_pasteFirst),
-          backgroundColor: AppColors.error,
-        ),
-      );
-      return;
-    }
-
-    final success = await ref.read(csvProvider.notifier).importCsv(csvData);
-    if (!mounted) return;
-
-    if (success) {
-      final state = ref.read(csvProvider);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.l10n.csv_importResult(state.created ?? 0, state.skipped ?? 0),
-          ),
-          backgroundColor: AppColors.success,
-        ),
-      );
-      _importController.clear();
-      ref.read(productsProvider.notifier).refresh();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(context.l10n.error_generic),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget build(BuildContext context, WidgetRef ref) {
     final csvState = ref.watch(csvProvider);
     final isLoading = csvState.status == CsvStatus.loading;
 
@@ -96,116 +30,202 @@ class _CsvScreenState extends ConsumerState<CsvScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Export section
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(AppDimensions.paddingMedium),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.l10n.csv_exportTitle,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: AppDimensions.marginSmall),
-                    Text(
-                      context.l10n.csv_exportDescription,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: AppDimensions.marginMedium),
-                    SizedBox(
-                      width: double.infinity,
-                      height: AppDimensions.buttonHeightMedium,
-                      child: ElevatedButton.icon(
-                        onPressed: isLoading ? null : _export,
-                        icon: isLoading
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColors.white,
-                                ),
-                              )
-                            : const Icon(Icons.download_outlined),
-                        label: Text(context.l10n.csv_export),
-                      ),
-                    ),
-                  ],
-                ),
+            _ExportCard(isLoading: isLoading),
+            const SizedBox(height: AppDimensions.marginMedium),
+            _ImportCard(isLoading: isLoading, state: csvState),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Export card
+// ---------------------------------------------------------------------------
+
+class _ExportCard extends ConsumerWidget {
+  final bool isLoading;
+
+  const _ExportCard({required this.isLoading});
+
+  Future<void> _onExport(BuildContext context, WidgetRef ref) async {
+    final success = await ref.read(csvProvider.notifier).exportCsv();
+    if (!context.mounted) return;
+    if (!success) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(context.l10n.error_generic),
+        backgroundColor: AppColors.error,
+      ));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppDimensions.paddingMedium),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              context.l10n.csv_exportTitle,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
               ),
             ),
+            const SizedBox(height: AppDimensions.marginSmall),
+            Text(
+              context.l10n.csv_exportDescription,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: AppDimensions.marginMedium),
+            SizedBox(
+              width: double.infinity,
+              height: AppDimensions.buttonHeightMedium,
+              child: ElevatedButton.icon(
+                onPressed: isLoading ? null : () => _onExport(context, ref),
+                icon: isLoading
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.white,
+                        ),
+                      )
+                    : const Icon(Icons.share_outlined),
+                label: Text(context.l10n.csv_export),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
+// ---------------------------------------------------------------------------
+// Import card
+// ---------------------------------------------------------------------------
+
+class _ImportCard extends ConsumerWidget {
+  final bool isLoading;
+  final CsvState state;
+
+  const _ImportCard({required this.isLoading, required this.state});
+
+  Future<void> _onPickFile(BuildContext context, WidgetRef ref) async {
+    await ref.read(csvProvider.notifier).pickFile();
+  }
+
+  Future<void> _onImport(BuildContext context, WidgetRef ref) async {
+    final success = await ref.read(csvProvider.notifier).importCsv();
+    if (!context.mounted) return;
+
+    if (success) {
+      final s = ref.read(csvProvider);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          context.l10n.csv_importResult(s.created ?? 0, s.skipped ?? 0),
+        ),
+        backgroundColor: AppColors.success,
+      ));
+      ref.read(productsProvider.notifier).refresh();
+      ref.read(csvProvider.notifier).reset();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(context.l10n.error_generic),
+        backgroundColor: AppColors.error,
+      ));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final fileName = state.selectedFileName;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppDimensions.paddingMedium),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              context.l10n.csv_importTitle,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: AppDimensions.marginSmall),
+            Text(
+              context.l10n.csv_importDescription,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
             const SizedBox(height: AppDimensions.marginMedium),
 
-            // Import section
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(AppDimensions.paddingMedium),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.l10n.csv_importTitle,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: AppDimensions.marginSmall),
-                    Text(
-                      context.l10n.csv_importDescription,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: AppDimensions.marginSmall),
-                    Text(
-                      context.l10n.csv_formatHint,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.textTertiary,
-                        fontFamily: 'monospace',
-                      ),
-                    ),
-                    const SizedBox(height: AppDimensions.marginMedium),
-                    TextFormField(
-                      controller: _importController,
-                      decoration: InputDecoration(
-                        labelText: context.l10n.csv_pasteLabel,
-                        hintText: context.l10n.csv_pasteHint,
-                        alignLabelWithHint: true,
-                      ),
-                      maxLines: 8,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        fontFamily: 'monospace',
-                      ),
-                    ),
-                    const SizedBox(height: AppDimensions.marginMedium),
-                    SizedBox(
-                      width: double.infinity,
-                      height: AppDimensions.buttonHeightMedium,
-                      child: ElevatedButton.icon(
-                        onPressed: isLoading ? null : _import,
-                        icon: isLoading
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColors.white,
-                                ),
-                              )
-                            : const Icon(Icons.upload_outlined),
-                        label: Text(context.l10n.csv_import),
-                      ),
-                    ),
-                  ],
-                ),
+            // Pick file button
+            SizedBox(
+              width: double.infinity,
+              height: AppDimensions.buttonHeightMedium,
+              child: OutlinedButton.icon(
+                onPressed: isLoading ? null : () => _onPickFile(context, ref),
+                icon: const Icon(Icons.folder_open_outlined),
+                label: Text(context.l10n.csv_pickFile),
               ),
             ),
+
+            // Selected file name
+            if (fileName != null) ...[
+              const SizedBox(height: AppDimensions.marginSmall),
+              Row(
+                children: [
+                  Icon(
+                    Icons.check_circle_outline,
+                    size: 16,
+                    color: AppColors.success,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      context.l10n.csv_fileSelected(fileName),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppColors.success,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppDimensions.marginMedium),
+
+              // Import button — only shown after file is picked
+              SizedBox(
+                width: double.infinity,
+                height: AppDimensions.buttonHeightMedium,
+                child: ElevatedButton.icon(
+                  onPressed: isLoading ? null : () => _onImport(context, ref),
+                  icon: isLoading
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.white,
+                          ),
+                        )
+                      : const Icon(Icons.upload_outlined),
+                  label: Text(context.l10n.csv_importButton),
+                ),
+              ),
+            ],
           ],
         ),
       ),
