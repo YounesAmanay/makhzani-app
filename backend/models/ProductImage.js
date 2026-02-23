@@ -1,11 +1,9 @@
 // backend/models/ProductImage.js
-const { v4: uuidv4 } = require('uuid');
-
 module.exports = (sequelize, DataTypes) => {
   const ProductImage = sequelize.define('ProductImage', {
     id: {
       type: DataTypes.UUID,
-      defaultValue: () => uuidv4(),
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
     product_id: {
@@ -24,6 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     tableName: 'product_images',
+    timestamps: true,
+    underscored: true,
     indexes: [{ fields: ['product_id'] }]
   });
 

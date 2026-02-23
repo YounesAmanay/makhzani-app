@@ -1,12 +1,10 @@
-const { v4: uuidv4 } = require("uuid");
-
 module.exports = (sequelize, DataTypes) => {
   const Merchant = sequelize.define(
     "Merchant",
     {
       id: {
         type: DataTypes.UUID,
-        defaultValue: () => uuidv4(),
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
       name: {
@@ -113,6 +111,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       tableName: "merchants",
+      timestamps: true,
+      underscored: true,
       indexes: [
         { fields: ["phone_number"] },
         { fields: ["status"] },

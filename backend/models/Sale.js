@@ -1,10 +1,8 @@
-const { v4: uuidv4 } = require('uuid');
-
 module.exports = (sequelize, DataTypes) => {
   const Sale = sequelize.define('Sale', {
     id: {
       type: DataTypes.UUID,
-      defaultValue: () => uuidv4(),
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
     merchant_id: {
@@ -37,6 +35,8 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     tableName: 'sales',
+    timestamps: true,
+    underscored: true,
     indexes: [
       { fields: ['merchant_id'] },
       { fields: ['created_at'] },

@@ -68,6 +68,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       tableName: 'barcode_cache',
       timestamps: false,
+      underscored: true,
       indexes: [
         { fields: ['expires_at'] },
       ],

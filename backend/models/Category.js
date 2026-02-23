@@ -1,12 +1,10 @@
-const { v4: uuidv4 } = require("uuid");
-
 module.exports = (sequelize, DataTypes) => {
   const Category = sequelize.define(
     "Category",
     {
       id: {
         type: DataTypes.UUID,
-        defaultValue: () => uuidv4(),
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
       name: {
@@ -51,6 +49,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       tableName: "categories",
+      timestamps: true,
+      underscored: true,
       indexes: [
         { fields: ["merchant_id"] },
         { fields: ["merchant_id", "is_active"] },

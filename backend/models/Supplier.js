@@ -1,11 +1,9 @@
 // backend/models/Supplier.js
-const { v4: uuidv4 } = require('uuid');
-
 module.exports = (sequelize, DataTypes) => {
   const Supplier = sequelize.define('Supplier', {
     id: {
       type: DataTypes.UUID,
-      defaultValue: () => uuidv4(),
+      defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
     merchant_id: {
@@ -97,6 +95,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     tableName: 'suppliers',
+    timestamps: true,
+    underscored: true,
     indexes: [
       // Scoped uniqueness: same merchant cannot have two suppliers with the same phone
       { unique: true, fields: ['merchant_id', 'phone_number'] },
