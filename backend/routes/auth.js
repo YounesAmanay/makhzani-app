@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const db = require('../models');
 
+const { sendOtpLimiter, verifyOtpLimiter } = require('../middleware/rateLimiter');
+
 // OTP storage — uses Redis when available, falls back to in-memory Map
 const { getRedisClient, isRedisAvailable } = require('../config/redis');
 const otpStore = new Map(); // Fallback only
@@ -124,7 +126,7 @@ const handleValidationErrors = (req, res, next) => {
  * POST /api/auth/send-otp
  * Send OTP to merchant's phone number
  */
-router.post('/send-otp', validatePhone, handleValidationErrors, async (req, res) => {
+router.post('/send-otp', sendOtpLimiter, validatePhone, handleValidationErrors, async (req, res) => {
   try {
     const { phone_number } = req.body;
 
@@ -185,7 +187,7 @@ router.post('/send-otp', validatePhone, handleValidationErrors, async (req, res)
  * POST /api/auth/verify-otp
  * Verify OTP and return JWT token
  */
-router.post('/verify-otp', validateOTP, handleValidationErrors, async (req, res) => {
+router.post('/verify-otp', verifyOtpLimiter, validateOTP, handleValidationErrors, async (req, res) => {
   try {
     const { phone_number, otp } = req.body;
 

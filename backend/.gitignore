@@ -75,5 +75,8 @@ uploads/products/
 uploads/pdfs/
 uploads/avatars/
 
+# PM2 logs
+logs/
+
 # Firebase private key — never commit
 config/firebase-service-account.json
