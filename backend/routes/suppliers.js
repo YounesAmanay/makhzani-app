@@ -212,7 +212,7 @@ router.post('/:id/avatar', authenticateToken, uploadAvatar.single('avatar'), asy
       return res.status(404).json({ success: false, message: 'Supplier not found' });
     }
 
-    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+    const avatarUrl = req.file.location; // S3 absolute URL
     await supplier.update({ avatar_url: avatarUrl });
 
     res.json({ success: true, data: { avatar_url: avatarUrl } });

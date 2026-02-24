@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../core/constants/app_constants.dart';
+import '../../../../core/utils/url_helper.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
@@ -189,7 +189,7 @@ class _SupplierDetailScreenState extends ConsumerState<SupplierDetailScreen> {
                     ? CircleAvatar(
                         radius: 40,
                         backgroundImage: NetworkImage(
-                          AppConstants.serverUrl + supplier.avatarUrl!,
+                          UrlHelper.resolve(supplier.avatarUrl!),
                         ),
                         backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                       )

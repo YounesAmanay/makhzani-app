@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../../core/constants/app_constants.dart';
+import '../../../../core/utils/url_helper.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
@@ -476,7 +476,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                             AppDimensions.radiusMedium,
                           ),
                           child: Image.network(
-                            AppConstants.serverUrl + image.imageUrl,
+                            UrlHelper.resolve(image.imageUrl),
                             width: 120,
                             height: 120,
                             fit: BoxFit.cover,

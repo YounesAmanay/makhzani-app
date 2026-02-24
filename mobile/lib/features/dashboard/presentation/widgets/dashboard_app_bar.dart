@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
 
-import '../../../../core/constants/app_constants.dart';
+import '../../../../core/utils/url_helper.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
@@ -79,7 +79,7 @@ class DashboardAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   radius: 16,
                   backgroundColor: AppColors.primaryLight,
                   backgroundImage: avatarUrl != null
-                      ? NetworkImage(AppConstants.serverUrl + avatarUrl)
+                      ? NetworkImage(UrlHelper.resolve(avatarUrl))
                       : null,
                   child: avatarUrl == null
                       ? Text(
@@ -222,7 +222,7 @@ class _ProfileSheet extends ConsumerWidget {
                     radius: 28,
                     backgroundColor: AppColors.primaryLight,
                     backgroundImage: avatarUrl != null
-                        ? NetworkImage(AppConstants.serverUrl + avatarUrl)
+                        ? NetworkImage(UrlHelper.resolve(avatarUrl))
                         : null,
                     child: avatarUrl == null
                         ? Text(

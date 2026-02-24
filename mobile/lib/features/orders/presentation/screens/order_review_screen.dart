@@ -11,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../core/constants/app_constants.dart';
+import '../../../../core/utils/url_helper.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
@@ -110,7 +110,7 @@ class _OrderReviewScreenState extends ConsumerState<OrderReviewScreen> {
 
     // Step 2: download to temp storage
     try {
-      final fullUrl = '${AppConstants.serverUrl}$pdfUrl';
+      final fullUrl = UrlHelper.resolve(pdfUrl);
       final fileName = pdfUrl.split('/').last;
       final dir = await getTemporaryDirectory();
       final filePath = '${dir.path}/$fileName';

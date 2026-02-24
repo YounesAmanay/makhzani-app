@@ -1,12 +1,11 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
+const { uploadFileToS3 } = require('./s3Upload');
 
-// Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, '../uploads/pdfs');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
+// Temp directory for PDF generation before S3 upload
+const uploadsDir = os.tmpdir();
 
 /**
  * Generate PDF for a purchase order
@@ -163,12 +162,16 @@ async function generateOrderPDF(order) {
       doc.end();
 
       // Handle stream events
-      stream.on('finish', () => {
-        resolve({
-          filename: filename,
-          filepath: filepath,
-          url: `/uploads/pdfs/${filename}`
-        });
+      stream.on('finish', async () => {
+        try {
+          // Upload to S3 and clean up temp file
+          const s3Key = `pdfs/${filename}`;
+          const url = await uploadFileToS3(filepath, s3Key, 'application/pdf');
+          fs.unlink(filepath, () => {}); // non-fatal cleanup
+          resolve({ filename, filepath, url });
+        } catch (uploadError) {
+          reject(new Error(`S3 upload error: ${uploadError.message}`));
+        }
       });
 
       stream.on('error', (error) => {

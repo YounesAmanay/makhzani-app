@@ -5,7 +5,7 @@ library;
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_constants.dart';
+import '../../../../core/utils/url_helper.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
@@ -60,7 +60,7 @@ class SupplierListTile extends StatelessWidget {
       return CircleAvatar(
         radius: 24,
         backgroundImage: NetworkImage(
-          AppConstants.serverUrl + supplier.avatarUrl!,
+          UrlHelper.resolve(supplier.avatarUrl!),
         ),
         backgroundColor: AppColors.primary.withValues(alpha: 0.1),
       );

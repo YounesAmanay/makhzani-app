@@ -375,22 +375,9 @@ router.post(
         return res.status(404).json({ success: false, message: 'Merchant not found' });
       }
 
-      // Delete old avatar file from disk if it exists
-      if (merchant.avatar_url) {
-        const oldPath = require('path').join(__dirname, '..', merchant.avatar_url);
-        require('fs').unlink(oldPath, () => {}); // non-fatal
-      }
+      const avatarUrl = req.file.location; // S3 absolute URL
 
-      const avatarUrl = `/uploads/avatars/${req.file.filename}`;
-
-      try {
-        await merchant.update({ avatar_url: avatarUrl });
-      } catch (dbError) {
-        // DB update failed — clean up the newly uploaded file
-        const newPath = require('path').join(__dirname, '..', avatarUrl);
-        require('fs').unlink(newPath, () => {});
-        throw dbError;
-      }
+      await merchant.update({ avatar_url: avatarUrl });
 
       res.json({ success: true, data: { avatar_url: avatarUrl } });
     } catch (error) {

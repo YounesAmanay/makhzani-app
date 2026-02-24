@@ -7,8 +7,6 @@ const db = require('../models');
 const { generateOrderPDF } = require('../utils/pdfGenerator');
 const { logStockTransaction } = require('../utils/stockLogger');
 const { notifyLowStock } = require('../utils/notificationService');
-const fs = require('fs');
-const path = require('path');
 
 // Validation middleware
 const validateOrder = [
@@ -703,20 +701,8 @@ router.get('/:id/download-pdf', authenticateToken, async (req, res) => {
       });
     }
 
-    // Construct file path
-    const filename = path.basename(order.pdf_url);
-    const filepath = path.join(__dirname, '../uploads/pdfs', filename);
-
-    // Check if file exists
-    if (!fs.existsSync(filepath)) {
-      return res.status(404).json({
-        success: false,
-        message: 'PDF file not found'
-      });
-    }
-
-    // Send file
-    res.download(filepath, `order-${order.order_number}.pdf`);
+    // PDF is stored on S3 — redirect to the absolute S3 URL
+    res.redirect(order.pdf_url);
 
   } catch (error) {
     console.error('Error downloading PDF:', error);

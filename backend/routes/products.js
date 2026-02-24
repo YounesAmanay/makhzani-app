@@ -833,16 +833,11 @@ router.post('/:id/images', authenticateToken, uploadProductImages.array('images'
       created = await Promise.all(req.files.map((file, i) =>
         db.ProductImage.create({
           product_id: product.id,
-          url: `/uploads/products/${file.filename}`,
+          url: file.location, // S3 absolute URL
           sort_order: currentCount + i
         })
       ));
     } catch (dbError) {
-      // DB insert failed — clean up uploaded files
-      for (const file of req.files) {
-        const filepath = path.join(__dirname, '..', 'uploads', 'products', file.filename);
-        if (fs.existsSync(filepath)) fs.unlinkSync(filepath);
-      }
       throw dbError;
     }
 

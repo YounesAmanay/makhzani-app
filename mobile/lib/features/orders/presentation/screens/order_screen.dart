@@ -12,7 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../core/constants/app_constants.dart';
+import '../../../../core/utils/url_helper.dart';
 import '../../../../core/localization/l10n_extension.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_dimensions.dart';
@@ -214,7 +214,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                   ? CircleAvatar(
                       radius: 18,
                       backgroundImage: NetworkImage(
-                        AppConstants.serverUrl + draft.supplierAvatarUrl!,
+                        UrlHelper.resolve(draft.supplierAvatarUrl!),
                       ),
                     )
                   : CircleAvatar(
@@ -722,7 +722,7 @@ class _SupplierPickTile extends StatelessWidget {
                     ? CircleAvatar(
                         radius: 22,
                         backgroundImage: NetworkImage(
-                          AppConstants.serverUrl + supplier.avatarUrl!,
+                          UrlHelper.resolve(supplier.avatarUrl!),
                         ),
                       )
                     : CircleAvatar(
