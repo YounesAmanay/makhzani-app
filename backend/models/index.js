@@ -31,6 +31,21 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+// Globally override toJSON on all models so timestamps serialize as snake_case.
+// Sequelize underscored:true maps DB created_at → JS createdAt, but toJSON()
+// still outputs camelCase. This ensures every model response matches the Flutter contract.
+Object.keys(db).forEach(modelName => {
+  const model = db[modelName];
+  if (!model || !model.prototype) return;
+  const originalToJSON = model.prototype.toJSON;
+  model.prototype.toJSON = function () {
+    const obj = originalToJSON.call(this);
+    if ('createdAt' in obj) { obj.created_at = obj.createdAt; delete obj.createdAt; }
+    if ('updatedAt' in obj) { obj.updated_at = obj.updatedAt; delete obj.updatedAt; }
+    return obj;
+  };
+});
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

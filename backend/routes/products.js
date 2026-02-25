@@ -175,8 +175,6 @@ router.get('/', authenticateToken, validateQuery, handleValidationErrors, async 
       data: {
         products: products.map(product => ({
           ...product.toJSON(),
-          created_at: product.createdAt,
-          updated_at: product.updatedAt,
           needs_reorder: product.current_stock <= product.reorder_threshold,
           stock_status: product.current_stock <= product.reorder_threshold ? 'low' : 'ok'
         })),
@@ -494,14 +492,11 @@ router.get('/:id', authenticateToken, async (req, res) => {
       });
     }
 
-    const p = product.toJSON();
     res.json({
       success: true,
       data: {
         product: {
-          ...p,
-          created_at: product.createdAt,
-          updated_at: product.updatedAt,
+          ...product.toJSON(),
           needs_reorder: product.current_stock <= product.reorder_threshold,
           stock_status: product.current_stock <= product.reorder_threshold ? 'low' : 'ok'
         }
