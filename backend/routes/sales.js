@@ -154,7 +154,7 @@ router.get('/', authenticateToken, validateListQuery, handleValidation, async (r
             product_name_snapshot: si.product_name_snapshot,
             product_unit_snapshot: si.product_unit_snapshot,
           })),
-          created_at: new Date(s.get('created_at')).toISOString(),
+          created_at: s.createdAt.toISOString(),
         })),
         pagination: { total: count, page, limit, total_pages: Math.ceil(count / limit) },
       },
@@ -198,7 +198,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
           product_name_snapshot: si.product_name_snapshot,
           product_unit_snapshot: si.product_unit_snapshot,
         })),
-        created_at: new Date(sale.get('created_at')).toISOString(),
+        created_at: sale.createdAt.toISOString(),
       },
     });
   } catch (err) {
@@ -329,7 +329,7 @@ router.post('/', authenticateToken, checkSubscription, validateSale, handleValid
           product_name_snapshot: si.product_name_snapshot,
           product_unit_snapshot: si.product_unit_snapshot,
         })),
-        created_at: new Date(sale.get('created_at')).toISOString(),
+        created_at: sale.createdAt.toISOString(),
       },
     });
   } catch (err) {
@@ -357,7 +357,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     }
 
     // Only allow cancellation within 24 hours
-    const ageHours = (Date.now() - new Date(sale.get('created_at')).getTime()) / 3_600_000;
+    const ageHours = (Date.now() - sale.createdAt.getTime()) / 3_600_000;
     if (ageHours > 24) {
       await transaction.rollback();
       return res.status(400).json({ success: false, message: 'Sale can only be cancelled within 24 hours' });

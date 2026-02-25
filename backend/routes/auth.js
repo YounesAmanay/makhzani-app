@@ -159,10 +159,18 @@ router.post('/send-otp', sendOtpLimiter, validatePhone, handleValidationErrors, 
       attempts: 0
     });
 
-    console.log(`🔢 Generated OTP: ${otp} (expires: ${expiresAt})`);
-
-    // In production, send SMS here
-    // await smsService.send(phone_number, `Your Makhzani verification code: ${otp}`);
+    // Send SMS via Twilio in production
+    if (process.env.NODE_ENV === 'production') {
+      const twilio = require('twilio');
+      const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+      await twilioClient.messages.create({
+        body: `Your Makhzani verification code: ${otp}`,
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: phone_number,
+      });
+    } else {
+      console.log(`🔢 Generated OTP: ${otp} (expires: ${expiresAt})`);
+    }
 
     res.json({
       success: true,

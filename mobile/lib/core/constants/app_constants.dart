@@ -4,7 +4,7 @@ class AppConstants {
   static const String appVersion = '1.0.0';
 
   // API Configuration
-  static const String baseUrl = 'http://98.84.116.53:3000/api'; // Change to your backend IP
+  static const String baseUrl = 'http://98.84.116.53:3000/api/'; 
   static const String serverUrl = 'http://98.84.116.53:3000';
 
   // Timeouts

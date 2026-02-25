@@ -325,7 +325,7 @@ router.get('/dashboard-stats', authenticateToken, async (req, res) => {
           id: order.id,
           order_number: order.order_number,
           supplier_name: order.supplier?.name,
-          created_at: new Date(order.get('created_at')).toISOString(),
+          created_at: order.createdAt.toISOString(),
           pdf_generated: !!order.pdf_generated_at,
           sent: !!order.sent_at,
         })),
