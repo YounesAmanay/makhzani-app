@@ -159,14 +159,20 @@ router.post('/send-otp', sendOtpLimiter, validatePhone, handleValidationErrors, 
       attempts: 0
     });
 
-    // Send SMS via Twilio only when ENABLE_SMS=true
+    // Send SMS via Infobip only when ENABLE_SMS=true
     if (process.env.ENABLE_SMS === 'true') {
-      const twilio = require('twilio');
-      const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-      await twilioClient.messages.create({
-        body: `Your Makhzani verification code: ${otp}`,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: phone_number,
+      const { Infobip, AuthType } = require('@infobip-api/sdk');
+      const infobip = new Infobip({
+        baseUrl: process.env.INFOBIP_BASE_URL,
+        apiKey: process.env.INFOBIP_API_KEY,
+        authType: AuthType.ApiKey,
+      });
+      await infobip.channels.sms.send({
+        messages: [{
+          destinations: [{ to: phone_number }],
+          from: process.env.INFOBIP_SENDER,
+          text: `Your Makhzani verification code: ${otp}`,
+        }],
       });
     }
     // Always log OTP — readable via pm2 logs on server
