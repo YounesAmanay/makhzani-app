@@ -81,14 +81,28 @@ Fix the source. Never patch a symptom on one side to work around a bug on the ot
 
 ---
 
-### RULE-007 — Use `instance.get('column_name')` for Sequelize timestamps (-15pts)
+### RULE-007 — Never manually serialize Sequelize timestamps in routes (-15pts)
 ```javascript
-// WRONG — breaks in findAndCountAll subqueries
-new Date(s.createdAt).toISOString()
-// CORRECT — reads dataValues directly, always works
-new Date(s.get('created_at')).toISOString()
+// WRONG — patch each route manually, will be missed somewhere
+created_at: order.createdAt,
+created_at: new Date(s.get('created_at')).toISOString(),
+
+// CORRECT — fix at the model layer globally (models/index.js toJSON override)
+// All models serialize created_at/updated_at as snake_case automatically
 ```
-With `underscored: true`, `s.createdAt` getter can be undefined in subquery results.
+With `underscored: true`, `toJSON()` still outputs camelCase. Fix this once in `models/index.js` — not in every route.
+
+---
+
+### RULE-010 — When the same bug appears in 2+ places, fix the root cause — not each instance (-20pts)
+```javascript
+// WRONG — patch symptoms one by one
+// Fix orders.js... fix sales.js... fix merchants.js...
+
+// CORRECT — find the shared root cause and fix it once
+// e.g. toJSON() outputs camelCase → fix in models/index.js → all routes fixed
+```
+If you see the same error pattern in more than one file: **stop patching and fix the source**. The fix must be architectural, not repetitive.
 
 ---
 
@@ -110,6 +124,21 @@ Material(
 )
 ```
 No border = rejected. Wrong radius = rejected. Every card looks the same.
+
+---
+
+### RULE-009 — Refresh related providers after every mutation (-15pts)
+```dart
+// WRONG — stock changes on backend, UI still shows old value
+await _repo.createSale(items: items);
+// nothing else
+
+// CORRECT — invalidate every provider whose data changed
+await _repo.createSale(items: items);
+_ref.read(productsProvider.notifier).refresh();       // stock changed
+_ref.read(dashboardProvider.notifier).loadDashboard(); // stats changed
+```
+After ANY mutation (sale, stock adjust, order receive): refresh ALL providers whose state was affected. User must never need to pull-to-refresh to see their own action reflected.
 
 ---
 

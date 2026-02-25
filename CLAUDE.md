@@ -12,6 +12,20 @@ Every feature is scored out of 100. Score below 70 = feature rejected, rewrite r
 
 File: `ENGINEER_RULES.md` (same directory as this file)
 
+**MANDATORY: Before starting ANY task — Supervisor or Engineer — read `ENGINEER_RULES.md` in full. No exceptions.**
+
+### Systemic Thinking Rule (Non-Negotiable)
+When the same bug or error pattern appears in **2 or more places**:
+1. **Stop patching** — do not fix each instance individually
+2. **Find the root cause** — what shared layer produces this pattern?
+3. **Fix it once at the source** — models, middleware, config, base class
+4. The fix must be architectural, not repetitive
+
+Examples:
+- Same timestamp bug in 5 routes → fix `toJSON()` globally in `models/index.js`
+- Same auth check missing in 3 routes → add it to middleware
+- Same validation pattern repeated → extract to shared validator
+
 ---
 
 ## Absolute Rules (Non-Negotiable)
