@@ -159,8 +159,8 @@ router.post('/send-otp', sendOtpLimiter, validatePhone, handleValidationErrors, 
       attempts: 0
     });
 
-    // Send SMS via Twilio in production
-    if (process.env.NODE_ENV === 'production') {
+    // Send SMS via Twilio only when ENABLE_SMS=true
+    if (process.env.ENABLE_SMS === 'true') {
       const twilio = require('twilio');
       const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
       await twilioClient.messages.create({
@@ -168,9 +168,9 @@ router.post('/send-otp', sendOtpLimiter, validatePhone, handleValidationErrors, 
         from: process.env.TWILIO_PHONE_NUMBER,
         to: phone_number,
       });
-    } else {
-      console.log(`🔢 Generated OTP: ${otp} (expires: ${expiresAt})`);
     }
+    // Always log OTP — readable via pm2 logs on server
+    console.log(`🔢 OTP for ${phone_number}: ${otp}`);
 
     res.json({
       success: true,
