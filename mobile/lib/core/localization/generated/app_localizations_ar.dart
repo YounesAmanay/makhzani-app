@@ -1383,4 +1383,125 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get orders_sharePdf => 'مشاركة PDF';
+
+  @override
+  String get reports_title => 'التقارير';
+
+  @override
+  String get reports_sales => 'المبيعات';
+
+  @override
+  String get reports_products => 'المنتجات';
+
+  @override
+  String get reports_inventory => 'المخزون';
+
+  @override
+  String get reports_period_today => 'اليوم';
+
+  @override
+  String get reports_period_week => 'هذا الأسبوع';
+
+  @override
+  String get reports_period_month => 'هذا الشهر';
+
+  @override
+  String get reports_period_last_month => 'الشهر الماضي';
+
+  @override
+  String get reports_period_custom => 'مخصص';
+
+  @override
+  String get reports_totalRevenue => 'إجمالي الإيرادات';
+
+  @override
+  String get reports_totalSales => 'إجمالي المبيعات';
+
+  @override
+  String get reports_totalProfit => 'إجمالي الربح';
+
+  @override
+  String get reports_avgSaleValue => 'متوسط البيع';
+
+  @override
+  String get reports_cancelledCount => 'ملغاة';
+
+  @override
+  String get reports_cancelledValue => 'قيمة الملغاة';
+
+  @override
+  String get reports_bestDay => 'أفضل يوم';
+
+  @override
+  String get reports_worstDay => 'أسوأ يوم';
+
+  @override
+  String get reports_topProducts => 'أفضل المنتجات';
+
+  @override
+  String get reports_bestSellers => 'الأكثر مبيعًا';
+
+  @override
+  String get reports_deadStock => 'المخزون الراكد';
+
+  @override
+  String get reports_byCategory => 'حسب الفئة';
+
+  @override
+  String get reports_revenue => 'الإيرادات';
+
+  @override
+  String get reports_profit => 'الربح';
+
+  @override
+  String get reports_margin => 'الهامش';
+
+  @override
+  String get reports_quantitySold => 'مباع';
+
+  @override
+  String get reports_stockValue => 'قيمة المخزون';
+
+  @override
+  String get reports_healthScore => 'نقاط الصحة';
+
+  @override
+  String get reports_healthyStock => 'جيد';
+
+  @override
+  String get reports_lowStock => 'مخزون منخفض';
+
+  @override
+  String get reports_zeroStock => 'نفد المخزون';
+
+  @override
+  String get reports_reorderImpact => 'تكلفة إعادة الطلب';
+
+  @override
+  String reports_daysSinceLastSale(int days) {
+    return 'منذ $days يوم';
+  }
+
+  @override
+  String get reports_neverSold => 'لم يُباع مطلقًا';
+
+  @override
+  String get reports_noData => 'لا توجد بيانات لهذه الفترة';
+
+  @override
+  String get reports_sales_title => 'تقرير المبيعات';
+
+  @override
+  String get reports_products_title => 'تقرير المنتجات';
+
+  @override
+  String get reports_inventory_title => 'تقرير المخزون';
+
+  @override
+  String get reports_currency => 'د.م';
+
+  @override
+  String reports_products_count(int count) {
+    return '$count منتجات';
+  }
 }

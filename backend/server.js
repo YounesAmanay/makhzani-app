@@ -42,6 +42,7 @@ app.use('/api/suppliers', require('./routes/suppliers'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/categories', require('./routes/categories'));
 app.use('/api/sales', require('./routes/sales'));
+app.use('/api/reports', require('./routes/reports'));
 
 // Protected test endpoint
 const { authenticateToken } = require('./middleware/auth');

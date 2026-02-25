@@ -38,6 +38,11 @@ class ApiEndpoints {
   static String saleById(String id) => '/sales/$id';
   static const String salesSummary = '/sales/summary';
 
+  // Reports
+  static const String reportsSales = '/reports/sales';
+  static const String reportsProducts = '/reports/products';
+  static const String reportsInventory = '/reports/inventory';
+
   // Orders
   static const String orders = '/orders';
   static String orderById(String id) => '/orders/$id';

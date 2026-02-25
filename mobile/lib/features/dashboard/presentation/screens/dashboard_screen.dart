@@ -24,6 +24,7 @@ import '../widgets/top_selling_list.dart';
 import '../../../../shared/widgets/stats_card.dart';
 import '../../../orders/presentation/screens/reorder_suggestions_screen.dart';
 import '../../../products/presentation/screens/product_detail_screen.dart';
+import '../../../reports/presentation/screens/reports_screen.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -101,6 +102,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   const SizedBox(height: AppDimensions.marginMedium),
                   _buildProfitRow(state),
                 ],
+
+                const SizedBox(height: AppDimensions.marginLarge),
+
+                // Reports entry point
+                _buildReportsCard(),
 
                 const SizedBox(height: AppDimensions.marginLarge),
 
@@ -276,6 +282,55 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildReportsCard() {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const ReportsScreen()),
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.paddingMedium,
+          vertical: AppDimensions.paddingMedium,
+        ),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF008060), Color(0xFF00A87A)],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.insights_outlined, color: Colors.white, size: 28),
+            const SizedBox(width: AppDimensions.marginMedium),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.l10n.reports_title,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  Text(
+                    '${context.l10n.reports_sales} · ${context.l10n.reports_products} · ${context.l10n.reports_inventory}',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Colors.white.withAlpha(200),
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
+          ],
+        ),
+      ),
     );
   }
 

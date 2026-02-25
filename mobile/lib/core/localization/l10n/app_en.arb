@@ -635,5 +635,55 @@
   "orders_orderManually": "Order manually",
   "orders_orderManuallySubtitle": "These products have no order history — pick a supplier when creating the order",
 
-  "orders_sharePdf": "Share PDF"
+  "orders_sharePdf": "Share PDF",
+
+  "reports_title": "Reports",
+  "reports_sales": "Sales",
+  "reports_products": "Products",
+  "reports_inventory": "Inventory",
+  "reports_period_today": "Today",
+  "reports_period_week": "This Week",
+  "reports_period_month": "This Month",
+  "reports_period_last_month": "Last Month",
+  "reports_period_custom": "Custom",
+  "reports_totalRevenue": "Total Revenue",
+  "reports_totalSales": "Total Sales",
+  "reports_totalProfit": "Total Profit",
+  "reports_avgSaleValue": "Avg. Sale",
+  "reports_cancelledCount": "Cancelled",
+  "reports_cancelledValue": "Cancelled Value",
+  "reports_bestDay": "Best Day",
+  "reports_worstDay": "Worst Day",
+  "reports_topProducts": "Top Products",
+  "reports_bestSellers": "Best Sellers",
+  "reports_deadStock": "Dead Stock",
+  "reports_byCategory": "By Category",
+  "reports_revenue": "Revenue",
+  "reports_profit": "Profit",
+  "reports_margin": "Margin",
+  "reports_quantitySold": "Sold",
+  "reports_stockValue": "Stock Value",
+  "reports_healthScore": "Health Score",
+  "reports_healthyStock": "Healthy",
+  "reports_lowStock": "Low Stock",
+  "reports_zeroStock": "Out of Stock",
+  "reports_reorderImpact": "Reorder Cost",
+  "reports_daysSinceLastSale": "{days} days since last sale",
+  "@reports_daysSinceLastSale": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "reports_neverSold": "Never sold",
+  "reports_noData": "No data for this period",
+  "reports_sales_title": "Sales Report",
+  "reports_products_title": "Products Report",
+  "reports_inventory_title": "Inventory Report",
+  "reports_currency": "MAD",
+  "reports_products_count": "{count} products",
+  "@reports_products_count": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  }
 }

@@ -1409,4 +1409,125 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get orders_sharePdf => 'Partager le PDF';
+
+  @override
+  String get reports_title => 'Rapports';
+
+  @override
+  String get reports_sales => 'Ventes';
+
+  @override
+  String get reports_products => 'Produits';
+
+  @override
+  String get reports_inventory => 'Inventaire';
+
+  @override
+  String get reports_period_today => 'Aujourd\'hui';
+
+  @override
+  String get reports_period_week => 'Cette semaine';
+
+  @override
+  String get reports_period_month => 'Ce mois';
+
+  @override
+  String get reports_period_last_month => 'Mois dernier';
+
+  @override
+  String get reports_period_custom => 'Personnalise';
+
+  @override
+  String get reports_totalRevenue => 'Revenus totaux';
+
+  @override
+  String get reports_totalSales => 'Ventes totales';
+
+  @override
+  String get reports_totalProfit => 'Profit total';
+
+  @override
+  String get reports_avgSaleValue => 'Vente moyenne';
+
+  @override
+  String get reports_cancelledCount => 'Annulees';
+
+  @override
+  String get reports_cancelledValue => 'Valeur annulee';
+
+  @override
+  String get reports_bestDay => 'Meilleur jour';
+
+  @override
+  String get reports_worstDay => 'Pire jour';
+
+  @override
+  String get reports_topProducts => 'Top produits';
+
+  @override
+  String get reports_bestSellers => 'Meilleures ventes';
+
+  @override
+  String get reports_deadStock => 'Stock mort';
+
+  @override
+  String get reports_byCategory => 'Par categorie';
+
+  @override
+  String get reports_revenue => 'Revenus';
+
+  @override
+  String get reports_profit => 'Profit';
+
+  @override
+  String get reports_margin => 'Marge';
+
+  @override
+  String get reports_quantitySold => 'Vendu';
+
+  @override
+  String get reports_stockValue => 'Valeur du stock';
+
+  @override
+  String get reports_healthScore => 'Score sante';
+
+  @override
+  String get reports_healthyStock => 'Sain';
+
+  @override
+  String get reports_lowStock => 'Stock faible';
+
+  @override
+  String get reports_zeroStock => 'Rupture de stock';
+
+  @override
+  String get reports_reorderImpact => 'Cout de reapprovisionnement';
+
+  @override
+  String reports_daysSinceLastSale(int days) {
+    return '$days jours sans vente';
+  }
+
+  @override
+  String get reports_neverSold => 'Jamais vendu';
+
+  @override
+  String get reports_noData => 'Aucune donnee pour cette periode';
+
+  @override
+  String get reports_sales_title => 'Rapport des ventes';
+
+  @override
+  String get reports_products_title => 'Rapport des produits';
+
+  @override
+  String get reports_inventory_title => 'Rapport d\'inventaire';
+
+  @override
+  String get reports_currency => 'MAD';
+
+  @override
+  String reports_products_count(int count) {
+    return '$count produits';
+  }
 }

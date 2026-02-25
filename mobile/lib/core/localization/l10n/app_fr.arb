@@ -635,5 +635,55 @@
   "orders_orderManually": "Commander manuellement",
   "orders_orderManuallySubtitle": "Ces produits n'ont pas d'historique de commande — choisissez un fournisseur lors de la création",
 
-  "orders_sharePdf": "Partager le PDF"
+  "orders_sharePdf": "Partager le PDF",
+
+  "reports_title": "Rapports",
+  "reports_sales": "Ventes",
+  "reports_products": "Produits",
+  "reports_inventory": "Inventaire",
+  "reports_period_today": "Aujourd'hui",
+  "reports_period_week": "Cette semaine",
+  "reports_period_month": "Ce mois",
+  "reports_period_last_month": "Mois dernier",
+  "reports_period_custom": "Personnalise",
+  "reports_totalRevenue": "Revenus totaux",
+  "reports_totalSales": "Ventes totales",
+  "reports_totalProfit": "Profit total",
+  "reports_avgSaleValue": "Vente moyenne",
+  "reports_cancelledCount": "Annulees",
+  "reports_cancelledValue": "Valeur annulee",
+  "reports_bestDay": "Meilleur jour",
+  "reports_worstDay": "Pire jour",
+  "reports_topProducts": "Top produits",
+  "reports_bestSellers": "Meilleures ventes",
+  "reports_deadStock": "Stock mort",
+  "reports_byCategory": "Par categorie",
+  "reports_revenue": "Revenus",
+  "reports_profit": "Profit",
+  "reports_margin": "Marge",
+  "reports_quantitySold": "Vendu",
+  "reports_stockValue": "Valeur du stock",
+  "reports_healthScore": "Score sante",
+  "reports_healthyStock": "Sain",
+  "reports_lowStock": "Stock faible",
+  "reports_zeroStock": "Rupture de stock",
+  "reports_reorderImpact": "Cout de reapprovisionnement",
+  "reports_daysSinceLastSale": "{days} jours sans vente",
+  "@reports_daysSinceLastSale": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "reports_neverSold": "Jamais vendu",
+  "reports_noData": "Aucune donnee pour cette periode",
+  "reports_sales_title": "Rapport des ventes",
+  "reports_products_title": "Rapport des produits",
+  "reports_inventory_title": "Rapport d'inventaire",
+  "reports_currency": "MAD",
+  "reports_products_count": "{count} produits",
+  "@reports_products_count": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  }
 }

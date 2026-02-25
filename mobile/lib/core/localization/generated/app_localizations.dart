@@ -2661,6 +2661,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share PDF'**
   String get orders_sharePdf;
+
+  /// No description provided for @reports_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get reports_title;
+
+  /// No description provided for @reports_sales.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales'**
+  String get reports_sales;
+
+  /// No description provided for @reports_products.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get reports_products;
+
+  /// No description provided for @reports_inventory.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory'**
+  String get reports_inventory;
+
+  /// No description provided for @reports_period_today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get reports_period_today;
+
+  /// No description provided for @reports_period_week.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get reports_period_week;
+
+  /// No description provided for @reports_period_month.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get reports_period_month;
+
+  /// No description provided for @reports_period_last_month.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Month'**
+  String get reports_period_last_month;
+
+  /// No description provided for @reports_period_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get reports_period_custom;
+
+  /// No description provided for @reports_totalRevenue.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Revenue'**
+  String get reports_totalRevenue;
+
+  /// No description provided for @reports_totalSales.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Sales'**
+  String get reports_totalSales;
+
+  /// No description provided for @reports_totalProfit.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Profit'**
+  String get reports_totalProfit;
+
+  /// No description provided for @reports_avgSaleValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. Sale'**
+  String get reports_avgSaleValue;
+
+  /// No description provided for @reports_cancelledCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get reports_cancelledCount;
+
+  /// No description provided for @reports_cancelledValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled Value'**
+  String get reports_cancelledValue;
+
+  /// No description provided for @reports_bestDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Best Day'**
+  String get reports_bestDay;
+
+  /// No description provided for @reports_worstDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Worst Day'**
+  String get reports_worstDay;
+
+  /// No description provided for @reports_topProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Products'**
+  String get reports_topProducts;
+
+  /// No description provided for @reports_bestSellers.
+  ///
+  /// In en, this message translates to:
+  /// **'Best Sellers'**
+  String get reports_bestSellers;
+
+  /// No description provided for @reports_deadStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Dead Stock'**
+  String get reports_deadStock;
+
+  /// No description provided for @reports_byCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'By Category'**
+  String get reports_byCategory;
+
+  /// No description provided for @reports_revenue.
+  ///
+  /// In en, this message translates to:
+  /// **'Revenue'**
+  String get reports_revenue;
+
+  /// No description provided for @reports_profit.
+  ///
+  /// In en, this message translates to:
+  /// **'Profit'**
+  String get reports_profit;
+
+  /// No description provided for @reports_margin.
+  ///
+  /// In en, this message translates to:
+  /// **'Margin'**
+  String get reports_margin;
+
+  /// No description provided for @reports_quantitySold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get reports_quantitySold;
+
+  /// No description provided for @reports_stockValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock Value'**
+  String get reports_stockValue;
+
+  /// No description provided for @reports_healthScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Score'**
+  String get reports_healthScore;
+
+  /// No description provided for @reports_healthyStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthy'**
+  String get reports_healthyStock;
+
+  /// No description provided for @reports_lowStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Low Stock'**
+  String get reports_lowStock;
+
+  /// No description provided for @reports_zeroStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of Stock'**
+  String get reports_zeroStock;
+
+  /// No description provided for @reports_reorderImpact.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorder Cost'**
+  String get reports_reorderImpact;
+
+  /// No description provided for @reports_daysSinceLastSale.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days since last sale'**
+  String reports_daysSinceLastSale(int days);
+
+  /// No description provided for @reports_neverSold.
+  ///
+  /// In en, this message translates to:
+  /// **'Never sold'**
+  String get reports_neverSold;
+
+  /// No description provided for @reports_noData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data for this period'**
+  String get reports_noData;
+
+  /// No description provided for @reports_sales_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales Report'**
+  String get reports_sales_title;
+
+  /// No description provided for @reports_products_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Products Report'**
+  String get reports_products_title;
+
+  /// No description provided for @reports_inventory_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory Report'**
+  String get reports_inventory_title;
+
+  /// No description provided for @reports_currency.
+  ///
+  /// In en, this message translates to:
+  /// **'MAD'**
+  String get reports_currency;
+
+  /// No description provided for @reports_products_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} products'**
+  String reports_products_count(int count);
 }
 
 class _AppLocalizationsDelegate

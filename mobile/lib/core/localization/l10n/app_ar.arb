@@ -600,5 +600,55 @@
   "orders_orderManually": "طلب يدوي",
   "orders_orderManuallySubtitle": "هذه المنتجات لا تملك سجل طلبات — اختر موردًا عند إنشاء الطلب",
 
-  "orders_sharePdf": "مشاركة PDF"
+  "orders_sharePdf": "مشاركة PDF",
+
+  "reports_title": "التقارير",
+  "reports_sales": "المبيعات",
+  "reports_products": "المنتجات",
+  "reports_inventory": "المخزون",
+  "reports_period_today": "اليوم",
+  "reports_period_week": "هذا الأسبوع",
+  "reports_period_month": "هذا الشهر",
+  "reports_period_last_month": "الشهر الماضي",
+  "reports_period_custom": "مخصص",
+  "reports_totalRevenue": "إجمالي الإيرادات",
+  "reports_totalSales": "إجمالي المبيعات",
+  "reports_totalProfit": "إجمالي الربح",
+  "reports_avgSaleValue": "متوسط البيع",
+  "reports_cancelledCount": "ملغاة",
+  "reports_cancelledValue": "قيمة الملغاة",
+  "reports_bestDay": "أفضل يوم",
+  "reports_worstDay": "أسوأ يوم",
+  "reports_topProducts": "أفضل المنتجات",
+  "reports_bestSellers": "الأكثر مبيعًا",
+  "reports_deadStock": "المخزون الراكد",
+  "reports_byCategory": "حسب الفئة",
+  "reports_revenue": "الإيرادات",
+  "reports_profit": "الربح",
+  "reports_margin": "الهامش",
+  "reports_quantitySold": "مباع",
+  "reports_stockValue": "قيمة المخزون",
+  "reports_healthScore": "نقاط الصحة",
+  "reports_healthyStock": "جيد",
+  "reports_lowStock": "مخزون منخفض",
+  "reports_zeroStock": "نفد المخزون",
+  "reports_reorderImpact": "تكلفة إعادة الطلب",
+  "reports_daysSinceLastSale": "منذ {days} يوم",
+  "@reports_daysSinceLastSale": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "reports_neverSold": "لم يُباع مطلقًا",
+  "reports_noData": "لا توجد بيانات لهذه الفترة",
+  "reports_sales_title": "تقرير المبيعات",
+  "reports_products_title": "تقرير المنتجات",
+  "reports_inventory_title": "تقرير المخزون",
+  "reports_currency": "د.م",
+  "reports_products_count": "{count} منتجات",
+  "@reports_products_count": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  }
 }
