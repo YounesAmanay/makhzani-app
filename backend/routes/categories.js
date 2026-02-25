@@ -135,8 +135,8 @@ router.post("/", authenticateToken, checkSubscription, validateCategory, handleV
           color: category.color,
           icon: category.icon,
           sort_order: category.sort_order,
-          created_at: category.created_at,
-          updated_at: category.updated_at,
+          created_at: category.createdAt,
+          updated_at: category.updatedAt,
         },
       },
     });
@@ -217,8 +217,8 @@ router.put("/:id", authenticateToken, validateCategoryUpdate, handleValidationEr
           color: category.color,
           icon: category.icon,
           sort_order: category.sort_order,
-          created_at: category.created_at,
-          updated_at: category.updated_at,
+          created_at: category.createdAt,
+          updated_at: category.updatedAt,
         },
       },
     });

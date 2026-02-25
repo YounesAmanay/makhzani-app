@@ -55,7 +55,7 @@ function formatSupplier(s) {
       merchant_notes: s.merchant_notes,
       last_order_date: s.last_order_date,
       total_orders: s.total_orders || 0,
-      linked_since: s.created_at,
+      linked_since: s.createdAt,
     },
   };
 }
@@ -124,7 +124,7 @@ router.post("/", authenticateToken, checkSubscription, validateSupplier, handleV
     console.log("Created supplier:", supplier.name, "for merchant", req.merchantId);
     res.status(201).json({ success: true, message: "Supplier created", data: {
       supplier: { id: supplier.id, name: supplier.name, business_name: supplier.business_name, phone_number: supplier.phone_number, email: supplier.email, address: supplier.address, city: supplier.city, is_new_supplier: true },
-      relationship: { preferred_contact_method: supplier.preferred_contact_method, payment_terms: supplier.payment_terms, merchant_notes: supplier.merchant_notes, created_at: supplier.created_at },
+      relationship: { preferred_contact_method: supplier.preferred_contact_method, payment_terms: supplier.payment_terms, merchant_notes: supplier.merchant_notes, created_at: supplier.createdAt },
     }});
   } catch (error) {
     console.error("Error creating supplier:", error);
@@ -145,7 +145,7 @@ router.get("/:id", authenticateToken, async (req, res) => {
     });
     res.json({ success: true, data: {
       supplier: formatSupplier(supplier),
-      recent_orders: orders.map(o => ({ id: o.id, order_number: o.order_number, created_at: o.created_at, pdf_generated: !!o.pdf_generated_at, sent: !!o.sent_at })),
+      recent_orders: orders.map(o => ({ id: o.id, order_number: o.order_number, created_at: o.createdAt, pdf_generated: !!o.pdfGeneratedAt, sent: !!o.sentAt })),
     }});
   } catch (error) {
     console.error("Error fetching supplier:", error);

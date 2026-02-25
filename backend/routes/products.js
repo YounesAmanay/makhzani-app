@@ -272,7 +272,7 @@ router.post('/', authenticateToken, checkSubscription, validateProduct, handleVa
           cost_price: product.cost_price,
           category_id: product.category_id,
           needs_reorder: product.current_stock <= product.reorder_threshold,
-          created_at: product.created_at
+          created_at: product.createdAt
         }
       }
     });

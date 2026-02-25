@@ -86,7 +86,7 @@ router.get('/profile', authenticateToken, async (req, res) => {
           subscription_status: merchant.subscription_status,
           trial_ends_at: merchant.trial_ends_at,
           last_login: merchant.last_login,
-          created_at: merchant.created_at
+          created_at: merchant.createdAt
         },
         statistics: {
           total_products: totalProducts,
@@ -143,7 +143,7 @@ router.put('/profile', authenticateToken, validateMerchantUpdate, handleValidati
           phone_number: merchant.phone_number,
           address: merchant.address,
           region: merchant.region,
-          updated_at: merchant.updated_at
+          updated_at: merchant.updatedAt
         }
       }
     });

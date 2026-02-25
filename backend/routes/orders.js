@@ -175,10 +175,10 @@ router.get('/', authenticateToken, validateQuery, handleValidationErrors, async 
             received: !!order.received_at
           },
           pdf_url: order.pdf_url,
-          created_at: order.created_at,
-          pdf_generated_at: order.pdf_generated_at,
-          sent_at: order.sent_at,
-          received_at: order.received_at
+          created_at: order.createdAt,
+          pdf_generated_at: order.pdfGeneratedAt,
+          sent_at: order.sentAt,
+          received_at: order.receivedAt,
         })),
         pagination: {
           current_page: parseInt(page),
@@ -327,7 +327,7 @@ router.post('/', authenticateToken, checkSubscription, validateOrder, handleVali
           })),
           total_value: completeOrder.items.reduce((sum, item) => sum + parseFloat(item.total_price), 0),
           notes: completeOrder.notes,
-          created_at: completeOrder.created_at
+          created_at: completeOrder.createdAt
         }
       }
     });
@@ -516,11 +516,11 @@ router.get('/:id', authenticateToken, async (req, res) => {
             received: !!order.received_at
           },
           timestamps: {
-            created_at: order.created_at,
-            updated_at: order.updated_at,
-            pdf_generated_at: order.pdf_generated_at,
-            sent_at: order.sent_at,
-            received_at: order.received_at
+            created_at: order.createdAt,
+            updated_at: order.updatedAt,
+            pdf_generated_at: order.pdfGeneratedAt,
+            sent_at: order.sentAt,
+            received_at: order.receivedAt,
           }
         }
       }
@@ -596,7 +596,7 @@ router.post('/:id/generate-pdf', authenticateToken, checkSubscription, async (re
       data: {
         order_id: order.id,
         order_number: order.order_number,
-        pdf_generated_at: order.pdf_generated_at,
+        pdf_generated_at: order.pdfGeneratedAt,
         pdf_url: pdfData.url,
         pdf_filename: pdfData.filename
       }
@@ -654,9 +654,9 @@ router.post('/:id/mark-sent', authenticateToken, [
       data: {
         order_id: order.id,
         order_number: order.order_number,
-        sent_at: order.sent_at,
+        sent_at: order.sentAt,
         sent_via: order.sent_via,
-        pdf_generated_at: order.pdf_generated_at
+        pdf_generated_at: order.pdfGeneratedAt
       }
     });
 
@@ -804,7 +804,7 @@ router.post('/:id/receive', authenticateToken, checkSubscription, async (req, re
       data: {
         order_id: order.id,
         order_number: order.order_number,
-        received_at: order.received_at,
+        received_at: order.receivedAt,
         items_updated: order.items.length
       }
     });
