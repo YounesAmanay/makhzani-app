@@ -292,12 +292,17 @@ router.post('/', authenticateToken, checkSubscription, validateSale, handleValid
     await transaction.commit();
 
     // Non-blocking: fire low-stock notifications
+    // Build stock change map from the loop above (product.current_stock is already updated)
+    const stockChanges = items.map(item => {
+      const product = productMap[item.product_id];
+      const newStock = product.current_stock; // already decremented by product.update()
+      const oldStock = newStock + item.quantity; // reverse to get original
+      return { product, newStock, oldStock };
+    });
+
     const merchant = await db.Merchant.findByPk(merchantId, { attributes: ['fcm_token'] });
     if (merchant?.fcm_token) {
-      for (const item of items) {
-        const product = productMap[item.product_id];
-        const newStock = product.current_stock - item.quantity;
-        const oldStock = product.current_stock;
+      for (const { product, newStock, oldStock } of stockChanges) {
         if (newStock <= product.reorder_threshold && oldStock > product.reorder_threshold) {
           notifyLowStock({
             fcmToken: merchant.fcm_token,
